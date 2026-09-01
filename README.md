@@ -1,91 +1,49 @@
-# StrategyAI — MVP
+# StrategyAI
 
-**Trade your strategy. Not your emotions.**
+**Your rules decide. Not the model.**
 
-StrategyAI is a portfolio-project prototype for evaluating trading and investing opportunities against a user's own predefined rules.
+StrategyAI checks a trading setup or a company against a strategy *you* defined,
+and returns one of four verdicts: **QUALIFIED**, **WATCH**, **REJECTED**, or
+**INSUFFICIENT DATA**.
 
-## What works in this MVP
+It is a decision-support and research tool. It does not predict prices, does not
+give financial advice, and does not tell you what to buy.
 
-- Trading and investing modes
-- Strategy builder
-- Mandatory vs optional rules
-- Opportunity checker
-- Deterministic compliance verdicts
-- Local journal
-- Local analytics
-- Browser persistence via `localStorage`
-- Responsive dark UI
-
-## Important architecture
-
-The intended production architecture is:
-
-```text
-User strategy
-    ↓
-Strategy parser / structured rules
-    ↓
-AI interpretation (chart or financial research)
-    ↓
-Structured observations
-    ↓
-Deterministic rules engine
-    ↓
-QUALIFIED / WATCH / REJECTED / INSUFFICIENT DATA
+```
+USER STRATEGY → STRUCTURED RULES → AI / DATA ANALYSIS → STRUCTURED OBSERVATIONS
+                                                                    ↓
+        QUALIFIED / WATCH / REJECTED / INSUFFICIENT DATA ← DETERMINISTIC RULES ENGINE
 ```
 
-**AI interprets. Code decides.**
+**AI interprets. Code decides.** A model may report what it sees on a chart. It
+may not compute a risk/reward ratio, and it may not decide whether one is
+acceptable. Those are arithmetic, and arithmetic belongs in code.
 
-The current MVP deliberately uses deterministic demo observations instead of a real AI/market-data API. This lets the UI and product flow work without exposing API keys. The next step is to replace `demoObservations()` in `app.js` with a backend call to a vision/research model and real market/fundamental data.
+## Status
 
-## Run locally
+Rebuild in progress. See `docs/ROADMAP.md`.
 
-No build step is required.
+| Phase | Scope | State |
+|---|---|---|
+| 0 | Foundation, version control, tooling | done |
+| 1 | Rule model, observation model, rules engine, tests | done |
+| 2–10 | Builders, checkers, persistence, journal, analytics, portfolio, deploy | pending |
+
+The original static prototype is preserved at `legacy/mvp/` and is the reference
+for the visual design during the UI port.
+
+## Running the tests
 
 ```bash
-python3 -m http.server 8000
+npm install
+npm test
 ```
 
-Open `http://localhost:8000`.
+The rules engine is the product. It performs no I/O, contains no randomness, and
+never calls a model — the same strategy and observations always produce the same
+analysis. It is covered by 63 tests.
 
-## Put it on GitHub
+## Cost
 
-1. Create a new GitHub repository, e.g. `strategyai`.
-2. Upload `index.html`, `styles.css`, `app.js`, and `README.md`.
-3. Enable GitHub Pages if you want the static MVP publicly accessible.
-
-## Production roadmap
-
-### V0.2
-- Authentication
-- PostgreSQL database
-- Real strategy objects
-- Real trade/outcome journal
-- Server-side API layer
-
-### V0.3 — Trading
-- TradingView chart integration
-- Historical OHLCV data
-- Vision model for screenshots
-- Objective RR / session / price calculations
-- Paper-trade tracking
-- Alerts
-
-### V0.4 — Investing
-- Live financial statements
-- Valuation metrics
-- SEC/company filings where applicable
-- DCF module
-- Qualitative research with source citations
-- Portfolio-level constraints
-
-### V1.0
-- Backtesting
-- Rule-level performance attribution
-- Portfolio analytics
-- Strategy versioning
-- Broker/paper-trading integrations
-
-## Product principle
-
-Do not market this as an AI that predicts markets. The core product is **strategy compliance**: the user defines the decision framework, AI extracts/observes facts, and deterministic code evaluates whether the opportunity follows the framework.
+The entire project runs on no-cost tooling and free provider tiers. With no API
+keys configured at all, it runs on labelled mock providers. See `.env.example`.
