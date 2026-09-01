@@ -214,7 +214,7 @@ export function StrategyBuilder({ initial }: { initial: BuilderInitial }) {
 
       {/* --- condition library ---------------------------------------------- */}
       <Card className="p-4 xl:sticky xl:top-[58px]">
-        <div className="label">Add condition</div>
+        <div className="cap">Add condition</div>
         <input
           className="field mt-3"
           placeholder="Search conditions…"
@@ -226,7 +226,7 @@ export function StrategyBuilder({ initial }: { initial: BuilderInitial }) {
           {library.length === 0 && <p className="text-faint py-4">Nothing left to add.</p>}
           {library.map(([group, metrics]) => (
             <div key={group} className="mb-3">
-              <div className="label mb-1.5">{GROUP_LABELS[group] ?? group}</div>
+              <div className="cap mb-1.5">{GROUP_LABELS[group] ?? group}</div>
               <div className="flex flex-col gap-1">
                 {metrics.map((metric) => (
                   <button
@@ -234,7 +234,7 @@ export function StrategyBuilder({ initial }: { initial: BuilderInitial }) {
                     type="button"
                     onClick={() => addMetric(metric)}
                     title={metric.description}
-                    className="text-left px-2 py-1.5 rounded-[3px] hover:bg-surface-2 text-muted hover:text-ink cursor-pointer flex items-center justify-between gap-2 group"
+                    className="text-left px-2 py-1.5  hover:bg-paper-2 text-muted hover:text-ink cursor-pointer flex items-center justify-between gap-2 group"
                   >
                     <span>{metric.label}</span>
                     <span className="num text-dim group-hover:text-ink">+</span>

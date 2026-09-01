@@ -68,7 +68,7 @@ export function AuthForm({ mode }: { mode: 'sign-in' | 'sign-up' }) {
   return (
     <div className="max-w-[420px] mx-auto mt-6">
       <Card className="p-5">
-        <div className="label">{isSignUp ? 'Create account' : 'Welcome back'}</div>
+        <div className="cap">{isSignUp ? 'Create account' : 'Welcome back'}</div>
         <h1 className="text-[18px] font-semibold tracking-[-0.01em] mt-1.5">
           {isSignUp ? 'Keep your strategies' : 'Sign in'}
         </h1>

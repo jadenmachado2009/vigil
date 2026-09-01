@@ -66,9 +66,9 @@ export function StrategyLibrary() {
             return (
               <Card key={strategy.id} className="p-4 flex flex-col">
                 <div className="flex items-start justify-between gap-2">
-                  <span className="label">{strategy.mode}</span>
+                  <span className="cap">{strategy.mode}</span>
                   {strategy.status !== 'active' && (
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-faint border border-line rounded px-1.5 py-0.5">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-faint border border-rule rounded px-1.5 py-0.5">
                       {strategy.status}
                     </span>
                   )}

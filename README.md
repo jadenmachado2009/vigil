@@ -1,8 +1,8 @@
-# StrategyAI
+# Vigil
 
-**Your rules decide. Not the model.**
+**Watch the market. Protect your edge.**
 
-StrategyAI checks a trading setup or a company against a strategy *you* defined,
+Vigil checks a trading setup or a company against a strategy *you* defined,
 and returns one of four verdicts: **QUALIFIED**, **WATCH**, **REJECTED**, or
 **INSUFFICIENT DATA**.
 

@@ -4,7 +4,7 @@ import { DashboardOverview } from '@/features/strategies/dashboard-overview';
 export default function DashboardPage() {
   return (
     <>
-      <PageHeader title="Dashboard" />
+      <PageHeader figure="Fig. 00 — Instrument overview" title="Dashboard" />
       <DashboardOverview />
     </>
   );

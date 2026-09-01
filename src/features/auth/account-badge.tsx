@@ -24,9 +24,9 @@ export function AccountBadge() {
 
   if (!me.signedIn) {
     return (
-      <div className="text-faint">
-        <div className="flex items-center gap-2 text-[12px]">
-          <span className="w-1.5 h-1.5 rounded-full bg-dim" /> Local only
+      <div className="cap flex items-center gap-4">
+        <div className="flex items-center gap-2">
+          <span className="w-1.5 h-1.5 bg-dim" /> Held in this browser
         </div>
         <Link href="/sign-up" className="text-muted text-[12px] block mt-1.5 hover:text-ink">
           Create an account →
@@ -36,9 +36,9 @@ export function AccountBadge() {
   }
 
   return (
-    <div className="text-faint">
-      <div className="flex items-center gap-2 text-[12px]">
-        <span className="w-1.5 h-1.5 rounded-full bg-pass" /> Account
+    <div className="cap flex items-center gap-4">
+      <div className="flex items-center gap-2">
+        <span className="w-1.5 h-1.5 bg-pass" /> Saved to your account
       </div>
       <div className="text-[11px] mt-1.5 truncate" title={me.email ?? ''}>{me.name || me.email}</div>
       <button

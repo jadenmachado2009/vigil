@@ -1,0 +1,81 @@
+{
+  "pages": [
+    {
+      "id": "page-1",
+      "name": "Vigil"
+    },
+    {
+      "id": "page-2",
+      "name": "As built"
+    }
+  ],
+  "artboards": [
+    {
+      "file": "Mark.dc.html",
+      "x": 0,
+      "y": 0,
+      "w": 1180,
+      "h": 900,
+      "page": "page-1",
+      "title": "Identity"
+    },
+    {
+      "file": "Main.dc.html",
+      "x": 1300,
+      "y": 0,
+      "w": 1440,
+      "h": 980,
+      "page": "page-1",
+      "title": "Analysis result"
+    },
+    {
+      "file": "Dashboard.dc.html",
+      "x": 2860,
+      "y": 0,
+      "w": 1440,
+      "h": 900,
+      "page": "page-1",
+      "title": "Dashboard"
+    },
+    {
+      "file": "Builder.dc.html",
+      "x": 4420,
+      "y": 0,
+      "w": 1440,
+      "h": 900,
+      "page": "page-1",
+      "title": "Strategy builder"
+    },
+    {
+      "file": "Current.dc.html",
+      "x": 0,
+      "y": 0,
+      "w": 1440,
+      "h": 900,
+      "page": "page-2",
+      "title": "As built today"
+    }
+  ],
+  "annotations": [
+    {
+      "id": "note-vigil",
+      "x": 0,
+      "y": -250,
+      "w": 740,
+      "page": "page-1",
+      "text": "Your mark, refined and extended into a system \u2014 then the product rebuilt in its language.\n\nFour changes to the logo: baselines aligned so the V and wordmark read as one lockup; tracking put in order so the tagline steps back instead of competing; a heavier optical cut for small sizes, where didone hairlines break up; and the whole thing stated as lockups, reversal, palette and type scale.\n\nBodoni Moda for the wordmark and headlines, Jost for labels and copy, IBM Plex Mono for figures only \u2014 decimals have to align in a compliance table.\n\nNo brand colour anywhere. Paper and ink carry the interface; green, oxblood and grey appear only where a rule passed, failed, or could not be checked."
+    },
+    {
+      "id": "note-asbuilt",
+      "x": 0,
+      "y": -140,
+      "w": 560,
+      "page": "page-2",
+      "text": "The dark version running today, for comparison."
+    }
+  ],
+  "launch": {
+    "view": "canvas",
+    "page": "page-1"
+  }
+}

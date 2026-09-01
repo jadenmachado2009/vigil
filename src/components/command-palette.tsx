@@ -63,7 +63,7 @@ export function CommandPalette({ commands }: { commands: Command[] }) {
       onClick={() => setOpen(false)}
     >
       <div
-        className="w-full max-w-[520px] bg-surface border border-line-strong rounded-[4px] overflow-hidden shadow-[0_24px_80px_rgba(0,0,0,.6)]"
+        className="w-full max-w-[520px] bg-paper border border-ink  overflow-hidden shadow-[0_24px_80px_rgba(0,0,0,.6)]"
         onClick={(e) => e.stopPropagation()}
       >
         <input
@@ -77,7 +77,7 @@ export function CommandPalette({ commands }: { commands: Command[] }) {
           }}
           placeholder="Go to, or run…"
           aria-label="Command palette"
-          className="w-full bg-transparent border-0 border-b border-line px-4 py-3 text-ink outline-none placeholder:text-dim"
+          className="w-full bg-transparent border-0 border-b border-rule px-4 py-3 text-ink outline-none placeholder:text-dim"
         />
         <div className="max-h-[46vh] overflow-y-auto py-1">
           {matches.length === 0 && (
@@ -88,13 +88,13 @@ export function CommandPalette({ commands }: { commands: Command[] }) {
             lastGroup = command.group;
             return (
               <div key={command.id}>
-                {showGroup && <div className="label px-4 pt-3 pb-1.5">{command.group}</div>}
+                {showGroup && <div className="cap px-4 pt-3 pb-1.5">{command.group}</div>}
                 <button
                   type="button"
                   onMouseEnter={() => setCursor(index)}
                   onClick={() => run(command)}
                   className={`w-full text-left px-4 py-2 flex items-center justify-between gap-3 cursor-pointer ${
-                    index === cursor ? 'bg-raised text-ink' : 'text-muted'
+                    index === cursor ? 'bg-paper-2 text-ink' : 'text-muted'
                   }`}
                 >
                   <span>{command.label}</span>
@@ -104,7 +104,7 @@ export function CommandPalette({ commands }: { commands: Command[] }) {
             );
           })}
         </div>
-        <div className="border-t border-line px-4 py-2 flex gap-4 text-[11px] text-dim">
+        <div className="border-t border-rule px-4 py-2 flex gap-4 text-[11px] text-dim">
           <span><span className="kbd">↑↓</span> move</span>
           <span><span className="kbd">↵</span> open</span>
           <span><span className="kbd">esc</span> close</span>

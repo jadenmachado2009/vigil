@@ -4,7 +4,7 @@ import { AnalyzeTabs } from '@/features/analyze/analyze-tabs';
 export default function AnalyzePage() {
   return (
     <>
-      <PageHeader title="Analyze" />
+      <PageHeader figure="Fig. 02 — Opportunity check" title="Analyze" />
       <AnalyzeTabs />
     </>
   );

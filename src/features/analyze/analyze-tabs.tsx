@@ -15,7 +15,7 @@ export function AnalyzeTabs() {
   const [mode, setMode] = useState<Mode>('trading');
   return (
     <>
-      <div className="flex border-b border-line mb-4 -mt-1">
+      <div className="flex border-b border-rule mb-4 -mt-1">
         {TABS.map((tab) => (
           <button
             key={tab.value}

@@ -138,7 +138,7 @@ export function CompanyChecker() {
   return (
     <div className="grid grid-cols-1 xl:grid-cols-[380px_minmax(0,1fr)] gap-6 items-start">
       <Card className="p-4">
-        <div className="label">Company</div>
+        <div className="cap">Company</div>
 
         <div className="mt-3 flex flex-col gap-3">
           <label className="field-label block">
@@ -164,13 +164,13 @@ export function CompanyChecker() {
               onKeyDown={(e) => { if (e.key === 'Enter') void run(); }}
             />
             {showSuggestions && suggestions.length > 0 && (
-              <div className="absolute z-20 left-0 right-0 mt-1 bg-[#0d1116] border border-line-strong rounded-[9px] overflow-hidden shadow-[0_18px_60px_rgba(0,0,0,.5)]">
+              <div className="absolute z-20 left-0 right-0 mt-1 bg-[#efede8] border border-ink  overflow-hidden shadow-[0_18px_60px_rgba(0,0,0,.5)]">
                 {suggestions.map((s) => (
                   <button
                     key={s.ticker}
                     type="button"
                     onClick={() => { setTicker(s.ticker); setShowSuggestions(false); }}
-                    className="w-full text-left px-3 py-2 hover:bg-[#161d24] cursor-pointer flex items-baseline gap-2 font-normal"
+                    className="w-full text-left px-3 py-2 hover:bg-[#e9e6df] cursor-pointer flex items-baseline gap-2 font-normal"
                   >
                     <span className="num text-ink text-[13px] w-16 shrink-0">{s.ticker}</span>
                     <span className="text-muted text-[13px] truncate">{s.name}</span>
@@ -181,8 +181,8 @@ export function CompanyChecker() {
           </label>
 
           {qualitativeRules.length > 0 && (
-            <div className="border-t border-line pt-4">
-              <div className="label">Your judgement</div>
+            <div className="border-t border-rule pt-4">
+              <div className="cap">Your judgement</div>
               <p className="text-dim text-[11px] mt-1 leading-snug">
                 Unanswered reports as no data, never as a pass.
               </p>

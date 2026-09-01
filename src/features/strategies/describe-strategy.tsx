@@ -62,7 +62,7 @@ export function DescribeStrategy({ mode, onReady, onSkip }: Props) {
   return (
     <div className="grid grid-cols-1 xl:grid-cols-[minmax(0,1fr)_420px] gap-5 items-start">
       <Card className="p-4">
-        <div className="label">Describe it</div>
+        <div className="cap">Describe it</div>
         <p className="text-faint text-[12px] mt-1.5 leading-snug">
           Plain English. Anything left vague becomes a question rather than a guess.
         </p>
@@ -90,7 +90,7 @@ export function DescribeStrategy({ mode, onReady, onSkip }: Props) {
         </div>
         {error && <p className="text-fail text-[12px] mt-2">{error}</p>}
 
-        <div className="border-t border-line mt-4 pt-3">
+        <div className="border-t border-rule mt-4 pt-3">
           <button type="button" onClick={onSkip} className="text-[12px] text-faint hover:text-ink cursor-pointer">
             Skip and build it by hand →
           </button>
@@ -103,12 +103,12 @@ export function DescribeStrategy({ mode, onReady, onSkip }: Props) {
         ) : (
           <>
             {open.length > 0 && (
-              <div className="border-b border-line">
+              <div className="border-b border-rule">
                 <div className="row row-head grid-cols-1">
                   {open.length} question{open.length > 1 ? 's' : ''} before this is usable
                 </div>
                 {open.map((question) => (
-                  <div key={question.id} className="px-3 py-3 border-b border-line last:border-0">
+                  <div key={question.id} className="px-3 py-3 border-b border-rule last:border-0">
                     <div className="leading-snug">{question.question}</div>
                     {question.quote && (
                       <div className="text-dim text-[11px] mt-1 italic">“{question.quote}”</div>
@@ -119,7 +119,7 @@ export function DescribeStrategy({ mode, onReady, onSkip }: Props) {
                           key={suggestion.value}
                           type="button"
                           onClick={() => answer(question, suggestion.value)}
-                          className="num text-[12px] px-2 py-1 rounded-[3px] border border-line-strong text-muted hover:text-ink hover:border-[#3d454f] cursor-pointer"
+                          className="num text-[12px] px-2 py-1  border border-ink text-muted hover:text-ink hover:border-[#14130f] cursor-pointer"
                         >
                           {suggestion.label}
                         </button>
@@ -159,8 +159,8 @@ export function DescribeStrategy({ mode, onReady, onSkip }: Props) {
             )}
 
             {result.unmatched.length > 0 && (
-              <div className="border-t border-line px-3 py-2.5">
-                <div className="label">Not understood</div>
+              <div className="border-t border-rule px-3 py-2.5">
+                <div className="cap">Not understood</div>
                 {result.unmatched.map((phrase, i) => (
                   <div key={i} className="text-dim text-[12px] mt-1 italic">“{phrase}”</div>
                 ))}
@@ -169,10 +169,10 @@ export function DescribeStrategy({ mode, onReady, onSkip }: Props) {
             )}
 
             {warnings.map((warning, i) => (
-              <div key={i} className="border-t border-line px-3 py-2 text-watch text-[12px]">{warning}</div>
+              <div key={i} className="border-t border-rule px-3 py-2 text-watch text-[12px]">{warning}</div>
             ))}
 
-            <div className="border-t border-line px-3 py-3 flex items-center gap-2 flex-wrap">
+            <div className="border-t border-rule px-3 py-3 flex items-center gap-2 flex-wrap">
               <Button
                 disabled={result.rules.length === 0}
                 onClick={() => onReady({
@@ -188,7 +188,7 @@ export function DescribeStrategy({ mode, onReady, onSkip }: Props) {
                 {open.length > 0 ? 'Unanswered questions are left out.' : 'Nothing is saved until you review it.'}
               </span>
             </div>
-            <div className="border-t border-line px-3 py-2 text-dim text-[11px]">
+            <div className="border-t border-rule px-3 py-2 text-dim text-[11px]">
               Read by: {result.parserName}
             </div>
           </>

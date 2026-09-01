@@ -1,9 +1,9 @@
 {
-  "name": "strategyai",
+  "name": "vigil",
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "Strategy compliance engine for trading and investing. AI interprets, code decides.",
+  "description": "Watch the market. Protect your edge. Strategy compliance for trading and investing.",
   "scripts": {
     "test": "vitest run",
     "test:watch": "vitest",

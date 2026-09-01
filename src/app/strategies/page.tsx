@@ -6,7 +6,7 @@ import { StrategyLibrary } from '@/features/strategies/strategy-library';
 export default function StrategiesPage() {
   return (
     <>
-      <PageHeader title="Your strategies"
+      <PageHeader figure="Fig. 01 — Strategy library" title="Strategies"
         action={
           <div className="flex gap-2">
             <Link href="/strategies/new?mode=trading"><Button variant="secondary">New trading</Button></Link>

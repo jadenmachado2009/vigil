@@ -1,0 +1,137 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,400;6..96,500;6..96,600&family=Jost:wght@300;400;500&family=IBM+Plex+Mono:wght@400;500&display=swap">
+  <style>
+    body { margin: 0; font-family: 'Jost', ui-sans-serif, system-ui, sans-serif; font-size: 13px; color: #14130f; -webkit-font-smoothing: antialiased; }
+    .disp { font-family: 'Bodoni Moda', 'Didot', 'Bodoni MT', Georgia, serif; letter-spacing: -0.008em; font-weight: 400; }
+    .mono { font-family: 'IBM Plex Mono', ui-monospace, monospace; font-variant-numeric: tabular-nums; }
+    .sans { font-family: 'Jost', ui-sans-serif, system-ui, sans-serif; }
+    .cap { font-family: 'Jost', sans-serif; font-size: 9.5px; letter-spacing: 0.22em; text-transform: uppercase; color: #8f8a7e; font-weight: 400; }
+    a { color: #14130f; } a:hover { color: #6b665c; }
+  </style>
+</helmet>
+
+<div style="width: 1440px; height: 900px; background: #efede8; display: flex; flex-direction: column; box-sizing: border-box;">
+
+  <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #14130f; padding: 12px 26px;">
+    <div style="display: flex; align-items: center; gap: 13px;">
+      <div class="disp" style="font-size: 30px; line-height: 0.78; font-weight: 500;">V</div>
+      <div style="width: 1px; height: 26px; background: #14130f;"></div>
+      <div>
+        <div class="disp" style="font-size: 15px; letter-spacing: 0.3em; padding-left: 0.3em; line-height: 1;">VIGIL</div>
+        <div class="cap" style="font-size: 7.5px; margin-top: 4px; letter-spacing: 0.24em;">Watch the market. Protect your edge.</div>
+      </div>
+    </div>
+    <div style="display: flex; gap: 26px;">
+      <div style="border-bottom: 2px solid #14130f; padding-bottom: 2px;"><div class="cap" style="font-size: 8px; color: #14130f;">01</div><div class="cap" style="color: #14130f; margin-top: 2px;">Dashboard</div></div>
+      <div><div class="cap" style="font-size: 8px;">02</div><div class="cap" style="color: #14130f; margin-top: 2px;">Strategies</div></div>
+      <div><div class="cap" style="font-size: 8px;">03</div><div class="cap" style="color: #14130f; margin-top: 2px;">Analyze</div></div>
+      <div><div class="cap" style="font-size: 8px;">04</div><div class="cap" style="color: #14130f; margin-top: 2px;">Journal</div></div>
+      <div><div class="cap" style="font-size: 8px;">05</div><div class="cap" style="color: #14130f; margin-top: 2px;">Analytics</div></div>
+    </div>
+  </div>
+
+  <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #d5d1c6; padding: 8px 26px;">
+    <div style="display: flex; align-items: center; gap: 10px;">
+      <span class="cap">Mode</span>
+      <span class="cap" style="color: #efede8; background: #14130f; padding: 3px 9px;">Trading</span>
+      <span class="cap" style="border: 1px solid #d5d1c6; padding: 3px 9px;">Investing</span>
+    </div>
+    <div style="display: flex; align-items: center; gap: 14px;">
+      <span class="cap">2 strategies on file — data held locally</span>
+      <span class="cap" style="border: 1px solid #14130f; padding: 3px 9px; color: #14130f;">⌘K</span>
+    </div>
+  </div>
+
+  <div style="padding: 34px 26px;">
+    <div class="cap" style="margin-bottom: 20px;">Fig. 00 — Instrument overview</div>
+
+    <div style="display: grid; grid-template-columns: minmax(0,1fr) 372px; gap: 46px; align-items: start;">
+      <div>
+        <div class="disp" style="font-size: 58px; line-height: 0.93; color: #6b665c;">
+          Eight setups<br>checked.<br>
+          <span style="color: #14130f;">None qualified.</span>
+        </div>
+        <div class="sans" style="font-size: 13.5px; color: #4f4b42; line-height: 1.6; margin-top: 22px; max-width: 52ch;">
+          Every opportunity you have run this week broke at least one rule you wrote. That is the
+          instrument working, not failing — the question worth asking is whether the rules are right,
+          which is what the journal and rule attribution are for.
+        </div>
+
+        <!-- counts as a ruled register, not tiles -->
+        <div style="border-top: 1px solid #14130f; margin-top: 30px;">
+          <div style="display: grid; grid-template-columns: 34px minmax(0,1fr) 120px; gap: 16px; padding: 14px 0; border-bottom: 1px solid #e4e0d5; align-items: baseline;">
+            <div class="mono" style="color: #b8b2a4;">01</div>
+            <div><div class="disp" style="font-size: 16px;">Qualified</div><div class="sans" style="font-size: 12px; color: #6b665c; margin-top: 2px;">Every required rule passed</div></div>
+            <div class="mono" style="text-align: right; font-size: 30px; line-height: 1; color: #b8b2a4;">0</div>
+          </div>
+          <div style="display: grid; grid-template-columns: 34px minmax(0,1fr) 120px; gap: 16px; padding: 14px 0; border-bottom: 1px solid #e4e0d5; align-items: baseline;">
+            <div class="mono" style="color: #b8b2a4;">02</div>
+            <div><div class="disp" style="font-size: 16px;">Watch</div><div class="sans" style="font-size: 12px; color: #6b665c; margin-top: 2px;">Nothing failed, not yet confirmed</div></div>
+            <div class="mono" style="text-align: right; font-size: 30px; line-height: 1; color: #b8b2a4;">0</div>
+          </div>
+          <div style="display: grid; grid-template-columns: 34px minmax(0,1fr) 120px; gap: 16px; padding: 14px 0; border-bottom: 1px solid #e4e0d5; align-items: baseline;">
+            <div class="mono" style="color: #8c2f26;">03</div>
+            <div><div class="disp" style="font-size: 16px; color: #8c2f26;">Rejected</div><div class="sans" style="font-size: 12px; color: #6b665c; margin-top: 2px;">A required rule was broken</div></div>
+            <div class="mono" style="text-align: right; font-size: 30px; line-height: 1; color: #8c2f26;">8</div>
+          </div>
+          <div style="display: grid; grid-template-columns: 34px minmax(0,1fr) 120px; gap: 16px; padding: 14px 0; align-items: baseline;">
+            <div class="mono" style="color: #b8b2a4;">04</div>
+            <div><div class="disp" style="font-size: 16px;">Insufficient data</div><div class="sans" style="font-size: 12px; color: #6b665c; margin-top: 2px;">Could not be verified — never assumed</div></div>
+            <div class="mono" style="text-align: right; font-size: 30px; line-height: 1; color: #b8b2a4;">0</div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="cap">Recent — most recent first</div>
+        <div style="border-top: 1px solid #14130f; margin-top: 10px;">
+          <div style="display: grid; grid-template-columns: minmax(0,1fr) 46px 62px; gap: 10px; padding: 11px 0; border-bottom: 1px solid #e4e0d5; align-items: baseline;">
+            <div><div class="mono" style="font-size: 13px;">MSFT</div><div class="cap" style="margin-top: 2px;">Quality Growth v1</div></div>
+            <div class="mono" style="text-align: right; color: #8f8a7e;">4/6</div>
+            <div class="cap" style="text-align: right; color: #8c2f26;">Reject</div>
+          </div>
+          <div style="display: grid; grid-template-columns: minmax(0,1fr) 46px 62px; gap: 10px; padding: 11px 0; border-bottom: 1px solid #e4e0d5; align-items: baseline;">
+            <div><div class="mono" style="font-size: 13px;">EURUSD</div><div class="cap" style="margin-top: 2px;">NY AM FVG v1</div></div>
+            <div class="mono" style="text-align: right; color: #8f8a7e;">0/5</div>
+            <div class="cap" style="text-align: right; color: #8c2f26;">Reject</div>
+          </div>
+          <div style="display: grid; grid-template-columns: minmax(0,1fr) 46px 62px; gap: 10px; padding: 11px 0; border-bottom: 1px solid #e4e0d5; align-items: baseline;">
+            <div><div class="mono" style="font-size: 13px;">NVDA</div><div class="cap" style="margin-top: 2px;">Quality Growth v1</div></div>
+            <div class="mono" style="text-align: right; color: #8f8a7e;">4/6</div>
+            <div class="cap" style="text-align: right; color: #8c2f26;">Reject</div>
+          </div>
+          <div style="display: grid; grid-template-columns: minmax(0,1fr) 46px 62px; gap: 10px; padding: 11px 0; border-bottom: 1px solid #e4e0d5; align-items: baseline;">
+            <div><div class="mono" style="font-size: 13px;">KO</div><div class="cap" style="margin-top: 2px;">Quality Growth v1</div></div>
+            <div class="mono" style="text-align: right; color: #8f8a7e;">4/6</div>
+            <div class="cap" style="text-align: right; color: #8f8a7e;">No data</div>
+          </div>
+          <div style="display: grid; grid-template-columns: minmax(0,1fr) 46px 62px; gap: 10px; padding: 11px 0; align-items: baseline;">
+            <div><div class="mono" style="font-size: 13px;">EURUSD</div><div class="cap" style="margin-top: 2px;">NY AM FVG v1</div></div>
+            <div class="mono" style="text-align: right; color: #8f8a7e;">1/5</div>
+            <div class="cap" style="text-align: right; color: #8c2f26;">Reject</div>
+          </div>
+        </div>
+
+        <div style="border-top: 1px solid #d5d1c6; margin-top: 22px; padding-top: 14px;">
+          <div class="cap">Not yet built</div>
+          <div class="sans" style="font-size: 11.5px; color: #6b665c; line-height: 1.62; margin-top: 9px;">
+            Outcome tracking, rule attribution and portfolio limits. Until a trade's result is recorded
+            against the rules it was judged by, this screen can only tell you what complied — never
+            what worked.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+</body>
+</html>

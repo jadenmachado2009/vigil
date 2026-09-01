@@ -22,7 +22,7 @@ export function RuleEditor({ rule, onChange, onRemove }: Props) {
   const unitSuffix = rule.kind === 'numeric' ? (rule.unit === 'percent' ? '%' : rule.unit === 'multiple' ? 'x' : '') : '';
 
   return (
-    <div className="border-b border-line last:border-0 px-3 py-2.5">
+    <div className="border-b border-rule last:border-0 px-3 py-2.5">
       <div className="flex flex-wrap items-center gap-x-3 gap-y-2.5">
         <div className="min-w-[160px] flex-1">
           <div>{metric?.label ?? rule.metric}</div>

@@ -1,140 +1,132 @@
 @import "tailwindcss";
 
 /*
- * StrategyAI visual system.
+ * Vigil.
  *
- * One rule governs everything: COLOUR IS DATA, NOT DECORATION.
- * There is no brand accent. Chrome is neutral. A hue appears only when it
- * carries meaning - pass, fail, watch, no-data - so a glance at any screen
- * lands on the thing that actually happened.
+ * Paper and ink carry the interface. There is no brand colour: green, oxblood
+ * and grey appear only where a rule passed, failed, or could not be checked,
+ * so a glance at any screen lands on what actually happened.
  *
- * Surfaces are neutral charcoal rather than black: black plus a saturated
- * accent is the default look of generated dashboards, and this is meant to
- * read as an instrument.
+ * Bodoni for the wordmark, headlines and verdicts. Jost for labels and copy.
+ * A monospace for figures only — decimals have to align in a compliance table
+ * and no didone will do that.
  */
 @theme {
-  --color-bg: #101216;
-  --color-surface: #15181d;
-  --color-surface-2: #1a1e24;
-  --color-raised: #20252c;
-  --color-line: #23272e;
-  --color-line-strong: #2f353d;
+  --color-paper: #efede8;
+  --color-paper-2: #e9e6df;
+  --color-ink: #14130f;
+  --color-ink-2: #4f4b42;
+  --color-muted: #6b665c;
+  --color-faint: #8f8a7e;
+  --color-dim: #b8b2a4;
+  --color-rule: #d5d1c6;
+  --color-hair: #e4e0d5;
 
-  --color-ink: #e4e8ec;
-  --color-muted: #8f98a3;
-  --color-faint: #646d78;
-  --color-dim: #4a525b;
-
-  /* Status. Desaturated on purpose - neon reads as decoration. */
-  --color-pass: #4f9f7f;
-  --color-fail: #c2564f;
-  --color-watch: #c2913f;
-  --color-none: #6b7480;
-
-  --radius-control: 3px;
-  --radius-panel: 4px;
+  --color-pass: #2e5d46;
+  --color-fail: #8c2f26;
+  --color-watch: #9a6b18;
+  --color-none: #9a958a;
 }
 
-html { color-scheme: dark; }
+html { color-scheme: light; }
 
 body {
-  background: var(--color-bg);
+  background: var(--color-paper);
   color: var(--color-ink);
   font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
   font-size: 13px;
-  line-height: 1.45;
+  line-height: 1.5;
   -webkit-font-smoothing: antialiased;
 }
 
 @layer components {
-  /* Section label. Small, spaced, never a sentence. */
-  .label {
-    font-size: 10px;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    font-weight: 600;
-    color: var(--color-faint);
+  /* Bodoni. Headlines, verdicts, rule names, the wordmark. */
+  .ser {
+    font-family: var(--font-serif), 'Didot', 'Bodoni MT', Georgia, serif;
+    letter-spacing: -0.008em;
+    font-weight: 400;
   }
 
-  /*
-   * Figures. Every threshold, price, ratio and count. Tabular so columns align
-   * on the decimal and digits never change width between renders.
-   */
+  /* The wordmark's setting: wide caps with the trailing space compensated. */
+  .wordmark {
+    font-family: var(--font-serif), 'Didot', Georgia, serif;
+    letter-spacing: 0.3em;
+    padding-left: 0.3em;
+    font-weight: 400;
+  }
+
+  /* Section labels and status words. Never a sentence. */
+  .cap {
+    font-size: 9.5px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--color-faint);
+    font-weight: 400;
+  }
+
+  /* Figures. Tabular so columns align on the decimal. */
   .num {
     font-family: var(--font-mono), ui-monospace, monospace;
     font-variant-numeric: tabular-nums;
-    font-feature-settings: "tnum" 1, "zero" 1;
-    letter-spacing: -0.01em;
-  }
-
-  /* Containers are flat and ruled, not floating cards. */
-  .panel {
-    background: var(--color-surface);
-    border: 1px solid var(--color-line);
-    border-radius: var(--radius-panel);
+    font-feature-settings: "tnum" 1;
   }
 
   .field {
     width: 100%;
-    background: var(--color-bg);
-    border: 1px solid var(--color-line-strong);
-    border-radius: var(--radius-control);
+    background: transparent;
+    border: 1px solid var(--color-ink);
+    border-radius: 0;
     color: var(--color-ink);
-    padding: 7px 9px;
+    padding: 7px 10px;
     font: inherit;
     outline: none;
   }
-  .field:focus { border-color: #4a5560; background: #0c0e11; }
+  .field:focus { background: #f6f4f0; }
   .field::placeholder { color: var(--color-dim); }
 
   .field-label {
     display: block;
-    font-size: 11px;
-    letter-spacing: 0.04em;
+    font-size: 9.5px;
+    letter-spacing: 0.22em;
     text-transform: uppercase;
     color: var(--color-faint);
-    font-weight: 600;
-    margin-bottom: 5px;
+    margin-bottom: 6px;
   }
 
-  /* Data rows: 32px, hairline ruled, no zebra striping. */
+  /* Ruled data rows. No fills, no cards, no radius. */
   .row {
     display: grid;
     align-items: center;
-    gap: 12px;
-    padding: 7px 12px;
-    border-bottom: 1px solid var(--color-line);
-    min-height: 32px;
+    gap: 14px;
+    padding: 11px 0;
+    border-bottom: 1px solid var(--color-hair);
+    min-height: 38px;
   }
   .row:last-child { border-bottom: 0; }
   .row-head {
-    min-height: 26px;
-    padding-top: 0;
-    padding-bottom: 0;
-    background: var(--color-surface-2);
-    font-size: 10px;
-    letter-spacing: 0.1em;
+    min-height: 0;
+    padding: 0 0 7px;
+    border-bottom: 1px solid var(--color-ink);
+    font-size: 9.5px;
+    letter-spacing: 0.22em;
     text-transform: uppercase;
     color: var(--color-faint);
-    font-weight: 600;
   }
 
-  /* Keyboard hint. Signals the app is meant to be driven, not clicked through. */
   .kbd {
     font-family: var(--font-mono), monospace;
-    font-size: 10px;
-    border: 1px solid var(--color-line-strong);
-    border-bottom-width: 2px;
-    border-radius: 3px;
-    padding: 1px 4px;
-    color: var(--color-faint);
-    background: var(--color-surface-2);
+    font-size: 9.5px;
+    letter-spacing: 0.14em;
+    border: 1px solid var(--color-ink);
+    padding: 3px 7px;
+    text-transform: uppercase;
+    color: var(--color-ink);
   }
 }
 
-::-webkit-scrollbar { width: 9px; height: 9px; }
+::-webkit-scrollbar { width: 10px; height: 10px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: #252b32; }
-::-webkit-scrollbar-thumb:hover { background: #333b44; }
+::-webkit-scrollbar-thumb { background: var(--color-rule); }
+::-webkit-scrollbar-thumb:hover { background: var(--color-dim); }
 
-::selection { background: #2c343d; color: #fff; }
+::selection { background: #14130f; color: #efede8; }

@@ -11,7 +11,8 @@ export default async function NewStrategyPage({
   const mode: Mode = raw === 'investing' ? 'investing' : 'trading';
   return (
     <>
-      <PageHeader title={mode === 'trading' ? 'New trading strategy' : 'New investment strategy'} />
+      <PageHeader figure="Fig. 03 — Rule definition"
+      title={mode === 'trading' ? 'New trading strategy' : 'New investment strategy'} />
       <NewStrategyFlow mode={mode} />
     </>
   );

@@ -5,7 +5,7 @@ export default async function EditStrategyPage({ params }: { params: Promise<{ i
   const { id } = await params;
   return (
     <>
-      <PageHeader title="Edit strategy" />
+      <PageHeader figure="Fig. 03 — Rule definition" title="Edit strategy" />
       <EditStrategy id={id} />
     </>
   );

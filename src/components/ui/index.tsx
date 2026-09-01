@@ -5,53 +5,47 @@ type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   variant?: 'primary' | 'secondary' | 'ghost' | 'danger';
 };
 
-/*
- * Buttons carry no brand colour. The primary action is simply the lightest
- * thing on screen, which is enough of a signal and leaves every hue free to
- * mean something in the results.
- */
+/* Ink and paper. No radius, no fill except the primary action's inversion. */
 const VARIANTS: Record<NonNullable<ButtonProps['variant']>, string> = {
-  primary: 'bg-ink text-[#101216] hover:bg-white font-semibold',
-  secondary: 'bg-raised text-ink border border-line-strong hover:border-[#3d454f]',
-  ghost: 'bg-transparent text-muted hover:text-ink hover:bg-surface-2',
-  danger: 'bg-transparent text-fail border border-[#3b2523] hover:bg-[#1f1413]',
+  primary: 'bg-ink text-paper hover:bg-black',
+  secondary: 'border border-ink text-ink hover:bg-paper-2',
+  ghost: 'text-muted hover:text-ink',
+  danger: 'border border-fail/40 text-fail hover:bg-fail/5',
 };
 
 export function Button({ variant = 'primary', className = '', ...rest }: ButtonProps) {
   return (
     <button
       {...rest}
-      className={`rounded-[3px] px-3 py-[7px] cursor-pointer transition-colors disabled:opacity-40 disabled:cursor-not-allowed ${VARIANTS[variant]} ${className}`}
+      className={`px-4 py-2 cursor-pointer transition-colors uppercase tracking-[0.18em] text-[9.5px] disabled:opacity-40 disabled:cursor-not-allowed ${VARIANTS[variant]} ${className}`}
     />
   );
 }
 
+/** A ruled block, not a card. Top rule only. */
 export function Card({ children, className = '' }: { children: ReactNode; className?: string }) {
-  return <div className={`panel ${className}`}>{children}</div>;
+  return <div className={`border-t border-ink ${className}`}>{children}</div>;
 }
 
-/** A ruled section divider. Replaces heading-plus-explanatory-paragraph. */
 export function SectionHead({ title, action }: { title: string; action?: ReactNode }) {
   return (
-    <div className="flex items-center justify-between gap-4 mt-6 mb-2 first:mt-0">
-      <div className="label">{title}</div>
+    <div className="flex items-center justify-between gap-4 mt-8 mb-2 first:mt-0">
+      <div className="cap">{title}</div>
       {action}
     </div>
   );
 }
 
 const VERDICT_TONE: Record<Verdict, string> = {
-  QUALIFIED: 'text-pass border-pass/35',
-  WATCH: 'text-watch border-watch/35',
-  REJECTED: 'text-fail border-fail/35',
-  INSUFFICIENT_DATA: 'text-none border-none/35',
+  QUALIFIED: 'text-pass border-pass/40',
+  WATCH: 'text-watch border-watch/40',
+  REJECTED: 'text-fail border-fail/40',
+  INSUFFICIENT_DATA: 'text-none border-none/40',
 };
 
 export function VerdictPill({ verdict }: { verdict: Verdict }) {
   return (
-    <span
-      className={`num text-[10px] font-semibold tracking-[0.1em] px-2 py-1 rounded-[2px] border whitespace-nowrap ${VERDICT_TONE[verdict]}`}
-    >
+    <span className={`cap border px-2.5 py-1 whitespace-nowrap ${VERDICT_TONE[verdict]}`}>
       {verdict.replace('_', ' ')}
     </span>
   );
@@ -65,22 +59,18 @@ const STATUS_TONE: Record<RuleStatus, string> = {
 };
 
 const STATUS_TEXT: Record<RuleStatus, string> = {
-  PASS: 'pass',
-  FAIL: 'fail',
-  UNCONFIRMED: 'pending',
-  UNKNOWN: 'no data',
+  PASS: 'Pass',
+  FAIL: 'Fail',
+  UNCONFIRMED: 'Pending',
+  UNKNOWN: 'No data',
 };
 
 export function StatusMark({ status }: { status: RuleStatus }) {
-  return (
-    <span className={`num text-[11px] whitespace-nowrap ${STATUS_TONE[status]}`}>
-      {STATUS_TEXT[status]}
-    </span>
-  );
+  return <span className={`cap whitespace-nowrap ${STATUS_TONE[status]}`}>{STATUS_TEXT[status]}</span>;
 }
 
 export function Empty({ children }: { children: ReactNode }) {
-  return <div className="text-faint px-4 py-10 text-center leading-relaxed">{children}</div>;
+  return <div className="text-faint py-12 leading-relaxed">{children}</div>;
 }
 
 export function Toggle({
@@ -91,14 +81,14 @@ export function Toggle({
   onChange: (value: string) => void;
 }) {
   return (
-    <div className="inline-flex border border-line-strong rounded-[3px] overflow-hidden">
-      {options.map((o, index) => (
+    <div className="inline-flex gap-2">
+      {options.map((o) => (
         <button
           key={o.value}
           type="button"
           onClick={() => onChange(o.value)}
-          className={`px-3 py-1 cursor-pointer text-[12px] ${index > 0 ? 'border-l border-line-strong' : ''} ${
-            value === o.value ? 'bg-raised text-ink' : 'text-faint hover:text-muted'
+          className={`cap px-3 py-1.5 cursor-pointer border ${
+            value === o.value ? 'bg-ink text-paper border-ink !text-paper' : 'border-rule hover:border-ink'
           }`}
         >
           {o.label}

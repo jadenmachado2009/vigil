@@ -1,0 +1,148 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+  <style>
+    body { margin: 0; font-family: 'IBM Plex Sans', ui-sans-serif, system-ui, sans-serif; font-size: 13px; line-height: 1.45; -webkit-font-smoothing: antialiased; }
+    .m { font-family: 'IBM Plex Mono', ui-monospace, monospace; font-variant-numeric: tabular-nums; letter-spacing: -0.01em; }
+    .lbl { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 600; color: #646d78; }
+    a { color: #e4e8ec; } a:hover { color: #ffffff; }
+  </style>
+</helmet>
+
+<div style="width: 1440px; height: 900px; background: #101216; color: #e4e8ec; display: flex; overflow: hidden;">
+
+  <!-- sidebar : 188px, exactly as built -->
+  <div style="width: 188px; flex-shrink: 0; background: #15181d; border-right: 1px solid #23272e; display: flex; flex-direction: column;">
+    <div style="height: 42px; display: flex; align-items: center; padding: 0 16px; border-bottom: 1px solid #23272e;">
+      <span style="font-weight: 600; letter-spacing: -0.01em;">StrategyAI</span>
+    </div>
+    <div style="display: flex; flex-direction: column; padding: 8px 0;">
+      <div style="display: flex; justify-content: space-between; padding: 7px 16px; border-left: 2px solid transparent; color: #8f98a3;"><span>Dashboard</span><span class="m" style="font-size: 10px; color: #4a525b;">g d</span></div>
+      <div style="display: flex; justify-content: space-between; padding: 7px 16px; border-left: 2px solid transparent; color: #8f98a3;"><span>Strategies</span><span class="m" style="font-size: 10px; color: #4a525b;">g s</span></div>
+      <div style="display: flex; justify-content: space-between; padding: 7px 16px; border-left: 2px solid #e4e8ec; background: #1a1e24; color: #e4e8ec;"><span>Analyze</span><span class="m" style="font-size: 10px; color: #4a525b;">g a</span></div>
+      <div style="display: flex; justify-content: space-between; padding: 7px 16px; border-left: 2px solid transparent; color: #8f98a3;"><span>Journal</span><span class="m" style="font-size: 10px; color: #4a525b;">g j</span></div>
+      <div style="display: flex; justify-content: space-between; padding: 7px 16px; border-left: 2px solid transparent; color: #8f98a3;"><span>Analytics</span><span class="m" style="font-size: 10px; color: #4a525b;">g n</span></div>
+    </div>
+    <div style="margin-top: auto; border-top: 1px solid #23272e; padding: 12px 16px;">
+      <div style="display: flex; align-items: center; gap: 8px; font-size: 12px; color: #646d78;"><span style="width: 6px; height: 6px; border-radius: 999px; background: #4a525b;"></span> Local only</div>
+    </div>
+    <div style="border-top: 1px solid #23272e; padding: 10px 16px; font-size: 11px; color: #4a525b;">Decision support. Not financial advice.</div>
+  </div>
+
+  <!-- main -->
+  <div style="flex: 1; min-width: 0; display: flex; flex-direction: column;">
+    <div style="height: 42px; border-bottom: 1px solid #23272e; display: flex; align-items: center; justify-content: space-between; padding: 0 20px;">
+      <div style="color: #8f98a3;">Analyze</div>
+      <div style="display: flex; align-items: center; gap: 8px; color: #646d78;"><span style="font-size: 11px;">Search</span><span class="m" style="font-size: 10px; border: 1px solid #2f353d; border-bottom-width: 2px; border-radius: 3px; padding: 1px 4px; background: #1a1e24;">⌘K</span></div>
+    </div>
+
+    <div style="padding: 20px; display: flex; flex-direction: column; gap: 16px;">
+      <div style="font-size: 19px; font-weight: 600; letter-spacing: -0.015em;">Analyze</div>
+
+      <div style="display: flex; border-bottom: 1px solid #23272e;">
+        <div style="padding: 8px 12px; border-bottom: 2px solid #e4e8ec; margin-bottom: -1px;">Trading <span class="m" style="font-size: 10px; color: #4a525b;">Chart setup</span></div>
+        <div style="padding: 8px 12px; border-bottom: 2px solid transparent; color: #646d78;">Investing <span class="m" style="font-size: 10px; color: #4a525b;">Company</span></div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 380px minmax(0, 1fr); gap: 20px; align-items: start;">
+
+        <!-- input panel -->
+        <div style="background: #15181d; border: 1px solid #23272e; border-radius: 4px; padding: 16px; display: flex; flex-direction: column; gap: 12px;">
+          <div class="lbl">Trading setup</div>
+          <div>
+            <div class="lbl" style="margin-bottom: 5px;">Strategy</div>
+            <div style="background: #101216; border: 1px solid #2f353d; border-radius: 3px; padding: 7px 9px; color: #e4e8ec;">NY AM FVG (v1, 6 rules)</div>
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+            <div><div class="lbl" style="margin-bottom: 5px;">Entry</div><div class="m" style="background: #101216; border: 1px solid #2f353d; border-radius: 3px; padding: 7px 9px;">1.1642</div></div>
+            <div><div class="lbl" style="margin-bottom: 5px;">Stop</div><div class="m" style="background: #101216; border: 1px solid #2f353d; border-radius: 3px; padding: 7px 9px;">1.1610</div></div>
+            <div><div class="lbl" style="margin-bottom: 5px;">Target</div><div class="m" style="background: #101216; border: 1px solid #2f353d; border-radius: 3px; padding: 7px 9px;">1.1700</div></div>
+            <div><div class="lbl" style="margin-bottom: 5px;">Entry time</div><div class="m" style="background: #101216; border: 1px solid #2f353d; border-radius: 3px; padding: 7px 9px; color: #8f98a3;">10/03 22:45</div></div>
+          </div>
+          <div style="background: #e4e8ec; color: #101216; border-radius: 3px; padding: 7px 12px; text-align: center; font-weight: 600;">Check against strategy</div>
+          <div style="font-size: 11px; color: #4a525b; line-height: 1.4;">RR is calculated from your levels, never read from the chart.</div>
+        </div>
+
+        <!-- result panel -->
+        <div style="background: #15181d; border: 1px solid #23272e; border-radius: 4px; overflow: hidden;">
+          <div style="padding: 16px 16px 12px;">
+            <div style="display: flex; align-items: center; justify-content: space-between;">
+              <div class="m" style="font-size: 22px; font-weight: 600; letter-spacing: -0.01em; line-height: 1;">REJECTED</div>
+              <div class="m" style="font-size: 10px; font-weight: 600; letter-spacing: 0.1em; padding: 4px 8px; border-radius: 2px; border: 1px solid rgba(194,86,79,.35); color: #c2564f;">REJECTED</div>
+            </div>
+            <div style="display: flex; gap: 2px; height: 3px; margin-top: 12px;">
+              <div style="flex: 1; background: #333b44;"></div><div style="flex: 1; background: #333b44;"></div>
+              <div style="flex: 1; background: #333b44;"></div><div style="flex: 1; background: #c2564f;"></div>
+              <div style="flex: 1; background: #c2564f;"></div>
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; margin-top: 12px;">
+              <div><div class="lbl">Subject</div><div class="m" style="font-size: 12px; margin-top: 4px; color: #8f98a3;">EURUSD</div></div>
+              <div><div class="lbl">Strategy</div><div class="m" style="font-size: 12px; margin-top: 4px; color: #8f98a3;">NY AM FVG v1</div></div>
+              <div><div class="lbl">Required</div><div class="m" style="font-size: 12px; margin-top: 4px; color: #8f98a3;">0/5 +0/1</div></div>
+              <div><div class="lbl">Checked</div><div class="m" style="font-size: 12px; margin-top: 4px; color: #8f98a3;">9/1/2026, 19:42</div></div>
+            </div>
+          </div>
+
+          <div style="padding: 0 16px 16px;">
+            <div style="border: 1px solid #23272e; border-radius: 4px; overflow: hidden;">
+              <div style="display: grid; grid-template-columns: minmax(0,1fr) 96px 88px 66px 54px; gap: 12px; padding: 0 12px; min-height: 26px; align-items: center; background: #1a1e24; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: #646d78; font-weight: 600;">
+                <div>Rule</div><div style="text-align: right;">Required</div><div style="text-align: right;">Observed</div><div style="text-align: right;">Result</div><div style="text-align: right;">Source</div>
+              </div>
+              <div style="display: grid; grid-template-columns: minmax(0,1fr) 96px 88px 66px 54px; gap: 12px; padding: 8px 12px; border-bottom: 1px solid #23272e; align-items: start;">
+                <div><div>HTF FVG exists</div><div style="color: #646d78; font-size: 12px; margin-top: 2px;">HTF fair value gap exists was not reported by any data source. This rule was not assumed to pass.</div></div>
+                <div class="m" style="text-align: right; color: #8f98a3;">present</div>
+                <div class="m" style="text-align: right; color: #4a525b;">—</div>
+                <div class="m" style="text-align: right; font-size: 11px; color: #6b7480;">no data</div>
+                <div class="m" style="text-align: right; font-size: 11px; color: #4a525b;">—</div>
+              </div>
+              <div style="display: grid; grid-template-columns: minmax(0,1fr) 96px 88px 66px 54px; gap: 12px; padding: 8px 12px; border-bottom: 1px solid #23272e; align-items: start;">
+                <div><div>5M FVG exists</div><div style="color: #646d78; font-size: 12px; margin-top: 2px;">LTF fair value gap exists was not reported by any data source.</div></div>
+                <div class="m" style="text-align: right; color: #8f98a3;">present</div>
+                <div class="m" style="text-align: right; color: #4a525b;">—</div>
+                <div class="m" style="text-align: right; font-size: 11px; color: #6b7480;">no data</div>
+                <div class="m" style="text-align: right; font-size: 11px; color: #4a525b;">—</div>
+              </div>
+              <div style="display: grid; grid-template-columns: minmax(0,1fr) 96px 88px 66px 54px; gap: 12px; padding: 8px 12px; border-bottom: 1px solid #23272e; align-items: start;">
+                <div><div>NY AM session</div><div style="color: #646d78; font-size: 12px; margin-top: 2px;">Entry time is 13:15 local to the session, outside 09:30–11:00 New York.</div></div>
+                <div class="m" style="text-align: right; color: #8f98a3;">09:30–11:00</div>
+                <div class="m" style="text-align: right;">13:15</div>
+                <div class="m" style="text-align: right; font-size: 11px; color: #c2564f;">fail</div>
+                <div class="m" style="text-align: right; font-size: 11px; color: #4a525b;">you</div>
+              </div>
+              <div style="display: grid; grid-template-columns: minmax(0,1fr) 96px 88px 66px 54px; gap: 12px; padding: 8px 12px; border-bottom: 1px solid #23272e; align-items: start;">
+                <div><div>Minimum RR 2.0</div><div style="color: #646d78; font-size: 12px; margin-top: 2px;">Risk/reward ratio is 1.8125x, which does not satisfy ≥ 2x.</div></div>
+                <div class="m" style="text-align: right; color: #8f98a3;">≥ 2x</div>
+                <div class="m" style="text-align: right;">1.8125x</div>
+                <div class="m" style="text-align: right; font-size: 11px; color: #c2564f;">fail</div>
+                <div class="m" style="text-align: right; font-size: 11px; color: #4a525b;">calc</div>
+              </div>
+              <div style="display: grid; grid-template-columns: minmax(0,1fr) 96px 88px 66px 54px; gap: 12px; padding: 8px 12px; align-items: start;">
+                <div><div>External liquidity target <span class="m" style="font-size: 10px; color: #4a525b;">opt</span></div><div style="color: #646d78; font-size: 12px; margin-top: 2px;">Liquidity target present was not reported by any data source.</div></div>
+                <div class="m" style="text-align: right; color: #8f98a3;">present</div>
+                <div class="m" style="text-align: right; color: #4a525b;">—</div>
+                <div class="m" style="text-align: right; font-size: 11px; color: #6b7480;">no data</div>
+                <div class="m" style="text-align: right; font-size: 11px; color: #4a525b;">—</div>
+              </div>
+            </div>
+
+            <div style="margin-top: 12px; border-left: 2px solid #2f353d; padding: 4px 0 4px 12px;">
+              <div style="line-height: 1.5;">2 mandatory rules failed: NY AM session; Minimum RR 2.0.</div>
+              <div style="color: #646d78; font-size: 12px; margin-top: 8px;">RR computed from your levels: <span class="m" style="color: #8f98a3;">1.81x</span> · risk <span class="m">0.0032</span> · reward <span class="m">0.0058</span></div>
+            </div>
+            <div style="margin-top: 12px; color: #4a525b; font-size: 12px;">No screenshot was provided, so only the values you entered were used.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+</body>
+</html>

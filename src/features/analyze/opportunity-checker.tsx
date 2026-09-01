@@ -158,7 +158,7 @@ export function OpportunityChecker() {
   return (
     <div className="grid grid-cols-1 xl:grid-cols-[380px_minmax(0,1fr)] gap-6 items-start">
       <Card className="p-4">
-        <div className="label">Trading setup</div>
+        <div className="cap">Trading setup</div>
 
         <div className="mt-3 flex flex-col gap-3">
           <Labeled label="Strategy">
@@ -187,12 +187,12 @@ export function OpportunityChecker() {
               {uploads.map((upload, index) => (
                 <div key={index} className="relative">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={upload.preview} alt={upload.name} className="h-20 w-28 object-cover rounded-[8px] border border-line" />
+                  <img src={upload.preview} alt={upload.name} className="h-20 w-28 object-cover rounded-[8px] border border-rule" />
                   <button
                     type="button"
                     aria-label={`Remove ${upload.name}`}
                     onClick={() => setUploads(uploads.filter((_, i) => i !== index))}
-                    className="absolute -top-2 -right-2 bg-[#1b222a] border border-line rounded-full w-6 h-6 text-faint hover:text-fail cursor-pointer leading-none"
+                    className="absolute -top-2 -right-2 bg-[#e9e6df] border border-rule rounded-full w-6 h-6 text-faint hover:text-fail cursor-pointer leading-none"
                   >×</button>
                 </div>
               ))}

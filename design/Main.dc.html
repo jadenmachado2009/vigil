@@ -1,0 +1,184 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,400;6..96,500;6..96,600&family=Jost:wght@300;400;500&family=IBM+Plex+Mono:wght@400;500&display=swap">
+  <style>
+    body { margin: 0; font-family: 'Jost', ui-sans-serif, system-ui, sans-serif; font-size: 13px; color: #14130f; -webkit-font-smoothing: antialiased; }
+    .disp { font-family: 'Bodoni Moda', 'Didot', 'Bodoni MT', Georgia, serif; letter-spacing: -0.008em; font-weight: 400; }
+    .mono { font-family: 'IBM Plex Mono', ui-monospace, monospace; font-variant-numeric: tabular-nums; }
+    .sans { font-family: 'Jost', ui-sans-serif, system-ui, sans-serif; }
+    .cap { font-family: 'Jost', sans-serif; font-size: 9.5px; letter-spacing: 0.22em; text-transform: uppercase; color: #8f8a7e; font-weight: 400; }
+    a { color: #14130f; } a:hover { color: #6b665c; }
+  </style>
+</helmet>
+
+<div style="width: 1440px; height: 980px; background: #efede8; display: flex; flex-direction: column; box-sizing: border-box;">
+
+  <!-- masthead : numbered nav, hairline only -->
+  <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #14130f; padding: 12px 26px;">
+    <div style="display: flex; align-items: center; gap: 13px;">
+      <div class="disp" style="font-size: 30px; line-height: 0.78; font-weight: 500;">V</div>
+      <div style="width: 1px; height: 26px; background: #14130f;"></div>
+      <div>
+        <div class="disp" style="font-size: 15px; letter-spacing: 0.3em; padding-left: 0.3em; line-height: 1;">VIGIL</div>
+        <div class="cap" style="font-size: 7.5px; margin-top: 4px; letter-spacing: 0.24em;">Watch the market. Protect your edge.</div>
+      </div>
+    </div>
+    <div style="display: flex; gap: 26px;">
+      <div><div class="cap" style="font-size: 8px;">01</div><div class="cap" style="color: #14130f; margin-top: 2px;">Dashboard</div></div>
+      <div><div class="cap" style="font-size: 8px;">02</div><div class="cap" style="color: #14130f; margin-top: 2px;">Strategies</div></div>
+      <div style="border-bottom: 2px solid #14130f; padding-bottom: 2px;"><div class="cap" style="font-size: 8px; color: #14130f;">03</div><div class="cap" style="color: #14130f; margin-top: 2px;">Analyze</div></div>
+      <div><div class="cap" style="font-size: 8px;">04</div><div class="cap" style="color: #14130f; margin-top: 2px;">Journal</div></div>
+      <div><div class="cap" style="font-size: 8px;">05</div><div class="cap" style="color: #14130f; margin-top: 2px;">Analytics</div></div>
+    </div>
+  </div>
+
+  <!-- mode strip -->
+  <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #d5d1c6; padding: 8px 26px;">
+    <div style="display: flex; align-items: center; gap: 10px;">
+      <span class="cap">Mode</span>
+      <span class="cap" style="color: #efede8; background: #14130f; padding: 3px 9px;">Trading</span>
+      <span class="cap" style="border: 1px solid #d5d1c6; padding: 3px 9px;">Investing</span>
+    </div>
+    <div style="display: flex; align-items: center; gap: 14px;">
+      <span class="cap">Strategy on file — NY AM FVG v1</span>
+      <span class="cap" style="border: 1px solid #14130f; padding: 3px 9px; color: #14130f;">⌘K</span>
+    </div>
+  </div>
+
+  <div style="padding: 34px 26px 0; display: grid; grid-template-columns: minmax(0,1fr) 372px; gap: 46px;">
+
+    <!-- left : the finding -->
+    <div>
+      <div class="cap" style="margin-bottom: 22px;">Fig. 01 — Compliance report · EURUSD</div>
+
+      <div class="disp" style="font-size: 62px; line-height: 0.92; color: #6b665c;">
+        This setup breaks<br>
+        <span style="color: #14130f;">two of your five</span><br>
+        required rules.
+      </div>
+
+      <!-- levels strip with the computed ratio -->
+      <div style="border-top: 1px solid #14130f; border-bottom: 1px solid #d5d1c6; margin-top: 30px; padding: 12px 0; display: grid; grid-template-columns: repeat(5, 1fr);">
+        <div><div class="cap">Entry</div><div class="mono" style="font-size: 17px; margin-top: 5px;">1.1642</div></div>
+        <div><div class="cap">Stop</div><div class="mono" style="font-size: 17px; margin-top: 5px;">1.1610</div></div>
+        <div><div class="cap">Target</div><div class="mono" style="font-size: 17px; margin-top: 5px;">1.1700</div></div>
+        <div><div class="cap">Risk / Reward</div><div class="mono" style="font-size: 17px; margin-top: 5px; color: #8f8a7e;">0.0032 / 0.0058</div></div>
+        <div><div class="cap" style="color: #8c2f26;">Ratio — computed</div><div class="mono" style="font-size: 17px; margin-top: 5px; color: #8c2f26;">1.81×</div></div>
+      </div>
+
+      <!-- numbered rule rows -->
+      <div style="margin-top: 26px;">
+        <div style="display: grid; grid-template-columns: 34px minmax(0,1fr) 128px 108px 84px; gap: 16px; padding-bottom: 7px; border-bottom: 1px solid #14130f;">
+          <div class="cap">No.</div><div class="cap">Rule</div><div class="cap" style="text-align: right;">Required</div><div class="cap" style="text-align: right;">Observed</div><div class="cap" style="text-align: right;">Finding</div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 34px minmax(0,1fr) 128px 108px 84px; gap: 16px; padding: 13px 0; border-bottom: 1px solid #e4e0d5; align-items: baseline;">
+          <div class="mono" style="color: #b8b2a4;">01</div>
+          <div><div class="disp" style="font-size: 14px;">HTF fair value gap</div></div>
+          <div class="mono" style="text-align: right; color: #8f8a7e;">present</div>
+          <div class="mono" style="text-align: right;">present</div>
+          <div class="cap" style="text-align: right; color: #2e5d46;">Pass</div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 34px minmax(0,1fr) 128px 108px 84px; gap: 16px; padding: 13px 0; border-bottom: 1px solid #e4e0d5; align-items: baseline;">
+          <div class="mono" style="color: #b8b2a4;">02</div>
+          <div><div class="disp" style="font-size: 14px;">5M fair value gap</div></div>
+          <div class="mono" style="text-align: right; color: #8f8a7e;">present</div>
+          <div class="mono" style="text-align: right;">present</div>
+          <div class="cap" style="text-align: right; color: #2e5d46;">Pass</div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 34px minmax(0,1fr) 128px 108px 84px; gap: 16px; padding: 13px 0; border-bottom: 1px solid #e4e0d5; align-items: baseline;">
+          <div class="mono" style="color: #8c2f26;">03</div>
+          <div>
+            <div class="disp" style="font-size: 14px; color: #8c2f26;">New York AM session</div>
+            <div class="sans" style="color: #6b665c; font-size: 12px; margin-top: 3px;">Entry sits 2h 15m past the window close.</div>
+          </div>
+          <div class="mono" style="text-align: right; color: #8f8a7e;">09:30–11:00</div>
+          <div class="mono" style="text-align: right; color: #8c2f26;">13:15</div>
+          <div class="cap" style="text-align: right; color: #8c2f26;">Fail</div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 34px minmax(0,1fr) 128px 108px 84px; gap: 16px; padding: 13px 0; border-bottom: 1px solid #e4e0d5; align-items: baseline;">
+          <div class="mono" style="color: #8c2f26;">04</div>
+          <div>
+            <div class="disp" style="font-size: 14px; color: #8c2f26;">Minimum risk / reward</div>
+            <div class="sans" style="color: #6b665c; font-size: 12px; margin-top: 3px;">Short by 0.19. A target of 1.1706 would clear it.</div>
+          </div>
+          <div class="mono" style="text-align: right; color: #8f8a7e;">≥ 2.00×</div>
+          <div class="mono" style="text-align: right; color: #8c2f26;">1.81×</div>
+          <div class="cap" style="text-align: right; color: #8c2f26;">Fail</div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 34px minmax(0,1fr) 128px 108px 84px; gap: 16px; padding: 13px 0; border-bottom: 1px solid #e4e0d5; align-items: baseline;">
+          <div class="mono" style="color: #b8b2a4;">05</div>
+          <div>
+            <div class="disp" style="font-size: 14px;">Inverse FVG confirmation</div>
+            <div class="sans" style="color: #6b665c; font-size: 12px; margin-top: 3px;">Not reported by any source. Not assumed to pass.</div>
+          </div>
+          <div class="mono" style="text-align: right; color: #8f8a7e;">present</div>
+          <div class="mono" style="text-align: right; color: #b8b2a4;">—</div>
+          <div class="cap" style="text-align: right;">No data</div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 34px minmax(0,1fr) 128px 108px 84px; gap: 16px; padding: 13px 0; align-items: baseline; opacity: .62;">
+          <div class="mono" style="color: #b8b2a4;">06</div>
+          <div><div class="disp" style="font-size: 14px;">External liquidity target</div><div class="cap" style="margin-top: 3px;">Optional</div></div>
+          <div class="mono" style="text-align: right; color: #8f8a7e;">present</div>
+          <div class="mono" style="text-align: right; color: #b8b2a4;">—</div>
+          <div class="cap" style="text-align: right;">No data</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- right : verdict + provenance -->
+    <div>
+      <div style="border: 1px solid #14130f; padding: 20px;">
+        <div class="cap">Verdict</div>
+        <div class="disp" style="font-size: 46px; line-height: 0.9; margin-top: 10px; color: #8c2f26;">Rejected</div>
+        <div class="sans" style="font-size: 13px; color: #4f4b42; margin-top: 12px; line-height: 1.5;">
+          A required rule was broken. More data cannot rescue this one.
+        </div>
+        <div style="display: flex; gap: 3px; margin-top: 18px;">
+          <div style="flex: 1; height: 6px; background: #2e5d46;"></div>
+          <div style="flex: 1; height: 6px; background: #2e5d46;"></div>
+          <div style="flex: 1; height: 6px; background: #8c2f26;"></div>
+          <div style="flex: 1; height: 6px; background: #8c2f26;"></div>
+          <div style="flex: 1; height: 6px; background: #d5d1c6;"></div>
+        </div>
+        <div class="cap" style="margin-top: 8px;">3 of 5 required rules held</div>
+      </div>
+
+      <div style="border-top: 1px solid #d5d1c6; margin-top: 22px; padding-top: 14px;">
+        <div class="cap">Where each figure came from</div>
+        <div style="margin-top: 12px; display: flex; flex-direction: column; gap: 9px;">
+          <div style="display: flex; justify-content: space-between;"><span class="mono" style="color: #4f4b42;">Price levels</span><span class="cap">Entered by you</span></div>
+          <div style="display: flex; justify-content: space-between;"><span class="mono" style="color: #4f4b42;">Risk / reward</span><span class="cap">Computed in code</span></div>
+          <div style="display: flex; justify-content: space-between;"><span class="mono" style="color: #4f4b42;">Session check</span><span class="cap">Computed in code</span></div>
+          <div style="display: flex; justify-content: space-between;"><span class="mono" style="color: #4f4b42;">Structure</span><span class="cap">Not reported</span></div>
+        </div>
+      </div>
+
+      <div style="border-top: 1px solid #d5d1c6; margin-top: 20px; padding-top: 14px;">
+        <div class="cap">Method &amp; provenance</div>
+        <div class="sans" style="font-size: 11.5px; color: #6b665c; line-height: 1.62; margin-top: 10px;">
+          The reading and the decision are separate. A model may report what it sees on a chart; it is
+          never asked for a ratio and never asked whether a setup is good. Every threshold here was
+          compared by application code against rules you wrote. An unverified condition is reported as
+          such — never assumed to pass. Compliance with your own framework. Not a prediction,
+          recommendation, or financial advice.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+</body>
+</html>

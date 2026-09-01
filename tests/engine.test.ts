@@ -203,3 +203,25 @@ describe('regressions against the original MVP', () => {
     expect(a.verdict).toBe('REJECTED');
   });
 });
+
+describe('reporting counts honestly', () => {
+  it('separates rules that failed from rules that could not be verified', () => {
+    // Three structural conditions unobserved, session and RR both broken.
+    const partial = obs({
+      entry: 100, stop: 98, target: 103,
+      entry_time: '2026-03-10T20:00:00.000Z',
+    });
+    const a = evaluateStrategy({ strategy: nyAmFvg, observations: partial, options: { now: NOW } });
+
+    const mandatory = a.results.filter((r) => r.mandatory);
+    const failed = mandatory.filter((r) => r.status === 'FAIL').length;
+    const unknown = mandatory.filter((r) => r.status === 'UNKNOWN').length;
+
+    expect(a.verdict).toBe('REJECTED');
+    expect(failed).toBe(2);            // session and RR
+    expect(unknown).toBe(3);           // the three FVG conditions
+    // "not passed" is 5, but only 2 were actually broken - the difference is
+    // what the verdict sentence must report.
+    expect(a.summary.mandatoryTotal - a.summary.mandatoryPassed).toBe(5);
+  });
+});
