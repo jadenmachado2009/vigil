@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import type { ReactNode } from 'react';
+import { AccountBadge } from '@/features/auth/account-badge';
 
 const NAV = [
   { href: '/', label: 'Dashboard', glyph: '⌂' },
@@ -38,11 +39,9 @@ export function AppShell({ children }: { children: ReactNode }) {
             );
           })}
         </nav>
-        <div className="mt-auto text-faint px-2 hidden lg:block">
-          <div className="flex items-center gap-2 text-[12px]">
-            <span className="w-1.5 h-1.5 rounded-full bg-accent" /> Local data
-          </div>
-          <small className="block mt-2.5 leading-relaxed">
+        <div className="mt-auto px-2 hidden lg:block">
+          <AccountBadge />
+          <small className="block mt-3 text-[#5a646f] text-[11px] leading-relaxed">
             Decision support only. Not financial advice.
           </small>
         </div>

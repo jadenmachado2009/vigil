@@ -4,8 +4,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import type { StrategyWithVersion } from '@/lib/repository/types';
 import type { AnalysisRecord } from '@/types/analysis';
-import { strategyRepository } from '@/lib/repository/local';
-import { analysisRepository } from '@/lib/repository/analyses';
+import { strategyRepository, analysisRepository } from '@/lib/repository/client';
 import { Button, Card, SectionHead, VerdictPill } from '@/components/ui';
 
 function Stat({ label, value, hint }: { label: string; value: string | number; hint: string }) {

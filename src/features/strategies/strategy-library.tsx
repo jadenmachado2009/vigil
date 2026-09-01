@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import Link from 'next/link';
 import type { StrategyWithVersion } from '@/lib/repository/types';
-import { strategyRepository } from '@/lib/repository/local';
+import { strategyRepository } from '@/lib/repository/client';
 import { Button, Card, Toggle } from '@/components/ui';
 import { nyAmFvgPreset, qualityGrowthPreset } from './presets';
 

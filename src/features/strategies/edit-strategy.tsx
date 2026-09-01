@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import type { StrategyWithVersion } from '@/lib/repository/types';
-import { strategyRepository } from '@/lib/repository/local';
+import { strategyRepository } from '@/lib/repository/client';
 import { Button, Card } from '@/components/ui';
 import { StrategyBuilder } from './strategy-builder';
 

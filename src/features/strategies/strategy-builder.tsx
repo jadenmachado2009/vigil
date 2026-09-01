@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import type { Rule, Mode, StrategyMeta, Market, StopMethod, TargetMethod, PositionSizing } from '@/types/rules';
 import type { MetricDef } from '@/types/metrics';
 import { ruleableMetrics } from '@/lib/metrics/catalog';
-import { strategyRepository } from '@/lib/repository/local';
+import { strategyRepository } from '@/lib/repository/client';
 import { Button, Card, SectionHead } from '@/components/ui';
 import { RuleEditor } from './rule-editor';
 import { createRuleForMetric, ruleProblem } from './rule-defaults';
