@@ -1,5 +1,5 @@
 import { PageHeader } from '@/components/app-shell';
-import { StrategyBuilder } from '@/features/strategies/strategy-builder';
+import { NewStrategyFlow } from '@/features/strategies/new-strategy-flow';
 import type { Mode } from '@/types/rules';
 
 export default async function NewStrategyPage({
@@ -12,7 +12,7 @@ export default async function NewStrategyPage({
   return (
     <>
       <PageHeader title={mode === 'trading' ? 'New trading strategy' : 'New investment strategy'} />
-      <StrategyBuilder initial={{ name: '', description: '', mode, meta: {}, rules: [] }} />
+      <NewStrategyFlow mode={mode} />
     </>
   );
 }

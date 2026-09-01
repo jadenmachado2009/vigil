@@ -55,8 +55,29 @@ npm test
 
 The rules engine is the product. It performs no I/O, contains no randomness, and
 never calls a model — the same strategy and observations always produce the same
-analysis. It is covered by 100 tests, including the repository's version-immutability rules, the
-parsing layer that guards it from untrusted model output, and both data providers.
+analysis. It is covered by 138 tests, including the repository's version-immutability rules, the
+parsing layer that guards it from untrusted model output, both data providers, and the strategy parser.
+
+## Describing a strategy
+
+You can write a strategy in plain English instead of filling in the builder:
+
+> Companies growing revenue and EPS above 15%, ROIC above 15%, positive free
+> cash flow, debt to EBITDA below 2 and forward PE below 35.
+
+`POST /api/strategies/parse` turns that into structured rules. Once parsed, the
+structured rules are the source of truth — nothing downstream reads the prose again.
+
+The parser **never invents a threshold**. "High ROIC" is a question, not a rule,
+because a guessed number would look authoritative without being yours. Phrases it
+cannot place are reported rather than dropped, and every rule lands in the builder
+for review before anything is saved.
+
+The default parser is deterministic pattern matching over a bounded vocabulary —
+no key, no cost, and honest about being a parser rather than a model. Set
+`STRATEGY_PARSER=gemini` for descriptions the patterns cannot follow; its output is
+re-validated against the metric catalog and falls back to the built-in parser on
+failure.
 
 ## Chart analysis
 
