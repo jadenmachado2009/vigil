@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>StrategyAI — Trade your strategy, not your emotions.</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand"><span class="brand-dot"></span> StrategyAI</div>
+      <nav>
+        <button class="nav-btn active" data-page="dashboard">⌂ <span>Dashboard</span></button>
+        <button class="nav-btn" data-page="strategies">◈ <span>Strategies</span></button>
+        <button class="nav-btn" data-page="analyze">◎ <span>Analyze</span></button>
+        <button class="nav-btn" data-page="journal">▤ <span>Journal</span></button>
+        <button class="nav-btn" data-page="analytics">◒ <span>Analytics</span></button>
+      </nav>
+      <div class="sidebar-bottom">
+        <div class="mode-pill"><span></span> Local MVP</div>
+        <small>No API keys required for demo</small>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div>
+          <div class="eyebrow">PERSONAL DECISION ENGINE</div>
+          <h1 id="page-title">Dashboard</h1>
+        </div>
+        <button class="primary" id="quickAnalyze">+ Analyze opportunity</button>
+      </header>
+
+      <section id="page-dashboard" class="page active">
+        <div class="hero-card">
+          <div>
+            <span class="badge">YOUR RULES. YOUR DECISIONS.</span>
+            <h2>Trade your strategy.<br />Not your emotions.</h2>
+            <p>Define your trading or investing rules once. StrategyAI checks opportunities against those rules instead of inventing a new opinion every time.</p>
+            <div class="hero-actions"><button class="primary" data-goto="analyze">Check an opportunity</button><button class="secondary" data-goto="strategies">Build a strategy</button></div>
+          </div>
+          <div class="hero-orbit"><div class="orbit-center">AI<br/><span>→ RULES</span></div><div class="orbit-card oc1">Trading</div><div class="orbit-card oc2">Investing</div><div class="orbit-card oc3">Analytics</div></div>
+        </div>
+        <div class="section-head"><h3>Overview</h3><span id="strategyCountLabel">0 strategies</span></div>
+        <div class="stats-grid">
+          <div class="stat"><span>Strategies</span><strong id="statStrategies">0</strong><small>Trading + investing</small></div>
+          <div class="stat"><span>Analyses</span><strong id="statAnalyses">0</strong><small>Opportunities checked</small></div>
+          <div class="stat"><span>Qualified</span><strong id="statQualified">0</strong><small>Passed mandatory rules</small></div>
+          <div class="stat"><span>Rejected</span><strong id="statRejected">0</strong><small>Rule violations</small></div>
+        </div>
+        <div class="section-head"><h3>Recent analyses</h3><button class="text-btn" data-goto="journal">View journal →</button></div>
+        <div id="recentAnalyses" class="table-card"></div>
+      </section>
+
+      <section id="page-strategies" class="page">
+        <div class="section-head"><div><h3>Your strategies</h3><p class="muted">The strategy is the source of truth. AI interprets; the rules engine decides.</p></div><button class="primary" id="newStrategy">+ New strategy</button></div>
+        <div id="strategyGrid" class="strategy-grid"></div>
+      </section>
+
+      <section id="page-analyze" class="page">
+        <div class="mode-switch"><button class="mode-btn active" data-mode="trading">📈 Trading</button><button class="mode-btn" data-mode="investing">🏦 Investing</button></div>
+        <div class="analyze-grid">
+          <div class="panel">
+            <div class="panel-title"><div><h3 id="analyzeTitle">Trading opportunity</h3><p class="muted" id="analyzeSubtitle">Choose a strategy and describe/upload the setup.</p></div></div>
+            <label>Strategy<select id="analysisStrategy"></select></label>
+            <label id="assetLabel">Asset<input id="analysisAsset" placeholder="e.g. BTC/USD" /></label>
+            <label id="chartLabel">Chart / setup<input id="chartInput" type="file" accept="image/*" /><small class="file-note">Demo: image is stored locally; connect a vision model for real chart extraction.</small></label>
+            <label id="investmentLabel" class="hidden">Company / ticker<input id="companyInput" placeholder="e.g. NVDA" /></label>
+            <label>Notes<textarea id="analysisNotes" placeholder="What are you seeing? Optional context for the AI..."></textarea></label>
+            <button class="primary wide" id="runAnalysis">Analyze against strategy</button>
+          </div>
+          <div class="panel result-panel" id="analysisResult">
+            <div class="empty-result"><div>◎</div><h3>Awaiting analysis</h3><p>Pick a strategy and run an opportunity check.</p></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="page-journal" class="page">
+        <div class="section-head"><div><h3>Opportunity journal</h3><p class="muted">Every decision becomes data for improving your process.</p></div></div>
+        <div id="journalTable" class="table-card"></div>
+      </section>
+
+      <section id="page-analytics" class="page">
+        <div class="section-head"><div><h3>Strategy analytics</h3><p class="muted">MVP analytics from your locally saved analyses.</p></div></div>
+        <div id="analyticsContent"></div>
+      </section>
+    </main>
+  </div>
+
+  <dialog id="strategyDialog">
+    <form method="dialog" id="strategyForm" class="dialog-card">
+      <div class="dialog-head"><div><span class="eyebrow">STRATEGY BUILDER</span><h2>Create a strategy</h2></div><button value="cancel" class="icon-btn">×</button></div>
+      <label>Name<input id="strategyName" required placeholder="e.g. NY AM FVG" /></label>
+      <label>Type<select id="strategyType"><option value="trading">Trading</option><option value="investing">Investing</option></select></label>
+      <label>Rules <span class="muted">one rule per line; prefix mandatory rules with *</span><textarea id="strategyRules" required rows="9" placeholder="* HTF FVG exists\n* 5M FVG exists\n* Inverse FVG confirmation\n* NY AM session\n* Minimum RR >= 2\nExternal liquidity target"></textarea></label>
+      <div class="rule-tip">Tip: objective rules are easiest to evaluate reliably. Examples: <b>Minimum RR >= 2</b>, <b>ROIC >= 15%</b>, <b>Debt/EBITDA <= 2</b>.</div>
+      <div class="dialog-actions"><button value="cancel" class="secondary">Cancel</button><button value="default" class="primary">Save strategy</button></div>
+    </form>
+  </dialog>
+
+  <script src="app.js"></script>
+</body>
+</html>
