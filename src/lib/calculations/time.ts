@@ -1,4 +1,4 @@
-import type { SessionWindow } from '@/types/rules.js';
+import type { SessionWindow } from '@/types/rules';
 
 /** Minutes since local midnight for an instant, in the given IANA timezone. */
 export function minutesInTimezone(iso: string, timezone: string): number | null {

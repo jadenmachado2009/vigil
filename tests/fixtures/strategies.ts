@@ -1,4 +1,4 @@
-import type { StrategyVersion, Rule } from '@/types/rules.js';
+import type { StrategyVersion, Rule } from '@/types/rules';
 
 const base = { mandatory: true, onFail: 'reject' as const, enabled: true };
 
@@ -45,10 +45,10 @@ export const NOW = '2026-03-10T15:00:00.000Z';
 /** Helper: build an observation set from plain values, all sourced and current. */
 export function obs(
   values: Record<string, number | boolean | string | null>,
-  overrides: Record<string, Partial<import('@/types/observations.js').Observation>> = {},
+  overrides: Record<string, Partial<import('@/types/observations').Observation>> = {},
   asOf = NOW,
-): import('@/types/observations.js').ObservationSet {
-  const set: import('@/types/observations.js').ObservationSet = {};
+): import('@/types/observations').ObservationSet {
+  const set: import('@/types/observations').ObservationSet = {};
   for (const [key, value] of Object.entries(values)) {
     set[key] = { value, source: 'mock', asOf, ...(overrides[key] ?? {}) };
   }

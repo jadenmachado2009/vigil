@@ -1,8 +1,8 @@
 import { describe, it, expect } from 'vitest';
-import { computeTradeGeometry, computePositionSize, inferDirection } from '@/lib/calculations/trading.js';
-import { compareNumbers } from '@/lib/calculations/compare.js';
-import { convert, areUnitsCompatible } from '@/lib/calculations/units.js';
-import { isWithinSession, parseClock, minutesInTimezone } from '@/lib/calculations/time.js';
+import { computeTradeGeometry, computePositionSize, inferDirection } from '@/lib/calculations/trading';
+import { compareNumbers } from '@/lib/calculations/compare';
+import { convert, areUnitsCompatible } from '@/lib/calculations/units';
+import { isWithinSession, parseClock, minutesInTimezone } from '@/lib/calculations/time';
 
 describe('trade geometry', () => {
   it('computes RR for the spec long example', () => {

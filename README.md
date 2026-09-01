@@ -27,21 +27,32 @@ Rebuild in progress. See `docs/ROADMAP.md`.
 |---|---|---|
 | 0 | Foundation, version control, tooling | done |
 | 1 | Rule model, observation model, rules engine, tests | done |
-| 2–10 | Builders, checkers, persistence, journal, analytics, portfolio, deploy | pending |
+| 2 | Next.js app, design system port, strategy library, trading + investing builders | done |
+| 3–10 | Opportunity checkers, persistence, journal, analytics, portfolio, deploy | pending |
 
 The original static prototype is preserved at `legacy/mvp/` and is the reference
 for the visual design during the UI port.
 
-## Running the tests
+## Running it
 
 ```bash
 npm install
+npm run dev
+```
+
+Then open http://localhost:3000. No API keys and no database are required — the
+app persists to your browser behind a repository interface that Phase 6 swaps
+for Postgres.
+
+## Running the tests
+
+```bash
 npm test
 ```
 
 The rules engine is the product. It performs no I/O, contains no randomness, and
 never calls a model — the same strategy and observations always produce the same
-analysis. It is covered by 63 tests.
+analysis. It is covered by 73 tests, including the repository's version-immutability rules.
 
 ## Cost
 

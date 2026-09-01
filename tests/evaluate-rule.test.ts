@@ -1,8 +1,8 @@
 import { describe, it, expect } from 'vitest';
-import { evaluateRule } from '@/lib/rules-engine/evaluate-rule.js';
-import type { Rule } from '@/types/rules.js';
-import type { ObservationSet } from '@/types/observations.js';
-import { NOW } from './fixtures/strategies.js';
+import { evaluateRule } from '@/lib/rules-engine/evaluate-rule';
+import type { Rule } from '@/types/rules';
+import type { ObservationSet } from '@/types/observations';
+import { NOW } from './fixtures/strategies';
 
 const base = { id: 'x', label: 'Test rule', mandatory: true, onFail: 'reject' as const, enabled: true };
 const roicRule: Rule = { ...base, kind: 'numeric', metric: 'roic', operator: '>=', value: 15, unit: 'percent' };

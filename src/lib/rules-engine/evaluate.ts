@@ -1,9 +1,9 @@
-import type { StrategyVersion } from '@/types/rules.js';
-import type { ObservationSet } from '@/types/observations.js';
-import type { Analysis, RuleResult } from '@/types/results.js';
-import { deriveMetrics, stripComputedMetrics } from './derive.js';
-import { evaluateRule, type EvaluationOptions } from './evaluate-rule.js';
-import { resolveVerdict } from './verdict.js';
+import type { StrategyVersion } from '@/types/rules';
+import type { ObservationSet } from '@/types/observations';
+import type { Analysis, RuleResult } from '@/types/results';
+import { deriveMetrics, stripComputedMetrics } from './derive';
+import { evaluateRule, type EvaluationOptions } from './evaluate-rule';
+import { resolveVerdict } from './verdict';
 
 export interface EvaluateInput {
   strategy: StrategyVersion;

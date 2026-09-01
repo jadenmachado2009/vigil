@@ -1,5 +1,5 @@
-import type { Rule } from './rules.js';
-import type { ObservationSource } from './observations.js';
+import type { Rule } from './rules';
+import type { ObservationSource } from './observations';
 
 /**
  * PASS        - condition met.

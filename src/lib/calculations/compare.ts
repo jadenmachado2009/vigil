@@ -1,5 +1,5 @@
-import type { ComparisonOperator } from '@/types/rules.js';
-import { EPSILON } from './units.js';
+import type { ComparisonOperator } from '@/types/rules';
+import { EPSILON } from './units';
 
 /**
  * Epsilon-aware numeric comparison. All threshold checks in the product route

@@ -1,10 +1,10 @@
-import type { Rule } from '@/types/rules.js';
-import type { ObservationSet, Observation } from '@/types/observations.js';
-import type { RuleResult } from '@/types/results.js';
-import { getMetric } from '@/lib/metrics/catalog.js';
-import { compareNumbers, operatorLabel } from '@/lib/calculations/compare.js';
-import { convert, areUnitsCompatible } from '@/lib/calculations/units.js';
-import { isWithinSession, ageInDays } from '@/lib/calculations/time.js';
+import type { Rule } from '@/types/rules';
+import type { ObservationSet, Observation } from '@/types/observations';
+import type { RuleResult } from '@/types/results';
+import { getMetric } from '@/lib/metrics/catalog';
+import { compareNumbers, operatorLabel } from '@/lib/calculations/compare';
+import { convert, areUnitsCompatible } from '@/lib/calculations/units';
+import { isWithinSession, ageInDays } from '@/lib/calculations/time';
 
 export interface EvaluationOptions {
   /** Evaluation timestamp. Injected so results are reproducible in tests. */

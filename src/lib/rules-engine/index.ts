@@ -1,4 +1,4 @@
-export { evaluateStrategy, type EvaluateInput } from './evaluate.js';
-export { evaluateRule, type EvaluationOptions } from './evaluate-rule.js';
-export { resolveVerdict } from './verdict.js';
-export { deriveMetrics, stripComputedMetrics } from './derive.js';
+export { evaluateStrategy, type EvaluateInput } from './evaluate';
+export { evaluateRule, type EvaluationOptions } from './evaluate-rule';
+export { resolveVerdict } from './verdict';
+export { deriveMetrics, stripComputedMetrics } from './derive';

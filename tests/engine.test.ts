@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { evaluateStrategy } from '@/lib/rules-engine/index.js';
-import { nyAmFvg, qualityGrowth, obs, NOW } from './fixtures/strategies.js';
+import { evaluateStrategy } from '@/lib/rules-engine/index';
+import { nyAmFvg, qualityGrowth, obs, NOW } from './fixtures/strategies';
 
 /** A chart read where every mandatory condition is met and RR is 2.5. */
 const compliantSetup = obs({

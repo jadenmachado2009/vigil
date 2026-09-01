@@ -1,4 +1,6 @@
-import type { Mode, Unit } from './metrics.js';
+import type { Mode, Unit } from './metrics';
+
+export type { Mode };
 
 export type ComparisonOperator = '>=' | '<=' | '>' | '<' | '==' | '!=';
 
@@ -58,6 +60,32 @@ export interface CategoricalRule extends RuleBase {
 
 export type Rule = NumericRule | BooleanRule | TemporalRule | CategoricalRule;
 
+export type Market = 'stocks' | 'forex' | 'crypto' | 'futures';
+export type StopMethod = 'structure' | 'atr' | 'fixed-distance' | 'percent' | 'custom';
+export type TargetMethod = 'liquidity' | 'previous-high-low' | 'fixed-rr' | 'custom';
+export type PositionSizing = 'fixed-percent' | 'fixed-amount' | 'manual';
+
+/**
+ * Strategy context that is not itself a pass/fail rule: what the strategy is
+ * for, and how its levels are chosen. Kept separate from `rules` so the engine
+ * never has to interpret it.
+ */
+export interface TradingMeta {
+  market?: Market;
+  htfTimeframe?: string;
+  entryTimeframe?: string;
+  stopMethod?: StopMethod;
+  targetMethod?: TargetMethod;
+  positionSizing?: PositionSizing;
+}
+
+export interface InvestingMeta {
+  holdingPeriod?: string;
+  universe?: string;
+}
+
+export type StrategyMeta = TradingMeta & InvestingMeta;
+
 /**
  * Strategies are versioned immutably. An Analysis references a StrategyVersion,
  * never a Strategy, so that editing a strategy cannot retroactively change the
@@ -70,6 +98,7 @@ export interface StrategyVersion {
   version: number;
   mode: Mode;
   rules: Rule[];
+  meta?: StrategyMeta;
   createdAt: string;
 }
 

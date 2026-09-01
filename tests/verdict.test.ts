@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { resolveVerdict } from '@/lib/rules-engine/verdict.js';
-import type { RuleResult, RuleStatus } from '@/types/results.js';
+import { resolveVerdict } from '@/lib/rules-engine/verdict';
+import type { RuleResult, RuleStatus } from '@/types/results';
 
 function r(
   status: RuleStatus,

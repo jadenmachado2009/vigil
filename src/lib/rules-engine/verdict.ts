@@ -1,4 +1,4 @@
-import type { RuleResult, Verdict } from '@/types/results.js';
+import type { RuleResult, Verdict } from '@/types/results';
 
 /**
  * Verdict resolution. Deterministic, order-dependent, and total.

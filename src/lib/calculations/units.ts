@@ -1,4 +1,4 @@
-import type { Unit } from '@/types/metrics.js';
+import type { Unit } from '@/types/metrics';
 
 /**
  * Tolerance for float comparison. 0.1 + 0.2 >= 0.3 must be true, and a revenue

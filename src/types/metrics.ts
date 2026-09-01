@@ -45,4 +45,9 @@ export interface MetricDef {
    * default operator selection - never for evaluation.
    */
   preferred?: 'higher' | 'lower';
+  /**
+   * False for raw inputs that are observed but are never themselves a pass/fail
+   * condition - entry price, ticker, revenue. Defaults to true.
+   */
+  ruleable?: boolean;
 }

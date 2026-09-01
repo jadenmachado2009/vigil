@@ -1,4 +1,4 @@
-import type { Unit } from './metrics.js';
+import type { Unit } from './metrics';
 
 export type ObservationSource =
   | 'vision'          // chart screenshot read by a vision model

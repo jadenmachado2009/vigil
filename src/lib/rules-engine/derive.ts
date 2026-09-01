@@ -1,6 +1,6 @@
-import type { ObservationSet, Observation } from '@/types/observations.js';
-import { COMPUTED_METRIC_IDS } from '@/lib/metrics/catalog.js';
-import { computeTradeGeometry, type Direction } from '@/lib/calculations/trading.js';
+import type { ObservationSet, Observation } from '@/types/observations';
+import { COMPUTED_METRIC_IDS } from '@/lib/metrics/catalog';
+import { computeTradeGeometry, type Direction } from '@/lib/calculations/trading';
 
 /**
  * PRINCIPLE

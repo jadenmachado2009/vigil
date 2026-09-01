@@ -1,4 +1,4 @@
-import type { MetricDef } from '@/types/metrics.js';
+import type { MetricDef } from '@/types/metrics';
 
 /**
  * The single source of truth for what a rule may reference.
@@ -7,11 +7,11 @@ import type { MetricDef } from '@/types/metrics.js';
  */
 const DEFS: MetricDef[] = [
   // ---------------------------------------------------------------- trading
-  { id: 'entry', label: 'Entry price', kind: 'numeric', mode: 'trading', unit: 'price', origin: 'observed', group: 'levels', description: 'Planned entry price.' },
-  { id: 'stop', label: 'Stop loss', kind: 'numeric', mode: 'trading', unit: 'price', origin: 'observed', group: 'levels', description: 'Planned stop-loss price.' },
-  { id: 'target', label: 'Target', kind: 'numeric', mode: 'trading', unit: 'price', origin: 'observed', group: 'levels', description: 'Planned take-profit price.' },
-  { id: 'direction', label: 'Direction', kind: 'categorical', mode: 'trading', unit: 'text', origin: 'observed', group: 'levels', description: 'Long or short.' },
-  { id: 'instrument', label: 'Instrument', kind: 'categorical', mode: 'trading', unit: 'text', origin: 'observed', group: 'context', description: 'Ticker or pair.' },
+  { ruleable: false, id: 'entry', label: 'Entry price', kind: 'numeric', mode: 'trading', unit: 'price', origin: 'observed', group: 'levels', description: 'Planned entry price.' },
+  { ruleable: false, id: 'stop', label: 'Stop loss', kind: 'numeric', mode: 'trading', unit: 'price', origin: 'observed', group: 'levels', description: 'Planned stop-loss price.' },
+  { ruleable: false, id: 'target', label: 'Target', kind: 'numeric', mode: 'trading', unit: 'price', origin: 'observed', group: 'levels', description: 'Planned take-profit price.' },
+  { ruleable: false, id: 'direction', label: 'Direction', kind: 'categorical', mode: 'trading', unit: 'text', origin: 'observed', group: 'levels', description: 'Long or short.' },
+  { ruleable: false, id: 'instrument', label: 'Instrument', kind: 'categorical', mode: 'trading', unit: 'text', origin: 'observed', group: 'context', description: 'Ticker or pair.' },
   { id: 'entry_time', label: 'Entry time', kind: 'temporal', mode: 'trading', unit: 'time', origin: 'observed', group: 'session', description: 'Timestamp of the planned entry.' },
 
   { id: 'risk', label: 'Risk per unit', kind: 'numeric', mode: 'trading', unit: 'price', origin: 'computed', group: 'risk', description: 'Distance from entry to stop. Computed.' },
@@ -49,8 +49,8 @@ const DEFS: MetricDef[] = [
   { id: 'current_ratio', label: 'Current ratio', kind: 'numeric', mode: 'investing', unit: 'multiple', origin: 'observed', group: 'balance-sheet', description: 'Current assets over current liabilities.', preferred: 'higher' },
   { id: 'interest_coverage', label: 'Interest coverage', kind: 'numeric', mode: 'investing', unit: 'multiple', origin: 'observed', group: 'balance-sheet', description: 'EBIT over interest expense.', preferred: 'higher' },
 
-  { id: 'fcf', label: 'Free cash flow', kind: 'numeric', mode: 'investing', unit: 'currency', origin: 'observed', group: 'cash-flow', description: 'Trailing twelve month free cash flow.' },
-  { id: 'revenue', label: 'Revenue', kind: 'numeric', mode: 'investing', unit: 'currency', origin: 'observed', group: 'cash-flow', description: 'Trailing twelve month revenue.' },
+  { ruleable: false, id: 'fcf', label: 'Free cash flow', kind: 'numeric', mode: 'investing', unit: 'currency', origin: 'observed', group: 'cash-flow', description: 'Trailing twelve month free cash flow.' },
+  { ruleable: false, id: 'revenue', label: 'Revenue', kind: 'numeric', mode: 'investing', unit: 'currency', origin: 'observed', group: 'cash-flow', description: 'Trailing twelve month revenue.' },
   { id: 'fcf_positive', label: 'Free cash flow positive', kind: 'boolean', mode: 'investing', unit: 'boolean', origin: 'computed', group: 'cash-flow', description: 'Whether free cash flow is above zero. Computed from FCF.' },
   { id: 'fcf_margin', label: 'FCF margin', kind: 'numeric', mode: 'investing', unit: 'percent', origin: 'computed', group: 'cash-flow', description: 'Free cash flow as a percent of revenue. Computed.', preferred: 'higher' },
 
@@ -76,6 +76,11 @@ export function getMetric(id: string): MetricDef | undefined {
 
 export function metricsForMode(mode: 'trading' | 'investing'): MetricDef[] {
   return DEFS.filter((d) => d.mode === mode || d.mode === 'both');
+}
+
+/** Metrics that can be used as the subject of a rule (raw inputs cannot). */
+export function ruleableMetrics(mode: 'trading' | 'investing'): MetricDef[] {
+  return metricsForMode(mode).filter((d) => d.ruleable !== false);
 }
 
 export function isComputedMetric(id: string): boolean {
