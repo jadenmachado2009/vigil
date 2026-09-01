@@ -23,6 +23,7 @@
   --radius-control: 9px;
 
   --font-sans: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-mono: ui-monospace, "SF Mono", SFMono-Regular, "JetBrains Mono", Menlo, Consolas, monospace;
 }
 
 html { color-scheme: dark; }
@@ -66,6 +67,40 @@ body {
     color: #aeb8c2;
     font-weight: 700;
     font-size: 12px;
+  }
+
+  /*
+   * Figures. Every price, ratio, percentage and threshold uses this so columns
+   * align on the decimal and digits do not shift width between renders. This is
+   * the difference between a financial tool and a web page with numbers on it.
+   */
+  .num {
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum" 1;
+    letter-spacing: -0.01em;
+  }
+
+  /* Compact data row used by the results and fundamentals tables. */
+  .data-row {
+    display: grid;
+    align-items: center;
+    gap: 12px;
+    padding: 9px 16px;
+    border-bottom: 1px solid var(--color-line);
+    min-height: 40px;
+  }
+  .data-row:last-child { border-bottom: 0; }
+  .data-head {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--color-faint);
+    font-weight: 800;
+    background: #0b0e12;
+    min-height: 34px;
+    padding-top: 0;
+    padding-bottom: 0;
   }
 }
 

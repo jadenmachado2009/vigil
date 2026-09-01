@@ -30,7 +30,8 @@ Rebuild in progress. See `docs/ROADMAP.md`.
 | 2 | Next.js app, design system port, strategy library, trading + investing builders | done |
 | 3 | Trading opportunity checker, vision provider abstraction, API layer | done |
 | 4 | Investment strategy builder | done (with Phase 2) |
-| 5–10 | Investment checker + financial data, persistence, journal, analytics, portfolio, deploy | pending |
+| 5 | Investment opportunity checker, fundamentals providers | done |
+| 6–10 | Auth + database, journal, analytics, portfolio, deploy | pending |
 
 The original static prototype is preserved at `legacy/mvp/` and is the reference
 for the visual design during the UI port.
@@ -54,8 +55,8 @@ npm test
 
 The rules engine is the product. It performs no I/O, contains no randomness, and
 never calls a model — the same strategy and observations always produce the same
-analysis. It is covered by 88 tests, including the repository's version-immutability rules and the
-parsing layer that guards it from untrusted model output.
+analysis. It is covered by 100 tests, including the repository's version-immutability rules, the
+parsing layer that guards it from untrusted model output, and both data providers.
 
 ## Chart analysis
 
@@ -70,6 +71,21 @@ UI says so. Set `VISION_PROVIDER=gemini` and `GEMINI_API_KEY` for real analysis.
 The model is asked only for what a picture can show — whether a structure is present,
 and what the price levels are. It is never asked for a risk/reward ratio, and a
 provider-supplied one is discarded before evaluation.
+
+## Company analysis
+
+`POST /api/analyze/company` fetches fundamentals, records where each figure came
+from and how old it is, and hands them to the same engine.
+
+With no key configured it uses a **labelled demo provider** whose figures are derived
+from the ticker string — internally consistent and stable per ticker, but not real.
+Set `FINANCIAL_PROVIDER=fmp` and `FMP_API_KEY` for live fundamentals. Note that a
+snapshot costs six API calls, and free tiers are capped per day.
+
+Anything a provider cannot supply stays **absent**, which the engine reports as
+INSUFFICIENT DATA. Nothing is substituted or approximated. Qualitative rules — moat,
+management quality — are never answered by a data feed; the checker asks you, and
+leaving one unanswered reports as insufficient data rather than a pass.
 
 ## Cost
 

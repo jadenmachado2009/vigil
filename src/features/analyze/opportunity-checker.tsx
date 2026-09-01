@@ -157,10 +157,10 @@ export function OpportunityChecker() {
   }
 
   return (
-    <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 items-start">
-      <Card className="p-6">
-        <h3 className="text-[19px] font-bold">Trading opportunity</h3>
-        <p className="text-muted mt-1 leading-relaxed">
+    <div className="grid grid-cols-1 xl:grid-cols-[380px_minmax(0,1fr)] gap-6 items-start">
+      <Card className="p-5">
+        <h3 className="text-[17px] font-bold">Trading opportunity</h3>
+        <p className="text-muted mt-1 text-[13px] leading-relaxed">
           Upload the chart, or type the levels yourself. Anything you enter overrides the chart reading.
         </p>
 
@@ -216,15 +216,15 @@ export function OpportunityChecker() {
               </select>
             </Labeled>
             <Labeled label="Entry">
-              <input className="field" type="number" step="any" value={manual.entry}
+              <input className="field num" type="number" step="any" value={manual.entry}
                 onChange={(e) => setManual({ ...manual, entry: e.target.value })} />
             </Labeled>
             <Labeled label="Stop">
-              <input className="field" type="number" step="any" value={manual.stop}
+              <input className="field num" type="number" step="any" value={manual.stop}
                 onChange={(e) => setManual({ ...manual, stop: e.target.value })} />
             </Labeled>
             <Labeled label="Target">
-              <input className="field" type="number" step="any" value={manual.target}
+              <input className="field num" type="number" step="any" value={manual.target}
                 onChange={(e) => setManual({ ...manual, target: e.target.value })} />
             </Labeled>
             <Labeled label="Entry time" hint="Your local time. Used for session rules.">
@@ -255,12 +255,13 @@ export function OpportunityChecker() {
       </Card>
 
       {result ? (
-        <VerdictPanel record={result.record} warnings={result.warnings} />
+        <VerdictPanel record={result.record} warnings={result.warnings}
+          demoLabel="Chart observations were generated locally, not read from your screenshot." />
       ) : (
         <Card>
           <Empty>
-            <div className="text-[34px] mb-2">◎</div>
-            Awaiting analysis.<br />Pick a strategy and check a setup.
+            <div className="num text-[13px] text-faint tracking-widest mb-3">— — —</div>
+            Upload a chart or enter your levels to check a setup.
           </Empty>
         </Card>
       )}

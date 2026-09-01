@@ -79,7 +79,7 @@ export function StrategyLibrary() {
                 {strategy.description && <p className="text-muted mt-1.5 leading-relaxed">{strategy.description}</p>}
 
                 <div className="text-faint text-[12px] mt-3">
-                  {version.rules.length} rules · {mandatory} required · v{version.version}
+                  <span className="num">{version.rules.length}</span> rules · <span className="num">{mandatory}</span> required · <span className="num">v{version.version}</span>
                 </div>
                 <div className="text-faint text-[12px] mt-1">
                   Created {new Date(strategy.createdAt).toLocaleDateString()}

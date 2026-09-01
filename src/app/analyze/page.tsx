@@ -1,11 +1,11 @@
 import { PageHeader } from '@/components/app-shell';
-import { OpportunityChecker } from '@/features/analyze/opportunity-checker';
+import { AnalyzeTabs } from '@/features/analyze/analyze-tabs';
 
 export default function AnalyzePage() {
   return (
     <>
       <PageHeader eyebrow="Opportunity checker" title="Analyze" />
-      <OpportunityChecker />
+      <AnalyzeTabs />
     </>
   );
 }

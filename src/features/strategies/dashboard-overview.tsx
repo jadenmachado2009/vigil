@@ -12,7 +12,7 @@ function Stat({ label, value, hint }: { label: string; value: string | number; h
   return (
     <Card className="p-[18px]">
       <span className="block text-[#7f8b98]">{label}</span>
-      <strong className="block text-[30px] my-2 font-bold tracking-tight">{value}</strong>
+      <strong className="num block text-[30px] my-2 font-bold tracking-tight">{value}</strong>
       <small className="block text-[#7f8b98]">{hint}</small>
     </Card>
   );
@@ -74,15 +74,15 @@ export function DashboardOverview() {
           </div>
         ) : (
           <div className="min-w-[620px]">
-            <div className="grid grid-cols-[1.3fr_1.2fr_1fr_.7fr_auto] px-4 py-3 border-b border-line bg-[#0b0e12] text-[10px] uppercase tracking-wider text-faint font-bold">
+            <div className="data-row data-head grid-cols-[1.3fr_1.2fr_1fr_.7fr_auto]">
               <div>Opportunity</div><div>Strategy</div><div>Date</div><div>Rules</div><div>Verdict</div>
             </div>
             {recent.map((a) => (
-              <div key={a.id} className="grid grid-cols-[1.3fr_1.2fr_1fr_.7fr_auto] px-4 py-3.5 border-b border-line last:border-0 items-center gap-2">
+              <div key={a.id} className="data-row grid-cols-[1.3fr_1.2fr_1fr_.7fr_auto]">
                 <div className="font-bold truncate">{a.subject}</div>
                 <div className="text-muted truncate">{a.strategyName}</div>
-                <div className="text-muted">{new Date(a.createdAt).toLocaleDateString()}</div>
-                <div className="text-muted">{a.summary.mandatoryPassed}/{a.summary.mandatoryTotal}</div>
+                <div className="num text-muted text-[13px]">{new Date(a.createdAt).toLocaleDateString()}</div>
+                <div className="num text-muted text-[13px]">{a.summary.mandatoryPassed}/{a.summary.mandatoryTotal}</div>
                 <VerdictPill verdict={a.verdict} />
               </div>
             ))}
