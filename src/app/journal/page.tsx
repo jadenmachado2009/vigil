@@ -4,12 +4,9 @@ import { Card } from '@/components/ui';
 export default function JournalPage() {
   return (
     <>
-      <PageHeader eyebrow="Coming next" title="Journal" />
+      <PageHeader title="Journal" />
       <Card>
-        <div className="text-muted text-center py-16 px-5 leading-relaxed max-w-[52ch] mx-auto">
-          Not built yet. This screen arrives in a later phase, and will be wired to the same
-          deterministic rules engine that powers every verdict.
-        </div>
+        <div className="text-faint px-4 py-12 text-center">Not built yet.</div>
       </Card>
     </>
   );

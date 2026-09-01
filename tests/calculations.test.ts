@@ -128,3 +128,23 @@ describe('session windows', () => {
     expect(minutesInTimezone('2026-03-10T00:00:00.000Z', 'UTC')).toBe(0);
   });
 });
+
+describe('display formatting', () => {
+  it('strips binary float noise from derived values', async () => {
+    const { formatFigure } = await import('@/lib/format');
+    // 1.1642 - 1.1610 is 0.0031999999999999806 in binary floating point.
+    expect(formatFigure(1.1642 - 1.161)).toBe('0.0032');
+    expect(formatFigure(1.17 - 1.1642)).toBe('0.0058');
+  });
+
+  it('keeps precision where it matters and drops it where it does not', async () => {
+    const { formatFigure, formatMultiple, formatPercent } = await import('@/lib/format');
+    expect(formatFigure(1.16425)).toBe('1.1643');   // forex level
+    expect(formatFigure(18234.567)).toBe('18234.57'); // index level
+    expect(formatFigure(2)).toBe('2');
+    expect(formatFigure(0)).toBe('0');
+    expect(formatFigure(NaN)).toBe('—');
+    expect(formatMultiple(1.8125)).toBe('1.81x');
+    expect(formatPercent(46.15384)).toBe('46.2%');
+  });
+});

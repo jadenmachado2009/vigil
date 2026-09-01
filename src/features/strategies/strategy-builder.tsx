@@ -111,7 +111,7 @@ export function StrategyBuilder({ initial }: { initial: BuilderInitial }) {
   return (
     <div className="grid grid-cols-1 xl:grid-cols-[1fr_330px] gap-6 items-start">
       <div>
-        <Card className="p-6">
+        <Card className="p-4">
           <div className="grid sm:grid-cols-2 gap-4">
             <Labeled label="Strategy name">
               <input className="field" value={name} onChange={(e) => setName(e.target.value)}
@@ -176,15 +176,11 @@ export function StrategyBuilder({ initial }: { initial: BuilderInitial }) {
 
         <SectionHead
           title="Rules"
-          hint="Required rules decide the verdict. Optional rules are reported but never reject an opportunity."
-          action={<span className="text-faint text-[12px]">{rules.length} rules · {mandatoryCount} required</span>}
+          action={<span className="num text-[11px] text-dim">{rules.length} rules · {mandatoryCount} required</span>}
         />
         <Card>
           {rules.length === 0 ? (
-            <div className="text-muted text-center py-12 px-5 leading-relaxed">
-              No rules yet. Add conditions from the library{' '}
-              <span className="xl:hidden">below</span><span className="hidden xl:inline">on the right</span>.
-            </div>
+            <div className="text-faint text-center py-10 px-4">No rules yet.</div>
           ) : (
             rules.map((rule, index) => (
               <RuleEditor
@@ -203,10 +199,10 @@ export function StrategyBuilder({ initial }: { initial: BuilderInitial }) {
           </Button>
           <Button variant="secondary" onClick={() => router.push('/strategies')}>Cancel</Button>
           {!canSave && rules.length > 0 && mandatoryCount === 0 && (
-            <span className="text-warn text-[12px]">At least one rule must be required, or no verdict can be reached.</span>
+            <span className="text-watch text-[12px]">At least one rule must be required, or no verdict can be reached.</span>
           )}
-          {problems > 0 && <span className="text-warn text-[12px]">{problems} rule{problems > 1 ? 's' : ''} still need values.</span>}
-          {error && <span className="text-danger text-[12px]">{error}</span>}
+          {problems > 0 && <span className="text-watch text-[12px]">{problems} rule{problems > 1 ? 's' : ''} still need values.</span>}
+          {error && <span className="text-fail text-[12px]">{error}</span>}
         </div>
         {initial.id && (
           <p className="text-faint text-[12px] mt-4 leading-relaxed max-w-[60ch]">
@@ -217,8 +213,8 @@ export function StrategyBuilder({ initial }: { initial: BuilderInitial }) {
       </div>
 
       {/* --- condition library ---------------------------------------------- */}
-      <Card className="p-5 xl:sticky xl:top-6">
-        <div className="eyebrow">Add condition</div>
+      <Card className="p-4 xl:sticky xl:top-[58px]">
+        <div className="label">Add condition</div>
         <input
           className="field mt-3"
           placeholder="Search conditions…"
@@ -229,10 +225,8 @@ export function StrategyBuilder({ initial }: { initial: BuilderInitial }) {
         <div className="mt-4 max-h-[60vh] overflow-y-auto pr-1">
           {library.length === 0 && <p className="text-faint py-4">Nothing left to add.</p>}
           {library.map(([group, metrics]) => (
-            <div key={group} className="mb-4">
-              <div className="text-faint text-[11px] font-bold uppercase tracking-wider mb-1.5">
-                {GROUP_LABELS[group] ?? group}
-              </div>
+            <div key={group} className="mb-3">
+              <div className="label mb-1.5">{GROUP_LABELS[group] ?? group}</div>
               <div className="flex flex-col gap-1">
                 {metrics.map((metric) => (
                   <button
@@ -240,10 +234,10 @@ export function StrategyBuilder({ initial }: { initial: BuilderInitial }) {
                     type="button"
                     onClick={() => addMetric(metric)}
                     title={metric.description}
-                    className="text-left px-2.5 py-2 rounded-[7px] hover:bg-[#161c23] text-[#c3ccd5] cursor-pointer flex items-center justify-between gap-2 group"
+                    className="text-left px-2 py-1.5 rounded-[3px] hover:bg-surface-2 text-muted hover:text-ink cursor-pointer flex items-center justify-between gap-2 group"
                   >
                     <span>{metric.label}</span>
-                    <span className="text-faint group-hover:text-accent">+</span>
+                    <span className="num text-dim group-hover:text-ink">+</span>
                   </button>
                 ))}
               </div>

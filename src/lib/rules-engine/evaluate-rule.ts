@@ -4,7 +4,8 @@ import type { RuleResult } from '@/types/results';
 import { getMetric } from '@/lib/metrics/catalog';
 import { compareNumbers, operatorLabel } from '@/lib/calculations/compare';
 import { convert, areUnitsCompatible } from '@/lib/calculations/units';
-import { isWithinSession, ageInDays } from '@/lib/calculations/time';
+import { isWithinSession, ageInDays, clockInTimezone } from '@/lib/calculations/time';
+import { formatFigure } from '@/lib/format';
 
 export interface EvaluationOptions {
   /** Evaluation timestamp. Injected so results are reproducible in tests. */
@@ -30,7 +31,7 @@ function unknown(rule: Rule, expected: string, reason: string, obs?: Observation
 }
 
 function formatNumber(value: number): string {
-  return Number.isInteger(value) ? String(value) : String(Number(value.toFixed(4)));
+  return formatFigure(value);
 }
 
 function describeExpected(rule: Rule): string {
@@ -42,7 +43,9 @@ function describeExpected(rule: Rule): string {
     case 'boolean':
       return rule.expected ? 'present' : 'absent';
     case 'temporal':
-      return `${rule.window.start}–${rule.window.end} ${rule.window.timezone}`;
+      // The zone is named in the reason line; keeping it out of the threshold
+      // column stops it colliding with the observed value.
+      return `${rule.window.start}–${rule.window.end}`;
     case 'categorical':
       return `${rule.operator === 'in' ? 'one of' : 'not one of'} ${rule.values.join(', ')}`;
   }
@@ -139,10 +142,12 @@ export function evaluateRule(
       if (within === null) {
         return unknown(rule, expected, `${metric.label} or the session window could not be parsed.`, obs);
       }
-      const actual = obs.value;
+      const zone = rule.window.timezone;
+      const actual = clockInTimezone(obs.value, zone) ?? obs.value;
+      const where = `${expected} ${zone.replace(/^[^/]+\//, '').replace(/_/g, ' ')}`;
       return within
-        ? { ...base, status: 'PASS', actual, reason: `Entry falls inside the ${expected} session.` }
-        : notSatisfied(actual, `falls outside the ${expected} session`);
+        ? { ...base, status: 'PASS', actual, reason: `Entry is ${actual} in ${zone.replace(/^[^/]+\//, '').replace(/_/g, ' ')}, inside the ${where} session.` }
+        : notSatisfied(actual, `is ${actual} local to the session, outside ${where}`);
     }
 
     case 'categorical': {

@@ -105,3 +105,35 @@ describe('temporal and categorical rules', () => {
     expect(evaluateRule(rule, set({ sector: { value: 'energy', source: 'financial-api', asOf: NOW } }), opts).status).toBe('FAIL');
   });
 });
+
+describe('session rules report time in the session zone', () => {
+  const sessionRule: Rule = {
+    ...base, kind: 'temporal', metric: 'entry_time',
+    window: { start: '09:30', end: '11:00', timezone: 'America/New_York' },
+  };
+
+  it('shows the wall-clock time in the rule timezone, not the raw timestamp', () => {
+    // 18:45 UTC is 14:45 in New York during DST - outside the morning window.
+    const result = evaluateRule(
+      sessionRule,
+      set({ entry_time: { value: '2026-03-10T18:45:00.000Z', source: 'user', asOf: NOW } }),
+      opts,
+    );
+    expect(result.status).toBe('FAIL');
+    expect(result.actual).toBe('14:45');
+    expect(result.expected).toBe('09:30–11:00');
+    expect(result.reason).toContain('New York');
+  });
+
+  it('keeps the threshold column free of the timezone so columns cannot collide', () => {
+    expect(sessionRule.kind).toBe('temporal');
+    const result = evaluateRule(
+      sessionRule,
+      set({ entry_time: { value: '2026-03-10T14:45:00.000Z', source: 'user', asOf: NOW } }),
+      opts,
+    );
+    expect(result.expected).not.toContain('America');
+    expect(result.actual).toBe('10:45');
+    expect(result.status).toBe('PASS');
+  });
+});

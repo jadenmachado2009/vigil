@@ -26,9 +26,9 @@ export function AccountBadge() {
     return (
       <div className="text-faint">
         <div className="flex items-center gap-2 text-[12px]">
-          <span className="w-1.5 h-1.5 rounded-full bg-[#4d565f]" /> This browser only
+          <span className="w-1.5 h-1.5 rounded-full bg-dim" /> Local only
         </div>
-        <Link href="/sign-up" className="text-accent text-[12px] block mt-2 hover:underline">
+        <Link href="/sign-up" className="text-muted text-[12px] block mt-1.5 hover:text-ink">
           Create an account →
         </Link>
       </div>
@@ -38,7 +38,7 @@ export function AccountBadge() {
   return (
     <div className="text-faint">
       <div className="flex items-center gap-2 text-[12px]">
-        <span className="w-1.5 h-1.5 rounded-full bg-accent" /> Saved to your account
+        <span className="w-1.5 h-1.5 rounded-full bg-pass" /> Account
       </div>
       <div className="text-[11px] mt-1.5 truncate" title={me.email ?? ''}>{me.name || me.email}</div>
       <button

@@ -1,108 +1,140 @@
 @import "tailwindcss";
 
 /*
- * Design tokens ported from the original prototype (legacy/mvp/styles.css).
- * The visual language is deliberately unchanged: near-black ground, lime
- * accent, hairline borders, generous radii.
+ * StrategyAI visual system.
+ *
+ * One rule governs everything: COLOUR IS DATA, NOT DECORATION.
+ * There is no brand accent. Chrome is neutral. A hue appears only when it
+ * carries meaning - pass, fail, watch, no-data - so a glance at any screen
+ * lands on the thing that actually happened.
+ *
+ * Surfaces are neutral charcoal rather than black: black plus a saturated
+ * accent is the default look of generated dashboards, and this is meant to
+ * read as an instrument.
  */
 @theme {
-  --color-bg: #080a0d;
-  --color-panel: #0e1217;
-  --color-panel-2: #11161d;
-  --color-line: #202731;
-  --color-line-strong: #29313a;
-  --color-ink: #f2f5f7;
-  --color-muted: #8c98a6;
-  --color-faint: #687481;
-  --color-accent: #d8ff4f;
-  --color-danger: #ff6b6b;
-  --color-warn: #ffd166;
-  --color-good: #65e6a4;
+  --color-bg: #101216;
+  --color-surface: #15181d;
+  --color-surface-2: #1a1e24;
+  --color-raised: #20252c;
+  --color-line: #23272e;
+  --color-line-strong: #2f353d;
 
-  --radius-card: 13px;
-  --radius-control: 9px;
+  --color-ink: #e4e8ec;
+  --color-muted: #8f98a3;
+  --color-faint: #646d78;
+  --color-dim: #4a525b;
 
-  --font-sans: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  --font-mono: ui-monospace, "SF Mono", SFMono-Regular, "JetBrains Mono", Menlo, Consolas, monospace;
+  /* Status. Desaturated on purpose - neon reads as decoration. */
+  --color-pass: #4f9f7f;
+  --color-fail: #c2564f;
+  --color-watch: #c2913f;
+  --color-none: #6b7480;
+
+  --radius-control: 3px;
+  --radius-panel: 4px;
 }
 
 html { color-scheme: dark; }
 
 body {
-  background: var(--color-bg) radial-gradient(circle at 70% -10%, #18201a 0, #080a0d 35%) fixed;
+  background: var(--color-bg);
   color: var(--color-ink);
-  font-family: var(--font-sans);
-  font-size: 14px;
+  font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+  font-size: 13px;
+  line-height: 1.45;
   -webkit-font-smoothing: antialiased;
 }
 
-/* Utility shorthands used across the app. */
 @layer components {
-  .eyebrow {
+  /* Section label. Small, spaced, never a sentence. */
+  .label {
     font-size: 10px;
-    letter-spacing: 1.7px;
-    font-weight: 800;
-    color: var(--color-faint);
+    letter-spacing: 0.12em;
     text-transform: uppercase;
-  }
-  .card {
-    background: color-mix(in srgb, var(--color-panel) 80%, transparent);
-    border: 1px solid var(--color-line);
-    border-radius: var(--radius-card);
-  }
-  .field {
-    width: 100%;
-    margin-top: 7px;
-    border: 1px solid var(--color-line-strong);
-    background: #0a0e12;
-    color: #eaf0f4;
-    border-radius: 8px;
-    padding: 10px 11px;
-    font: inherit;
-    outline: none;
-  }
-  .field:focus { border-color: #4d5b67; }
-  .field-label {
-    display: block;
-    color: #aeb8c2;
-    font-weight: 700;
-    font-size: 12px;
+    font-weight: 600;
+    color: var(--color-faint);
   }
 
   /*
-   * Figures. Every price, ratio, percentage and threshold uses this so columns
-   * align on the decimal and digits do not shift width between renders. This is
-   * the difference between a financial tool and a web page with numbers on it.
+   * Figures. Every threshold, price, ratio and count. Tabular so columns align
+   * on the decimal and digits never change width between renders.
    */
   .num {
-    font-family: var(--font-mono);
+    font-family: var(--font-mono), ui-monospace, monospace;
     font-variant-numeric: tabular-nums;
-    font-feature-settings: "tnum" 1;
+    font-feature-settings: "tnum" 1, "zero" 1;
     letter-spacing: -0.01em;
   }
 
-  /* Compact data row used by the results and fundamentals tables. */
-  .data-row {
+  /* Containers are flat and ruled, not floating cards. */
+  .panel {
+    background: var(--color-surface);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-panel);
+  }
+
+  .field {
+    width: 100%;
+    background: var(--color-bg);
+    border: 1px solid var(--color-line-strong);
+    border-radius: var(--radius-control);
+    color: var(--color-ink);
+    padding: 7px 9px;
+    font: inherit;
+    outline: none;
+  }
+  .field:focus { border-color: #4a5560; background: #0c0e11; }
+  .field::placeholder { color: var(--color-dim); }
+
+  .field-label {
+    display: block;
+    font-size: 11px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--color-faint);
+    font-weight: 600;
+    margin-bottom: 5px;
+  }
+
+  /* Data rows: 32px, hairline ruled, no zebra striping. */
+  .row {
     display: grid;
     align-items: center;
     gap: 12px;
-    padding: 9px 16px;
+    padding: 7px 12px;
     border-bottom: 1px solid var(--color-line);
-    min-height: 40px;
+    min-height: 32px;
   }
-  .data-row:last-child { border-bottom: 0; }
-  .data-head {
-    font-size: 10px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    color: var(--color-faint);
-    font-weight: 800;
-    background: #0b0e12;
-    min-height: 34px;
+  .row:last-child { border-bottom: 0; }
+  .row-head {
+    min-height: 26px;
     padding-top: 0;
     padding-bottom: 0;
+    background: var(--color-surface-2);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-faint);
+    font-weight: 600;
+  }
+
+  /* Keyboard hint. Signals the app is meant to be driven, not clicked through. */
+  .kbd {
+    font-family: var(--font-mono), monospace;
+    font-size: 10px;
+    border: 1px solid var(--color-line-strong);
+    border-bottom-width: 2px;
+    border-radius: 3px;
+    padding: 1px 4px;
+    color: var(--color-faint);
+    background: var(--color-surface-2);
   }
 }
 
-::-webkit-scrollbar { width: 10px; height: 10px; }
-::-webkit-scrollbar-thumb { background: #1c232b; border-radius: 8px; }
+::-webkit-scrollbar { width: 9px; height: 9px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #252b32; }
+::-webkit-scrollbar-thumb:hover { background: #333b44; }
+
+::selection { background: #2c343d; color: #fff; }

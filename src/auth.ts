@@ -7,11 +7,17 @@ import { verifyPassword } from '@/lib/auth/passwords';
 function resolveSecret(): string {
   const secret = process.env['AUTH_SECRET'];
   if (secret) return secret;
-  if (process.env.NODE_ENV === 'production') {
+
+  // A production BUILD has no requests to sign, and env vars are commonly
+  // injected only at runtime, so a missing secret must not fail compilation.
+  // A production SERVER with no secret is a different matter and is refused.
+  const building = process.env['NEXT_PHASE'] === 'phase-production-build';
+  if (process.env.NODE_ENV === 'production' && !building) {
     throw new Error('AUTH_SECRET must be set in production. Generate one with: openssl rand -base64 32');
   }
-  // Development convenience only. Regenerated per process, so restarting the
-  // dev server signs you out - which is preferable to shipping a known secret.
+
+  // Development (and build-time) fallback. Regenerated per process, so
+  // restarting signs you out - preferable to shipping a known secret.
   globalThis.__strategyaiDevSecret ??= crypto.randomUUID();
   return globalThis.__strategyaiDevSecret;
 }

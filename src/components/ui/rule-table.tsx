@@ -1,91 +1,76 @@
 import type { RuleResult, RuleStatus } from '@/types/results';
 import type { ObservationSource } from '@/types/observations';
-
-const MARK: Record<RuleStatus, { glyph: string; label: string; className: string }> = {
-  PASS: { glyph: '✓', label: 'pass', className: 'text-good' },
-  FAIL: { glyph: '✗', label: 'fail', className: 'text-danger' },
-  UNCONFIRMED: { glyph: '◔', label: 'pending', className: 'text-warn' },
-  UNKNOWN: { glyph: '–', label: 'no data', className: 'text-faint' },
-};
+import { StatusMark } from './index';
 
 const SOURCE_LABEL: Record<ObservationSource, string> = {
   vision: 'chart',
   'market-api': 'market',
   'financial-api': 'filings',
   user: 'you',
-  computed: 'calculated',
+  computed: 'calc',
   mock: 'demo',
 };
 
-const COLUMNS = 'grid-cols-[minmax(0,1fr)_88px_88px_92px]';
+// Required is sized to hold a full session window (09:30–11:00) without truncating.
+const COLUMNS = 'grid-cols-[minmax(0,1fr)_96px_88px_66px_54px]';
 
 /**
- * Dense results table: one row per rule, thresholds and observations aligned on
- * the decimal, reasons demoted to a secondary line. Reads like a compliance
- * report, not a feed of cards.
+ * The compliance table. Thresholds and observations align on the decimal so the
+ * eye can run down the Observed column and land on the number that broke.
+ * Reasons sit underneath in a quieter register rather than in their own column.
  */
 export function RuleTable({ results }: { results: RuleResult[] }) {
   return (
-    <div className="border border-line rounded-[10px] overflow-hidden">
-      <div className={`data-row data-head ${COLUMNS}`}>
+    <div className="border border-line rounded-[4px] overflow-hidden">
+      <div className={`row row-head ${COLUMNS}`}>
         <div>Rule</div>
         <div className="text-right">Required</div>
         <div className="text-right">Observed</div>
         <div className="text-right">Result</div>
+        <div className="text-right">Source</div>
       </div>
-      {results.map((result) => {
-        const mark = MARK[result.status];
-        return (
-          <div key={result.ruleId} className={`data-row ${COLUMNS} !items-start !py-2.5`}>
-            <div className="min-w-0">
-              <div className="truncate">
-                {result.label}
-                {!result.mandatory && (
-                  <span className="text-faint text-[11px] ml-2 uppercase tracking-wide">opt</span>
-                )}
-                {result.mandatory && result.onFail === 'watch' && (
-                  <span className="text-warn/70 text-[11px] ml-2 uppercase tracking-wide">watch</span>
-                )}
-              </div>
-              <div className="text-faint text-[12px] leading-snug mt-0.5">
-                {result.reason}
-                {result.source && (
-                  <span className="text-[#5a646f]"> · {SOURCE_LABEL[result.source]}</span>
-                )}
-                {result.stale && <span className="text-warn/80"> · stale</span>}
-              </div>
-            </div>
-            <div className="num text-right text-[#aab4bf] whitespace-nowrap">{result.expected}</div>
-            <div className={`num text-right whitespace-nowrap ${result.actual === null ? 'text-[#4d565f]' : 'text-ink'}`}>
-              {result.actual ?? '—'}
-            </div>
-            <div className={`text-right text-[12px] font-bold whitespace-nowrap ${mark.className}`}>
-              <span className="mr-1">{mark.glyph}</span>{mark.label}
-            </div>
+      {results.map((result) => (
+        <div key={result.ruleId} className={`row ${COLUMNS} !items-start !py-2`}>
+          <div className="min-w-0">
+            <span className="truncate">{result.label}</span>
+            {!result.mandatory && <span className="num text-[10px] text-dim ml-2">opt</span>}
+            {result.mandatory && result.onFail === 'watch' && (
+              <span className="num text-[10px] text-watch/70 ml-2">→watch</span>
+            )}
+            <div className="text-faint text-[12px] leading-snug mt-0.5">{result.reason}</div>
           </div>
-        );
-      })}
+          <div className="num text-right text-muted truncate" title={result.expected}>{result.expected}</div>
+          <div
+            className={`num text-right truncate ${result.actual === null ? 'text-dim' : 'text-ink'}`}
+            title={result.actual ?? undefined}
+          >
+            {result.actual ?? '—'}
+          </div>
+          <div className="text-right"><StatusMark status={result.status} /></div>
+          <div className="num text-right text-[11px] text-dim whitespace-nowrap">
+            {result.source ? SOURCE_LABEL[result.source] : '—'}
+            {result.stale && <span className="text-watch/80"> stale</span>}
+          </div>
+        </div>
+      ))}
     </div>
   );
 }
 
-/**
- * One segment per required rule, coloured by outcome. Shows at a glance how much
- * of the strategy held without reducing it to a single percentage.
- */
+/** One segment per required rule, coloured by outcome. */
 export function ComplianceMeter({ results }: { results: RuleResult[] }) {
   const mandatory = results.filter((r) => r.mandatory);
   if (mandatory.length === 0) return null;
   const fill: Record<RuleStatus, string> = {
-    PASS: 'bg-good',
-    FAIL: 'bg-danger',
-    UNCONFIRMED: 'bg-warn',
-    UNKNOWN: 'bg-[#2b333c]',
+    PASS: 'bg-pass',
+    FAIL: 'bg-fail',
+    UNCONFIRMED: 'bg-watch',
+    UNKNOWN: 'bg-[#333b44]',
   };
   return (
-    <div className="flex gap-[3px] h-[5px] mt-3" aria-hidden>
+    <div className="flex gap-[2px] h-[3px]" aria-hidden>
       {mandatory.map((r) => (
-        <div key={r.ruleId} className={`flex-1 rounded-full ${fill[r.status]}`} title={`${r.label}: ${r.status}`} />
+        <div key={r.ruleId} className={`flex-1 ${fill[r.status]}`} title={`${r.label}: ${r.status}`} />
       ))}
     </div>
   );

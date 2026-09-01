@@ -157,13 +157,10 @@ export function OpportunityChecker() {
 
   return (
     <div className="grid grid-cols-1 xl:grid-cols-[380px_minmax(0,1fr)] gap-6 items-start">
-      <Card className="p-5">
-        <h3 className="text-[17px] font-bold">Trading opportunity</h3>
-        <p className="text-muted mt-1 text-[13px] leading-relaxed">
-          Upload the chart, or type the levels yourself. Anything you enter overrides the chart reading.
-        </p>
+      <Card className="p-4">
+        <div className="label">Trading setup</div>
 
-        <div className="mt-5 flex flex-col gap-4">
+        <div className="mt-3 flex flex-col gap-3">
           <Labeled label="Strategy">
             <select className="field" value={strategyId} onChange={(e) => setStrategyId(e.target.value)}>
               {strategies.map(({ strategy, version }) => (
@@ -195,7 +192,7 @@ export function OpportunityChecker() {
                     type="button"
                     aria-label={`Remove ${upload.name}`}
                     onClick={() => setUploads(uploads.filter((_, i) => i !== index))}
-                    className="absolute -top-2 -right-2 bg-[#1b222a] border border-line rounded-full w-6 h-6 text-faint hover:text-danger cursor-pointer leading-none"
+                    className="absolute -top-2 -right-2 bg-[#1b222a] border border-line rounded-full w-6 h-6 text-faint hover:text-fail cursor-pointer leading-none"
                   >×</button>
                 </div>
               ))}
@@ -243,7 +240,7 @@ export function OpportunityChecker() {
             <Button onClick={run} disabled={running} className="w-full">
               {running ? 'Analysing…' : 'Check against strategy'}
             </Button>
-            {error && <p className="text-danger mt-3">{error}</p>}
+            {error && <p className="text-fail mt-3">{error}</p>}
           </div>
 
           <p className="text-faint text-[12px] leading-relaxed">
@@ -259,8 +256,8 @@ export function OpportunityChecker() {
       ) : (
         <Card>
           <Empty>
-            <div className="num text-[13px] text-faint tracking-widest mb-3">— — —</div>
-            Upload a chart or enter your levels to check a setup.
+            
+            Upload a chart or enter levels.
           </Empty>
         </Card>
       )}

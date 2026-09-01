@@ -46,6 +46,19 @@ export function isWithinSession(iso: string, window: SessionWindow): boolean | n
   return start < end ? now >= start && now < end : now >= start || now < end;
 }
 
+/**
+ * Wall-clock time of an instant in a given zone, "HH:mm".
+ * A session rule is judged in the session's timezone, so that is the number
+ * worth showing - not the raw UTC timestamp the observer happened to supply.
+ */
+export function clockInTimezone(iso: string, timezone: string): string | null {
+  const minutes = minutesInTimezone(iso, timezone);
+  if (minutes === null) return null;
+  const hour = Math.floor(minutes / 60);
+  const minute = minutes % 60;
+  return `${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}`;
+}
+
 export function ageInDays(asOf: string, now: string): number | null {
   const a = new Date(asOf).getTime();
   const b = new Date(now).getTime();

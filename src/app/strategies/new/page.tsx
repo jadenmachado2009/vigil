@@ -11,7 +11,7 @@ export default async function NewStrategyPage({
   const mode: Mode = raw === 'investing' ? 'investing' : 'trading';
   return (
     <>
-      <PageHeader eyebrow="Strategy builder" title={mode === 'trading' ? 'New trading strategy' : 'New investment strategy'} />
+      <PageHeader title={mode === 'trading' ? 'New trading strategy' : 'New investment strategy'} />
       <StrategyBuilder initial={{ name: '', description: '', mode, meta: {}, rules: [] }} />
     </>
   );

@@ -67,9 +67,9 @@ export function AuthForm({ mode }: { mode: 'sign-in' | 'sign-up' }) {
 
   return (
     <div className="max-w-[420px] mx-auto mt-6">
-      <Card className="p-7">
-        <div className="eyebrow">{isSignUp ? 'Create account' : 'Welcome back'}</div>
-        <h1 className="text-[24px] font-bold tracking-[-0.6px] mt-2">
+      <Card className="p-5">
+        <div className="label">{isSignUp ? 'Create account' : 'Welcome back'}</div>
+        <h1 className="text-[18px] font-semibold tracking-[-0.01em] mt-1.5">
           {isSignUp ? 'Keep your strategies' : 'Sign in'}
         </h1>
         <p className="text-muted mt-2 text-[13px] leading-relaxed">
@@ -101,7 +101,7 @@ export function AuthForm({ mode }: { mode: 'sign-in' | 'sign-up' }) {
           {isSignUp && (
             <label className="flex items-start gap-2.5 text-[13px] text-muted cursor-pointer font-normal">
               <input type="checkbox" checked={bringLocal} onChange={(e) => setBringLocal(e.target.checked)}
-                className="mt-0.5 accent-[#d8ff4f]" />
+                className="mt-0.5 accent-white" />
               Bring the strategies and analyses saved in this browser with me
             </label>
           )}
@@ -109,18 +109,18 @@ export function AuthForm({ mode }: { mode: 'sign-in' | 'sign-up' }) {
           <Button type="submit" disabled={busy} className="w-full">
             {busy ? (status ?? 'Working…') : isSignUp ? 'Create account' : 'Sign in'}
           </Button>
-          {error && <p className="text-danger text-[13px]">{error}</p>}
+          {error && <p className="text-fail text-[13px]">{error}</p>}
         </form>
 
         <p className="text-faint text-[12px] mt-5">
           {isSignUp ? (
-            <>Already have an account? <Link href="/sign-in" className="text-accent">Sign in</Link></>
+            <>Already have an account? <Link href="/sign-in" className="text-ink underline underline-offset-4">Sign in</Link></>
           ) : (
-            <>No account? <Link href="/sign-up" className="text-accent">Create one</Link></>
+            <>No account? <Link href="/sign-up" className="text-ink underline underline-offset-4">Create one</Link></>
           )}
         </p>
       </Card>
-      <p className="text-[#5a646f] text-[11px] mt-4 text-center leading-relaxed">
+      <p className="text-dim text-[11px] mt-3 text-center leading-snug">
         You can keep using StrategyAI without an account — your work stays in this browser only.
       </p>
     </div>

@@ -137,13 +137,10 @@ export function CompanyChecker() {
 
   return (
     <div className="grid grid-cols-1 xl:grid-cols-[380px_minmax(0,1fr)] gap-6 items-start">
-      <Card className="p-5">
-        <h3 className="text-[17px] font-bold">Investment opportunity</h3>
-        <p className="text-muted mt-1 text-[13px] leading-relaxed">
-          Fundamentals are fetched and compared to your thresholds. Judgement calls stay yours.
-        </p>
+      <Card className="p-4">
+        <div className="label">Company</div>
 
-        <div className="mt-5 flex flex-col gap-4">
+        <div className="mt-3 flex flex-col gap-3">
           <label className="field-label block">
             Strategy
             <select className="field" value={strategyId} onChange={(e) => setStrategyId(e.target.value)}>
@@ -175,7 +172,7 @@ export function CompanyChecker() {
                     onClick={() => { setTicker(s.ticker); setShowSuggestions(false); }}
                     className="w-full text-left px-3 py-2 hover:bg-[#161d24] cursor-pointer flex items-baseline gap-2 font-normal"
                   >
-                    <span className="num text-accent text-[13px] w-16 shrink-0">{s.ticker}</span>
+                    <span className="num text-ink text-[13px] w-16 shrink-0">{s.ticker}</span>
                     <span className="text-muted text-[13px] truncate">{s.name}</span>
                   </button>
                 ))}
@@ -185,10 +182,9 @@ export function CompanyChecker() {
 
           {qualitativeRules.length > 0 && (
             <div className="border-t border-line pt-4">
-              <div className="eyebrow">Your judgement</div>
-              <p className="text-faint text-[12px] mt-1.5 leading-relaxed">
-                No data feed can answer these. Leave unanswered and the rule reports as
-                insufficient data rather than being assumed.
+              <div className="label">Your judgement</div>
+              <p className="text-dim text-[11px] mt-1 leading-snug">
+                Unanswered reports as no data, never as a pass.
               </p>
               <div className="mt-3 flex flex-col gap-3">
                 {qualitativeRules.map(({ rule, metric }) => (
@@ -213,12 +209,11 @@ export function CompanyChecker() {
             <Button onClick={run} disabled={running || !ticker.trim()} className="w-full">
               {running ? 'Fetching and checking…' : 'Check against strategy'}
             </Button>
-            {error && <p className="text-danger mt-3 text-[13px]">{error}</p>}
+            {error && <p className="text-fail mt-3 text-[13px]">{error}</p>}
           </div>
 
-          <p className="text-[#5a646f] text-[11px] leading-relaxed">
-            Ratios and margins are compared by the app against your thresholds. No model is asked
-            whether a valuation is acceptable.
+          <p className="text-dim text-[11px] leading-snug">
+            Ratios are compared by the app. No model judges a valuation.
           </p>
         </div>
       </Card>
@@ -228,7 +223,7 @@ export function CompanyChecker() {
           <Card className="px-5 py-4">
             <div className="flex items-baseline justify-between gap-4 flex-wrap">
               <div className="min-w-0">
-                <span className="num text-accent text-[15px] font-bold">{result.company.ticker}</span>
+                <span className="num text-[14px] font-semibold">{result.company.ticker}</span>
                 <span className="text-muted ml-3 text-[14px]">{result.company.name}</span>
               </div>
               <div className="flex items-baseline gap-5 text-[12px]">
@@ -250,8 +245,8 @@ export function CompanyChecker() {
       ) : (
         <Card>
           <Empty>
-            <div className="num text-[13px] text-faint tracking-widest mb-3">— — —</div>
-            Enter a ticker to check it against your rules.
+            
+            Enter a ticker.
           </Empty>
         </Card>
       )}
