@@ -11,7 +11,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "build:check": "rm -rf .next-check && NEXT_DIST_DIR=.next-check next build && rm -rf .next-check"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.3.3",

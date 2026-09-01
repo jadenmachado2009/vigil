@@ -28,7 +28,9 @@ Rebuild in progress. See `docs/ROADMAP.md`.
 | 0 | Foundation, version control, tooling | done |
 | 1 | Rule model, observation model, rules engine, tests | done |
 | 2 | Next.js app, design system port, strategy library, trading + investing builders | done |
-| 3–10 | Opportunity checkers, persistence, journal, analytics, portfolio, deploy | pending |
+| 3 | Trading opportunity checker, vision provider abstraction, API layer | done |
+| 4 | Investment strategy builder | done (with Phase 2) |
+| 5–10 | Investment checker + financial data, persistence, journal, analytics, portfolio, deploy | pending |
 
 The original static prototype is preserved at `legacy/mvp/` and is the reference
 for the visual design during the UI port.
@@ -52,7 +54,22 @@ npm test
 
 The rules engine is the product. It performs no I/O, contains no randomness, and
 never calls a model — the same strategy and observations always produce the same
-analysis. It is covered by 73 tests, including the repository's version-immutability rules.
+analysis. It is covered by 88 tests, including the repository's version-immutability rules and the
+parsing layer that guards it from untrusted model output.
+
+## Chart analysis
+
+`POST /api/analyze/chart` runs the whole pipeline server-side: vision provider →
+observation parsing → computed metrics → rules engine → verdict. The client never
+computes a verdict, and API keys never reach the browser.
+
+With no key configured it uses a **labelled demo reader** that derives a stable
+pseudo-random reading from the image bytes. It does not look at your chart, and the
+UI says so. Set `VISION_PROVIDER=gemini` and `GEMINI_API_KEY` for real analysis.
+
+The model is asked only for what a picture can show — whether a structure is present,
+and what the price levels are. It is never asked for a risk/reward ratio, and a
+provider-supplied one is discarded before evaluation.
 
 ## Cost
 

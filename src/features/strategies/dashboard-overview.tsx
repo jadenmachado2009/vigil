@@ -3,8 +3,10 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import type { StrategyWithVersion } from '@/lib/repository/types';
+import type { AnalysisRecord } from '@/types/analysis';
 import { strategyRepository } from '@/lib/repository/local';
-import { Button, Card, SectionHead } from '@/components/ui';
+import { analysisRepository } from '@/lib/repository/analyses';
+import { Button, Card, SectionHead, VerdictPill } from '@/components/ui';
 
 function Stat({ label, value, hint }: { label: string; value: string | number; hint: string }) {
   return (
@@ -18,11 +20,19 @@ function Stat({ label, value, hint }: { label: string; value: string | number; h
 
 export function DashboardOverview() {
   const [items, setItems] = useState<StrategyWithVersion[] | null>(null);
-  useEffect(() => { void strategyRepository.list().then(setItems); }, []);
+  const [analyses, setAnalyses] = useState<AnalysisRecord[] | null>(null);
+
+  useEffect(() => {
+    void strategyRepository.list().then(setItems);
+    void analysisRepository.list().then(setAnalyses);
+  }, []);
 
   const active = (items ?? []).filter((i) => i.strategy.status === 'active');
   const trading = active.filter((i) => i.strategy.mode === 'trading').length;
   const investing = active.filter((i) => i.strategy.mode === 'investing').length;
+  const all = analyses ?? [];
+  const count = (verdict: AnalysisRecord['verdict']) => all.filter((a) => a.verdict === verdict).length;
+  const recent = all.slice(0, 6);
 
   return (
     <>
@@ -47,21 +57,37 @@ export function DashboardOverview() {
       <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-3">
         <Stat label="Trading" value={items === null ? '—' : trading} hint="Active strategies" />
         <Stat label="Investing" value={items === null ? '—' : investing} hint="Active strategies" />
-        <Stat label="Checked" value={0} hint="Opportunities" />
-        <Stat label="Qualified" value={0} hint="All rules passed" />
-        <Stat label="Watch" value={0} hint="Not yet confirmed" />
-        <Stat label="Rejected" value={0} hint="Rule violations" />
+        <Stat label="Checked" value={analyses === null ? '—' : all.length} hint="Opportunities" />
+        <Stat label="Qualified" value={analyses === null ? '—' : count('QUALIFIED')} hint="All rules passed" />
+        <Stat label="Watch" value={analyses === null ? '—' : count('WATCH')} hint="Not yet confirmed" />
+        <Stat label="Rejected" value={analyses === null ? '—' : count('REJECTED')} hint="Rule violations" />
       </div>
 
       <SectionHead title="Recent analyses" />
-      <Card>
-        <div className="text-muted text-center py-14 px-5 leading-relaxed max-w-[52ch] mx-auto">
-          The opportunity checker arrives in the next phase. Build the strategy you want to check
-          against first — the rules are what the checker reports on.
-          <div className="mt-5">
-            <Link href="/strategies"><Button variant="secondary">Go to strategies</Button></Link>
+      <Card className="overflow-x-auto">
+        {recent.length === 0 ? (
+          <div className="text-muted text-center py-14 px-5 leading-relaxed max-w-[52ch] mx-auto">
+            Nothing checked yet. Run a setup against one of your strategies.
+            <div className="mt-5">
+              <Link href="/analyze"><Button variant="secondary">Check an opportunity</Button></Link>
+            </div>
           </div>
-        </div>
+        ) : (
+          <div className="min-w-[620px]">
+            <div className="grid grid-cols-[1.3fr_1.2fr_1fr_.7fr_auto] px-4 py-3 border-b border-line bg-[#0b0e12] text-[10px] uppercase tracking-wider text-faint font-bold">
+              <div>Opportunity</div><div>Strategy</div><div>Date</div><div>Rules</div><div>Verdict</div>
+            </div>
+            {recent.map((a) => (
+              <div key={a.id} className="grid grid-cols-[1.3fr_1.2fr_1fr_.7fr_auto] px-4 py-3.5 border-b border-line last:border-0 items-center gap-2">
+                <div className="font-bold truncate">{a.subject}</div>
+                <div className="text-muted truncate">{a.strategyName}</div>
+                <div className="text-muted">{new Date(a.createdAt).toLocaleDateString()}</div>
+                <div className="text-muted">{a.summary.mandatoryPassed}/{a.summary.mandatoryTotal}</div>
+                <VerdictPill verdict={a.verdict} />
+              </div>
+            ))}
+          </div>
+        )}
       </Card>
     </>
   );

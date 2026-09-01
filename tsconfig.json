@@ -32,11 +32,12 @@
     "isolatedModules": true
   },
   "include": [
+    ".next/types/**/*.ts",
     "next-env.d.ts",
     "src/**/*",
     "tests/**/*",
     "vitest.config.ts",
-    ".next/types/**/*.ts"
+    ".next-check/types/**/*.ts"
   ],
   "exclude": [
     "node_modules"
