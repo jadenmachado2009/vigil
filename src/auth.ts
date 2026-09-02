@@ -70,8 +70,21 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   },
 });
 
-/** Returns the signed-in user's id, or null. Use in route handlers. */
+/**
+ * The signed-in user's id, or null.
+ *
+ * The session is a JWT, so it keeps asserting an identity after that account is
+ * gone — a deleted user would appear signed in, see nothing, and hit foreign-key
+ * failures on write. One indexed primary-key lookup per request avoids that
+ * whole class of confusing failure.
+ */
 export async function currentUserId(): Promise<string | null> {
   const session = await auth();
-  return session?.user?.id ?? null;
+  const id = session?.user?.id;
+  if (!id) return null;
+
+  const db = await getDb();
+  const [user] = await db.select({ id: schema.users.id })
+    .from(schema.users).where(eq(schema.users.id, id)).limit(1);
+  return user?.id ?? null;
 }

@@ -1,13 +1,13 @@
 import { NextResponse } from 'next/server';
-import { auth } from '@/auth';
+import { auth, currentUserId } from '@/auth';
 
 export const runtime = 'nodejs';
 
 export async function GET() {
-  const session = await auth();
+  const [session, userId] = await Promise.all([auth(), currentUserId()]);
   return NextResponse.json({
-    signedIn: Boolean(session?.user?.id),
-    email: session?.user?.email ?? null,
-    name: session?.user?.name ?? null,
+    signedIn: Boolean(userId),
+    email: userId ? session?.user?.email ?? null : null,
+    name: userId ? session?.user?.name ?? null : null,
   });
 }
