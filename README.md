@@ -34,7 +34,8 @@ Rebuild in progress. See `docs/ROADMAP.md`.
 | 6 | Auth + Postgres persistence | done |
 | 7 | Journal and outcome tracking | done |
 | 8 | Analytics and rule attribution | done |
-| 9–10 | Portfolio, deploy | pending |
+| 9 | Portfolio rules | not built |
+| 10 | Production polish, deployment | ready to deploy |
 
 The original static prototype is preserved at `legacy/mvp/` and is the reference
 for the visual design during the UI port.
@@ -164,6 +165,50 @@ usable sample.
 Nothing here establishes causation, and the interface says so. Below 20 closed trades
 the figures are shown with an explicit warning that they are arithmetically correct
 and statistically meaningless.
+
+## Deployment
+
+Free tier throughout. Two things must be set; the app refuses to serve without
+either, rather than starting up in a broken state.
+
+**1. A hosted Postgres.** Create a free database (Neon, Supabase, or any other) and
+copy its connection string. The embedded development database writes to the local
+filesystem, which is ephemeral on a serverless host — every deploy would silently
+start empty — so production refuses to boot without `DATABASE_URL`.
+
+**2. A session secret.**
+
+```bash
+openssl rand -base64 32
+```
+
+Then deploy:
+
+```bash
+npx vercel
+```
+
+Set these in the project's environment settings:
+
+| Variable | Required | Notes |
+|---|---|---|
+| `DATABASE_URL` | yes | Hosted Postgres connection string |
+| `AUTH_SECRET` | yes | From the command above |
+| `AUTH_URL` | yes | Your deployed URL |
+| `GEMINI_API_KEY` | no | Real chart reading; demo reader without it |
+| `FMP_API_KEY` | no | Real fundamentals; demo figures without it |
+| `VISION_PROVIDER` | no | `mock` (default) or `gemini` |
+| `FINANCIAL_PROVIDER` | no | `mock` (default) or `fmp` |
+| `STRATEGY_PARSER` | no | `pattern` (default) or `gemini` |
+
+Apply the schema once against the deployed database:
+
+```bash
+DATABASE_URL="<your connection string>" npm run db:migrate
+```
+
+With no provider keys the deployment still works end to end on labelled demo
+providers — the rules engine is real either way.
 
 ## Cost
 

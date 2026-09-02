@@ -18,6 +18,16 @@ const globalForDb = globalThis as unknown as {
 async function createDatabase() {
   const url = process.env['DATABASE_URL'];
 
+  // PGlite writes to the local filesystem, which on a serverless host is
+  // ephemeral and per-instance: every deployment would silently start empty and
+  // every request could land on a different copy. Refuse rather than lose data.
+  if (!url && process.env.NODE_ENV === 'production') {
+    throw new Error(
+      'DATABASE_URL must be set in production. The embedded database is for local development only — ' +
+      'point this at a hosted Postgres (Neon, Supabase, or any other) and run: npm run db:migrate',
+    );
+  }
+
   if (url) {
     const [{ drizzle }, postgresModule] = await Promise.all([
       import('drizzle-orm/postgres-js'),
