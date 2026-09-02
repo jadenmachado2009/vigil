@@ -8,7 +8,7 @@ export default function StrategiesPage() {
   return (
     <>
       <PageHeader
-        figure="Fig. 01 — Strategy library"
+        figure="Fig. 01 — Mandates"
         title="Strategies"
         asOf={<AsOf />}
         action={

@@ -4,8 +4,9 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import type { AnalysisRecord, Outcome } from '@/types/analysis';
 import { analysisRepository } from '@/lib/repository/client';
-import { isClosed, wasTaken, type TradeStatus } from '@/lib/calculations/outcome';
-import { formatRatio } from '@/lib/format';
+import { isClosed, wasTaken } from '@/lib/calculations/outcome';
+import { useMode } from '@/features/mode/mode-context';
+import { formatRatio, formatFigure } from '@/lib/format';
 import { Button, VerdictPill, Empty } from '@/components/ui';
 import { RuleTable } from '@/components/ui/rule-table';
 import { OutcomeForm } from './outcome-form';
@@ -30,7 +31,14 @@ function outcomeLabel(outcome: Outcome | undefined): string {
   return outcome.status.replace('_', ' ').toLowerCase().replace(/^./, (c) => c.toUpperCase());
 }
 
+/** A figure the analysis actually observed, or null. Never inferred. */
+function observed(record: AnalysisRecord, metric: string): number | null {
+  const value = record.observations[metric]?.value;
+  return typeof value === 'number' ? value : null;
+}
+
 export function Journal() {
+  const { mode } = useMode();
   const [records, setRecords] = useState<AnalysisRecord[] | null>(null);
   const [filter, setFilter] = useState<Filter>('all');
   const [openId, setOpenId] = useState<string | null>(null);
@@ -39,6 +47,8 @@ export function Journal() {
   useEffect(() => { void load(); }, [load]);
 
   const all = records ?? [];
+  const isTrading = mode === 'trading';
+  const COLUMNS = 'grid-cols-[62px_minmax(0,1fr)_150px_110px_86px_86px_92px_24px]';
 
   /**
    * Settled performance. A sum, not a statistic — only closed trades with a
@@ -126,10 +136,16 @@ export function Journal() {
       </div>
 
       <div className="border-t border-ink mt-4 overflow-x-auto -mx-4 px-4 sm:mx-0 sm:px-0">
-        <div className="min-w-[680px]">
-        <div className="row row-head grid-cols-[34px_minmax(0,1fr)_150px_120px_110px_84px_28px]">
-          <div>No.</div><div>Subject</div><div>Strategy</div><div>Checked</div>
-          <div className="text-right">Verdict</div><div className="text-right">Outcome</div><div />
+        <div className="min-w-[820px]">
+        <div className={`row row-head ${COLUMNS}`}>
+          <div>Date</div>
+          <div>{isTrading ? 'Asset' : 'Company'}</div>
+          <div>Strategy</div>
+          <div className="text-right">Verdict</div>
+          <div className="text-right">{isTrading ? 'Entry' : 'Price'}</div>
+          <div className="text-right">{isTrading ? 'RR' : 'Valuation'}</div>
+          <div className="text-right">{isTrading ? 'Outcome' : 'Status'}</div>
+          <div />
         </div>
 
         {visible.length === 0 && <Empty>Nothing matches this filter.</Empty>}
@@ -142,15 +158,26 @@ export function Journal() {
               <button
                 type="button"
                 onClick={() => setOpenId(open ? null : record.id)}
-                className={`row w-full text-left cursor-pointer grid-cols-[34px_minmax(0,1fr)_150px_120px_110px_84px_28px] hover:bg-paper-2 ${open ? '!border-b-0' : ''}`}
+                className={`row w-full text-left cursor-pointer ${COLUMNS} hover:bg-paper-2 ${open ? '!border-b-0' : ''}`}
               >
-                <div className="num text-[11px] text-dim">{String(index + 1).padStart(2, '0')}</div>
-                <div className="num truncate">{record.subject}</div>
+                <div className="num text-[11.5px] text-faint whitespace-nowrap">
+                  {new Date(record.createdAt).toLocaleDateString('en-GB', { day: '2-digit', month: 'short' }).toUpperCase()}
+                </div>
+                <div className="ser text-[16px] truncate">{record.subject}</div>
                 <div className="text-muted truncate text-[12px]">
                   {record.strategyName} <span className="num text-dim">v{record.strategyVersion}</span>
                 </div>
-                <div className="num text-[12px] text-faint">{new Date(record.createdAt).toLocaleDateString()}</div>
                 <div className="text-right"><VerdictPill verdict={record.verdict} /></div>
+                <div className="num text-right text-[12.5px] text-muted">
+                  {isTrading
+                    ? (observed(record, 'entry') !== null ? formatFigure(observed(record, 'entry') as number) : '—')
+                    : (observed(record, 'pe') !== null ? formatFigure(observed(record, 'pe') as number) : '—')}
+                </div>
+                <div className="num text-right text-[12.5px] text-muted">
+                  {isTrading
+                    ? (typeof record.computed['rr'] === 'number' ? `${formatRatio(record.computed['rr'])}x` : '—')
+                    : (observed(record, 'forward_pe') !== null ? `${formatRatio(observed(record, 'forward_pe') as number)}x` : '—')}
+                </div>
                 <div className={`cap text-right ${OUTCOME_TONE[record.outcome?.status ?? ''] ?? 'text-dim'}`}>
                   {typeof r === 'number'
                     ? `${r > 0 ? '+' : ''}${formatRatio(r)}R`

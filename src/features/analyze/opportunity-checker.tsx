@@ -44,6 +44,7 @@ export function OpportunityChecker() {
   const [uploads, setUploads] = useState<Upload[]>([]);
   const [manual, setManual] = useState({ instrument: '', direction: '', entry: '', stop: '', target: '', entry_time: '' });
   const [notes, setNotes] = useState('');
+  const [dragging, setDragging] = useState(false);
   const [running, setRunning] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<{ record: AnalysisRecord; warnings: string[] } | null>(null);
@@ -171,33 +172,42 @@ export function OpportunityChecker() {
             </select>
           </Labeled>
 
-          <Labeled label="Chart screenshots" hint={`PNG, JPEG or WebP. Up to ${MAX_IMAGES} images, 5 MB each.`}>
-            <input
-              className="field"
-              type="file"
-              accept="image/png,image/jpeg,image/webp"
-              multiple
-              disabled={uploads.length >= MAX_IMAGES}
-              onChange={(e) => { void addFiles(e.target.files); e.target.value = ''; }}
-            />
-          </Labeled>
-
-          {uploads.length > 0 && (
-            <div className="flex gap-2 flex-wrap">
-              {uploads.map((upload, index) => (
-                <div key={index} className="relative">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={upload.preview} alt={upload.name} className="h-20 w-28 object-cover rounded-[8px] border border-rule" />
-                  <button
-                    type="button"
-                    aria-label={`Remove ${upload.name}`}
-                    onClick={() => setUploads(uploads.filter((_, i) => i !== index))}
-                    className="absolute -top-2 -right-2 bg-[#e9e6df] border border-rule rounded-full w-6 h-6 text-faint hover:text-fail cursor-pointer leading-none"
-                  >×</button>
-                </div>
-              ))}
-            </div>
-          )}
+          {/* An editorial drop area, not a modern SaaS dropzone. */}
+          <div>
+            <div className="doc mb-2">Chart</div>
+            <label
+              onDragOver={(e) => { e.preventDefault(); setDragging(true); }}
+              onDragLeave={() => setDragging(false)}
+              onDrop={(e) => {
+                e.preventDefault();
+                setDragging(false);
+                void addFiles(e.dataTransfer.files);
+              }}
+              className={`block border border-dashed px-4 py-7 text-center cursor-pointer ${
+                dragging ? 'border-ink bg-paper-2' : 'border-rule hover:border-ink'
+              }`}
+            >
+              <input
+                className="sr-only"
+                type="file"
+                accept="image/png,image/jpeg,image/webp"
+                multiple
+                disabled={uploads.length >= MAX_IMAGES}
+                onChange={(e) => { void addFiles(e.target.files); e.target.value = ''; }}
+              />
+              {uploads.length > 0 ? (
+                <span className="cap !text-ink">
+                  {uploads.length === 1 ? 'Chart received' : `${uploads.length} charts received`}
+                </span>
+              ) : (
+                <>
+                  <span className="cap block">Drop chart screenshot here</span>
+                  <span className="doc block mt-2">or choose file</span>
+                </>
+              )}
+            </label>
+            <div className="doc mt-2">PNG, JPEG or WebP · up to {MAX_IMAGES} · 5 MB each</div>
+          </div>
 
           <div className="grid grid-cols-2 gap-3">
             <Labeled label="Instrument">

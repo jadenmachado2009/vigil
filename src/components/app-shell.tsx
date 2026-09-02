@@ -75,7 +75,7 @@ function Shell({ children }: { children: ReactNode }) {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <header className="border-b border-ink px-4 sm:px-7 py-4 flex items-start justify-between gap-x-8 gap-y-4 flex-wrap">
+      <header className="border-b border-ink px-4 sm:px-7 lg:px-10 py-4 flex items-start justify-between gap-x-8 gap-y-4 flex-wrap">
         <Link href="/"><Wordmark /></Link>
         <nav className="flex flex-wrap gap-x-6 sm:gap-x-8 gap-y-2 pt-1">
           {NAV.map((item) => {
@@ -92,7 +92,7 @@ function Shell({ children }: { children: ReactNode }) {
         </nav>
       </header>
 
-      <div className="border-b border-rule px-4 sm:px-7 py-2.5 flex items-center justify-between gap-x-6 gap-y-2 flex-wrap">
+      <div className="border-b border-rule px-4 sm:px-7 lg:px-10 py-2.5 flex items-center justify-between gap-x-6 gap-y-2 flex-wrap">
         <ModeSwitch />
         <div className="flex items-center gap-5">
           <AccountBadge />
@@ -100,7 +100,7 @@ function Shell({ children }: { children: ReactNode }) {
         </div>
       </div>
 
-      <main className="px-4 sm:px-7 py-7 max-w-[1560px] w-full">{children}</main>
+      <main className="px-4 sm:px-7 lg:px-10 py-8 max-w-[1600px] w-full mx-auto">{children}</main>
       <CommandPalette commands={commands} />
     </div>
   );

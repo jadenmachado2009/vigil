@@ -60,54 +60,56 @@ export function StrategyLibrary() {
           </div>
         </Card>
       ) : (
-        <div className="grid gap-3 sm:grid-cols-2 2xl:grid-cols-3">
-          {visible.map(({ strategy, version }) => {
-            const mandatory = version.rules.filter((r) => r.mandatory).length;
-            return (
-              <Card key={strategy.id} className="p-4 flex flex-col">
-                <div className="flex items-start justify-between gap-2">
-                  <span className="cap">{strategy.mode}</span>
-                  {strategy.status !== 'active' && (
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-faint border border-rule rounded px-1.5 py-0.5">
-                      {strategy.status}
-                    </span>
-                  )}
+        // A register of mandates, not a wall of cards.
+        <div className="border-t border-ink mt-5 overflow-x-auto -mx-4 px-4 sm:mx-0 sm:px-0">
+          <div className="min-w-[720px]">
+            <div className="row row-head grid-cols-[30px_minmax(0,1fr)_96px_84px_92px_78px_minmax(0,220px)]">
+              <div>No.</div><div>Mandate</div><div>Mode</div>
+              <div className="text-right">Conditions</div><div className="text-right">Required</div>
+              <div className="text-right">Status</div><div className="text-right">Actions</div>
+            </div>
+            {visible.map(({ strategy, version }, index) => {
+              const mandatory = version.rules.filter((r) => r.mandatory).length;
+              return (
+                <div key={strategy.id} className="row grid-cols-[30px_minmax(0,1fr)_96px_84px_92px_78px_minmax(0,220px)]">
+                  <div className="doc">{String(index + 1).padStart(2, '0')}</div>
+                  <div className="min-w-0">
+                    <Link href={`/strategies/${strategy.id}`} className="ser text-[18px] hover:underline underline-offset-4">
+                      {strategy.name}
+                    </Link>
+                    {strategy.description && (
+                      <div className="text-muted text-[12px] truncate mt-0.5">{strategy.description}</div>
+                    )}
+                  </div>
+                  <div className="cap">{strategy.mode}</div>
+                  <div className="num text-right text-[12.5px] text-muted">
+                    {String(version.rules.length).padStart(2, '0')}
+                  </div>
+                  <div className="num text-right text-[12.5px] text-muted">{String(mandatory).padStart(2, '0')}</div>
+                  <div className={`cap text-right ${strategy.status === 'active' ? '!text-pass' : ''}`}>
+                    {strategy.status}
+                  </div>
+                  <div className="flex justify-end gap-3 flex-wrap">
+                    <Link href={`/strategies/${strategy.id}`} className="cap hover:!text-ink">Edit</Link>
+                    <button type="button" className="cap hover:!text-ink cursor-pointer" disabled={busy === strategy.id}
+                      onClick={() => act(strategy.id, () => strategyRepository.duplicate(strategy.id))}>Duplicate</button>
+                    <button type="button" className="cap hover:!text-ink cursor-pointer" disabled={busy === strategy.id}
+                      onClick={() => act(strategy.id, () => strategyRepository.setStatus(strategy.id, strategy.status === 'active' ? 'inactive' : 'active'))}>
+                      {strategy.status === 'active' ? 'Deactivate' : 'Activate'}
+                    </button>
+                    <button type="button" className="cap hover:!text-ink cursor-pointer" disabled={busy === strategy.id}
+                      onClick={() => act(strategy.id, () => strategyRepository.setStatus(strategy.id, 'archived'))}>Archive</button>
+                    <button type="button" className="cap hover:!text-fail cursor-pointer" disabled={busy === strategy.id}
+                      onClick={() => {
+                        if (confirm(`Delete "${strategy.name}"? Past analyses keep their saved rule results.`)) {
+                          void act(strategy.id, () => strategyRepository.remove(strategy.id));
+                        }
+                      }}>Delete</button>
+                  </div>
                 </div>
-                <h3 className="text-[15px] font-semibold mt-2">{strategy.name}</h3>
-                {strategy.description && <p className="text-faint text-[12px] mt-1 leading-snug">{strategy.description}</p>}
-
-                <div className="text-faint text-[12px] mt-3">
-                  <span className="num">{version.rules.length}</span> rules · <span className="num">{mandatory}</span> required · <span className="num">v{version.version}</span>
-                </div>
-                <div className="text-faint text-[12px] mt-1">
-                  Created {new Date(strategy.createdAt).toLocaleDateString()}
-                </div>
-
-                <div className="text-[12px] text-dim mt-2 leading-snug line-clamp-2">
-                  {version.rules.slice(0, 4).map((r) => r.label).join(' · ')}
-                  {version.rules.length > 4 ? ' · …' : ''}
-                </div>
-
-                <div className="flex flex-wrap gap-2 mt-auto pt-4">
-                  <Link href={`/strategies/${strategy.id}`}><Button variant="secondary" className="!py-1 !text-[12px]">Edit</Button></Link>
-                  <Button variant="ghost" className="!py-1 !text-[12px]" disabled={busy === strategy.id}
-                    onClick={() => act(strategy.id, () => strategyRepository.duplicate(strategy.id))}>Duplicate</Button>
-                  <Button variant="ghost" className="!py-1 !text-[12px]" disabled={busy === strategy.id}
-                    onClick={() => act(strategy.id, () => strategyRepository.setStatus(strategy.id, strategy.status === 'active' ? 'inactive' : 'active'))}>
-                    {strategy.status === 'active' ? 'Deactivate' : 'Activate'}
-                  </Button>
-                  <Button variant="ghost" className="!py-1 !text-[12px]" disabled={busy === strategy.id}
-                    onClick={() => act(strategy.id, () => strategyRepository.setStatus(strategy.id, 'archived'))}>Archive</Button>
-                  <Button variant="danger" className="!py-1 !text-[12px]" disabled={busy === strategy.id}
-                    onClick={() => {
-                      if (confirm(`Delete "${strategy.name}"? Past analyses keep their saved rule results.`)) {
-                        void act(strategy.id, () => strategyRepository.remove(strategy.id));
-                      }
-                    }}>Delete</Button>
-                </div>
-              </Card>
-            );
-          })}
+              );
+            })}
+          </div>
         </div>
       )}
     </>

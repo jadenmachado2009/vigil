@@ -84,7 +84,7 @@ export function Analytics() {
 
       {/* Rule attribution — the reason the journal is worth filling in. */}
       <div className="mt-14">
-        <div className="cap">Rule attribution — historical observation</div>
+        <div className="doc">Rule performance — historical observation</div>
         <p className="text-muted text-[12.5px] leading-relaxed mt-2 max-w-[70ch]">
           How closed trades performed when each condition held, against how they performed when it
           did not. A trade whose condition could not be verified is excluded from both sides rather
@@ -140,7 +140,7 @@ export function Analytics() {
 
       {strategies.length > 1 && (
         <div className="mt-14">
-          <div className="cap">By strategy</div>
+          <div className="doc">By strategy</div>
           <div className="border-t border-ink mt-2.5 overflow-x-auto -mx-4 px-4 sm:mx-0 sm:px-0">
             <div className="min-w-[520px]">
             <div className="row row-head grid-cols-[minmax(0,1fr)_70px_70px_80px_80px]">
@@ -163,7 +163,7 @@ export function Analytics() {
 
       {investments.analysed > 0 && (
         <div className="mt-14">
-          <div className="cap">Investments</div>
+          <div className="doc">Investments</div>
           <div className="border-t border-ink mt-2.5 pt-4 grid grid-cols-2 md:grid-cols-4 gap-7">
             <Measure label="Analysed" value={String(investments.analysed)} />
             <Measure label="Bought / holding" value={`${investments.bought + investments.holding}`} note={`${investments.notBought} passed on`} />

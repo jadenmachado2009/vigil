@@ -44,7 +44,7 @@ export function DashboardOverview() {
   const inForce = active[0] ?? null;
 
   return (
-    <div className="grid lg:grid-cols-[minmax(0,1fr)_300px] gap-x-14 gap-y-10 items-start">
+    <div className="grid lg:grid-cols-[65fr_35fr] gap-x-16 gap-y-12 items-start">
       <div>
         <div className="ser text-[40px] leading-[1.08] font-light max-w-[18ch]">
           {scoped.length === 0 ? (

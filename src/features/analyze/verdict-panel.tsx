@@ -57,6 +57,27 @@ const VERDICT_TONE: Record<AnalysisRecord['verdict'], string> = {
   INSUFFICIENT_DATA: 'text-none',
 };
 
+/** The line under the stamp: what actually happened, in the report's voice. */
+function stampLine(record: AnalysisRecord): string {
+  const mandatory = record.results.filter((r) => r.mandatory);
+  const total = mandatory.length;
+  const failed = mandatory.filter((r) => r.status === 'FAIL').length;
+  const unknown = mandatory.filter((r) => r.status === 'UNKNOWN').length;
+  const unit = record.mode === 'investing' ? 'criteria' : 'rules';
+  const one = (n: number) => (n === 1 ? unit.replace(/s$|ia$/, (m) => (m === 'ia' ? 'ion' : '')) : unit);
+
+  switch (record.verdict) {
+    case 'QUALIFIED':
+      return `All ${total} required ${unit} satisfied`;
+    case 'REJECTED':
+      return `${failed} of ${total} required ${one(failed)} failed`;
+    case 'WATCH':
+      return `${record.summary.mandatoryPassed} of ${total} required ${unit} satisfied`;
+    case 'INSUFFICIENT_DATA':
+      return `${unknown} of ${total} required ${one(unknown)} unverified`;
+  }
+}
+
 function Field({ label, value }: { label: string; value: string }) {
   return (
     <div className="min-w-0">
@@ -83,6 +104,19 @@ export function VerdictPanel({
           <span className="text-muted text-[12px]">{demoLabel}</span>
         </div>
       )}
+
+      {/* Report framing: which exhibit, on what, against which mandate. */}
+      <div className="border-b border-ink pb-3 mb-6">
+        <div className="doc">
+          {record.mode === 'investing'
+            ? 'Fig. 07 — Investment compliance report'
+            : 'Fig. 04 — Strategy compliance report'}
+        </div>
+        <div className="flex items-baseline justify-between gap-4 flex-wrap mt-2.5">
+          <span className="ser text-[26px] leading-none">{record.subject}</span>
+          <span className="cap">{record.strategyName} · v{record.strategyVersion}</span>
+        </div>
+      </div>
 
       {/* The finding, stated before the evidence. */}
       <div className="ser text-[40px] leading-[1.05] text-muted max-w-[22ch]">
@@ -117,9 +151,7 @@ export function VerdictPanel({
             <div className={`ser text-[34px] leading-none mt-3 tracking-[0.06em] ${VERDICT_TONE[record.verdict]}`}>
               {record.verdict === 'INSUFFICIENT_DATA' ? 'INSUFFICIENT DATA' : record.verdict}
             </div>
-            <div className="doc mt-3">
-              {String(summary.mandatoryPassed).padStart(2, '0')} / {String(summary.mandatoryTotal).padStart(2, '0')} required
-            </div>
+            <div className="doc mt-3">{stampLine(record)}</div>
           </div>
           <p className="text-muted text-[12.5px] mt-4 leading-relaxed">{record.reason}</p>
           {typeof record.computed['rr'] === 'number' && (

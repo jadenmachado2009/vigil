@@ -141,3 +141,11 @@ body {
 ::-webkit-scrollbar-thumb:hover { background: var(--color-dim); }
 
 ::selection { background: #14130f; color: #efede8; }
+
+/* Calm, not animated. Opacity and colour only, and nothing that moves. */
+a, button, .row { transition: color 140ms ease, background-color 140ms ease, border-color 140ms ease, opacity 140ms ease; }
+
+@media (prefers-reduced-motion: no-preference) {
+  main { animation: settle 220ms ease-out both; }
+  @keyframes settle { from { opacity: 0; } to { opacity: 1; } }
+}
