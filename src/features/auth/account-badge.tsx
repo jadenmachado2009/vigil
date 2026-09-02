@@ -6,7 +6,10 @@ import { usePathname, useRouter } from 'next/navigation';
 import { signOut } from 'next-auth/react';
 import { getAccount, resetAccountState, type Account } from '@/lib/repository/client';
 
-/** Sidebar footer: says plainly where the user's data currently lives. */
+/**
+ * Where the user's data currently lives. Deliberately quiet — it is a status
+ * line on an instrument, not a prompt to sign up.
+ */
 export function AccountBadge() {
   const router = useRouter();
   const pathname = usePathname();
@@ -21,26 +24,21 @@ export function AccountBadge() {
 
   if (!me.signedIn) {
     return (
-      <div className="cap flex items-center gap-4">
-        <div className="flex items-center gap-2">
-          <span className="w-1.5 h-1.5 bg-dim" /> Held in this browser
-        </div>
-        <Link href="/sign-up" className="text-muted text-[12px] block mt-1.5 hover:text-ink">
-          Create an account →
-        </Link>
+      <div className="doc flex items-center gap-2">
+        <span>Local session</span>
+        <span>·</span>
+        <Link href="/sign-up" className="hover:text-ink">Create account →</Link>
       </div>
     );
   }
 
   return (
-    <div className="cap flex items-center gap-4">
-      <div className="flex items-center gap-2">
-        <span className="w-1.5 h-1.5 bg-pass" /> Saved to your account
-      </div>
-      <div className="text-[11px] mt-1.5 truncate" title={me.email ?? ''}>{me.name || me.email}</div>
+    <div className="doc flex items-center gap-2">
+      <span className="truncate max-w-[22ch]" title={me.email ?? ''}>{me.name || me.email}</span>
+      <span>·</span>
       <button
         type="button"
-        className="text-[12px] mt-2 hover:text-ink cursor-pointer"
+        className="doc hover:text-ink cursor-pointer"
         onClick={async () => {
           await signOut({ redirect: false });
           resetAccountState();

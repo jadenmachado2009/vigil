@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useMode } from '@/features/mode/mode-context';
 import { OpportunityChecker } from './opportunity-checker';
 import { CompanyChecker } from './company-checker';
 
@@ -11,8 +11,9 @@ const TABS: { value: Mode; label: string; hint: string }[] = [
   { value: 'investing', label: 'Investing', hint: 'Company' },
 ];
 
+/** Reads the shell's mode switch, so the two never disagree. */
 export function AnalyzeTabs() {
-  const [mode, setMode] = useState<Mode>('trading');
+  const { mode, setMode } = useMode();
   return (
     <>
       <div className="flex border-b border-rule mb-4 -mt-1">

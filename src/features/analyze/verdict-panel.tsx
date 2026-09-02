@@ -1,7 +1,6 @@
 'use client';
 
 import type { AnalysisRecord } from '@/types/analysis';
-import { VerdictPill } from '@/components/ui';
 import { RuleTable, ComplianceMeter } from '@/components/ui/rule-table';
 import { formatFigure, formatMultiple, formatPercent } from '@/lib/format';
 
@@ -43,6 +42,13 @@ function sentence(record: AnalysisRecord): { before: string; emphasis: string; a
       };
   }
 }
+
+const VERDICT_BORDER: Record<AnalysisRecord['verdict'], string> = {
+  QUALIFIED: 'border-pass/45',
+  REJECTED: 'border-fail/45',
+  WATCH: 'border-watch/45',
+  INSUFFICIENT_DATA: 'border-rule',
+};
 
 const VERDICT_TONE: Record<AnalysisRecord['verdict'], string> = {
   QUALIFIED: 'text-pass',
@@ -105,14 +111,17 @@ export function VerdictPanel({
 
       <div className="grid md:grid-cols-2 gap-8 mt-8">
         <div>
-          <div className="cap">Verdict</div>
-          <div className="flex items-baseline gap-4 mt-2">
-            <span className={`ser text-[34px] leading-none ${VERDICT_TONE[record.verdict]}`}>
-              {record.verdict === 'INSUFFICIENT_DATA' ? 'No verdict' : record.verdict.charAt(0) + record.verdict.slice(1).toLowerCase()}
-            </span>
-            <VerdictPill verdict={record.verdict} />
+          {/* A stamp on a document rather than a badge in an interface. */}
+          <div className={`border-y-2 py-5 text-center ${VERDICT_BORDER[record.verdict]}`}>
+            <div className="doc">Verdict</div>
+            <div className={`ser text-[34px] leading-none mt-3 tracking-[0.06em] ${VERDICT_TONE[record.verdict]}`}>
+              {record.verdict === 'INSUFFICIENT_DATA' ? 'INSUFFICIENT DATA' : record.verdict}
+            </div>
+            <div className="doc mt-3">
+              {String(summary.mandatoryPassed).padStart(2, '0')} / {String(summary.mandatoryTotal).padStart(2, '0')} required
+            </div>
           </div>
-          <p className="text-muted text-[12.5px] mt-3 leading-relaxed">{record.reason}</p>
+          <p className="text-muted text-[12.5px] mt-4 leading-relaxed">{record.reason}</p>
           {typeof record.computed['rr'] === 'number' && (
             <p className="text-faint text-[12px] mt-3">
               Ratio computed from your levels: <span className="num text-ink-2">{formatMultiple(record.computed['rr'])}</span>

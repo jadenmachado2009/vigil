@@ -4,9 +4,9 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useMemo, type ReactNode } from 'react';
 import { AccountBadge } from '@/features/auth/account-badge';
+import { ModeProvider, useMode } from '@/features/mode/mode-context';
 import { CommandPalette, useGoToShortcuts, type Command } from './command-palette';
 
-/** Numbered, horizontal. The section number is part of the label. */
 const NAV = [
   { href: '/', label: 'Dashboard', key: 'd', no: '01' },
   { href: '/strategies', label: 'Strategies', key: 's', no: '02' },
@@ -17,25 +17,47 @@ const NAV = [
 
 const GOTO = Object.fromEntries(NAV.map((item) => [item.key, item.href]));
 
-/** The lockup: monogram, a rule at cap height, wordmark and tagline. */
-export function Wordmark({ compact = false }: { compact?: boolean }) {
+/**
+ * The lockup. The V carries the identity, so it is given room and a rule at
+ * cap height; the tagline sits under the wordmark, quieter than either.
+ */
+export function Wordmark() {
   return (
-    <div className="flex items-center gap-3">
-      <span className="ser text-[30px] leading-[0.78] font-medium">V</span>
-      <span className="w-px h-[26px] bg-ink" />
+    <div className="flex items-center gap-5">
+      <span className="ser text-[40px] leading-[0.7] font-light">V</span>
+      <span className="w-px self-stretch bg-ink/70" />
       <span>
-        <span className="wordmark block text-[15px] leading-none">VIGIL</span>
-        {!compact && (
-          <span className="cap block mt-1 text-[7.5px] tracking-[0.24em]">
-            Watch the market. Protect your edge.
-          </span>
-        )}
+        <span className="wordmark block text-[17px] leading-none">VIGIL</span>
+        <span className="doc block mt-2 !text-[7.5px] !tracking-[0.24em] text-faint">
+          Watch the market. Protect your edge.
+        </span>
       </span>
     </div>
   );
 }
 
-export function AppShell({ children }: { children: ReactNode }) {
+function ModeSwitch() {
+  const { mode, setMode } = useMode();
+  return (
+    <div className="flex items-baseline gap-5">
+      <span className="doc">Mode</span>
+      {(['trading', 'investing'] as const).map((option) => (
+        <button
+          key={option}
+          type="button"
+          onClick={() => setMode(option)}
+          className={`cap cursor-pointer pb-1 border-b ${
+            mode === option ? 'border-ink !text-ink' : 'border-transparent hover:!text-muted'
+          }`}
+        >
+          {option}
+        </button>
+      ))}
+    </div>
+  );
+}
+
+function Shell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
   useGoToShortcuts(GOTO);
@@ -47,65 +69,68 @@ export function AppShell({ children }: { children: ReactNode }) {
     })),
     { id: 'new-trading', group: 'Create', label: 'New trading strategy', run: () => router.push('/strategies/new?mode=trading') },
     { id: 'new-investing', group: 'Create', label: 'New investment strategy', run: () => router.push('/strategies/new?mode=investing') },
-    { id: 'check-chart', group: 'Check', label: 'Check a chart setup', run: () => router.push('/analyze') },
+    { id: 'check', group: 'Check', label: 'Analyze an opportunity', run: () => router.push('/analyze') },
     { id: 'account', group: 'Account', label: 'Sign in or create an account', run: () => router.push('/sign-in') },
   ], [router]);
 
   return (
     <div className="min-h-screen flex flex-col">
-      <header className="border-b border-ink px-4 sm:px-6 py-3 flex items-center justify-between gap-x-6 gap-y-3 flex-wrap">
+      <header className="border-b border-ink px-4 sm:px-7 py-4 flex items-start justify-between gap-x-8 gap-y-4 flex-wrap">
         <Link href="/"><Wordmark /></Link>
-        <nav className="flex flex-wrap gap-x-5 sm:gap-x-7 gap-y-2">
+        <nav className="flex flex-wrap gap-x-6 sm:gap-x-8 gap-y-2 pt-1">
           {NAV.map((item) => {
             const active = item.href === '/' ? pathname === '/' : pathname.startsWith(item.href);
             return (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={`pb-0.5 ${active ? 'border-b-2 border-ink' : 'border-b-2 border-transparent'}`}
-              >
-                <span className={`cap block text-[8px] ${active ? '!text-ink' : ''}`}>{item.no}</span>
-                <span className="cap block mt-0.5 !text-ink">{item.label}</span>
+              <Link key={item.href} href={item.href} className="flex items-baseline gap-2 group">
+                <span className="doc">{item.no}</span>
+                <span className={`cap pb-0.5 border-b ${
+                  active ? 'border-ink !text-ink' : 'border-transparent group-hover:!text-muted'
+                }`}>{item.label}</span>
               </Link>
             );
           })}
         </nav>
       </header>
 
-      <div className="border-b border-rule px-4 sm:px-6 py-2 flex items-center justify-between gap-x-4 gap-y-2 flex-wrap">
-        <AccountBadge />
-        <div className="flex items-center gap-3">
-          <span className="cap hidden sm:inline">Press G then a letter to move</span>
+      <div className="border-b border-rule px-4 sm:px-7 py-2.5 flex items-center justify-between gap-x-6 gap-y-2 flex-wrap">
+        <ModeSwitch />
+        <div className="flex items-center gap-5">
+          <AccountBadge />
           <span className="kbd">⌘K</span>
         </div>
       </div>
 
-      <main className="px-4 sm:px-6 py-6 sm:py-7 max-w-[1560px] w-full">{children}</main>
+      <main className="px-4 sm:px-7 py-7 max-w-[1560px] w-full">{children}</main>
       <CommandPalette commands={commands} />
     </div>
   );
 }
 
-/**
- * Page heading. A figure caption sits above it — the screens are numbered
- * exhibits, which is what a compliance record is.
- */
+export function AppShell({ children }: { children: ReactNode }) {
+  return (
+    <ModeProvider>
+      <Shell>{children}</Shell>
+    </ModeProvider>
+  );
+}
+
+/** Page heading, framed as an exhibit in a document. */
 export function PageHeader({
-  title, figure, meta, action,
+  title, figure, asOf, action,
 }: {
   title: string;
   figure?: string;
-  meta?: ReactNode;
+  asOf?: ReactNode;
   action?: ReactNode;
 }) {
   return (
-    <header className="mb-6">
-      {figure && <div className="cap mb-4">{figure}</div>}
+    <header className="mb-7">
       <div className="flex items-baseline justify-between gap-4 flex-wrap">
-        <div className="flex items-baseline gap-4 min-w-0">
-          <h1 className="ser text-[30px] leading-none">{title}</h1>
-          {meta && <span className="num text-[11px] text-dim">{meta}</span>}
-        </div>
+        {figure && <div className="doc">{figure}</div>}
+        {asOf && <div className="doc">{asOf}</div>}
+      </div>
+      <div className="flex items-baseline justify-between gap-4 flex-wrap mt-3">
+        <h1 className="ser text-[34px] leading-none font-light">{title}</h1>
         {action}
       </div>
     </header>
