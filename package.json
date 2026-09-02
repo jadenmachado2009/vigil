@@ -14,7 +14,9 @@
     "lint": "next lint",
     "build:check": "rm -rf .next-check && NEXT_DIST_DIR=.next-check next build && rm -rf .next-check",
     "db:generate": "drizzle-kit generate",
-    "db:migrate": "drizzle-kit migrate"
+    "db:migrate": "drizzle-kit migrate",
+    "predev": "node scripts/ensure-dev-secret.mjs",
+    "prebuild": "node scripts/ensure-dev-secret.mjs"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.3.3",

@@ -16,8 +16,16 @@ function resolveSecret(): string {
     throw new Error('AUTH_SECRET must be set in production. Generate one with: openssl rand -base64 32');
   }
 
-  // Development (and build-time) fallback. Regenerated per process, so
-  // restarting signs you out - preferable to shipping a known secret.
+  // Last resort. `npm run dev` writes a stable secret to .env.local first, so
+  // this is only reached during a build or if that step was skipped. A
+  // per-process secret invalidates every session on restart, and because the
+  // client falls back to browser storage when signed out, writes then stop
+  // reaching the database silently.
+  if (!building) {
+    console.warn(
+      'AUTH_SECRET is not set. Sessions will not survive a restart. Run: node scripts/ensure-dev-secret.mjs',
+    );
+  }
   globalThis.__strategyaiDevSecret ??= crypto.randomUUID();
   return globalThis.__strategyaiDevSecret;
 }

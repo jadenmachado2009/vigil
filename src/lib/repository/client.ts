@@ -18,14 +18,33 @@ import { LocalAnalysisRepository, type AnalysisRepository } from './analyses';
  * in use. The app stays fully usable without an account, which is deliberate:
  * requiring a signup to try a decision tool is a bad trade.
  */
-let accountState: Promise<boolean> | null = null;
+export interface Account {
+  signedIn: boolean;
+  email: string | null;
+  name: string | null;
+}
 
-export function isSignedIn(): Promise<boolean> {
+const SIGNED_OUT: Account = { signedIn: false, email: null, name: null };
+
+/**
+ * One source of truth for who is signed in.
+ *
+ * Both the storage selection and the account badge read this. When they each
+ * kept their own copy, a sign-in could update one and not the other: the badge
+ * went on saying "held in this browser" while writes were correctly going to
+ * the account.
+ */
+let accountState: Promise<Account> | null = null;
+
+export function getAccount(): Promise<Account> {
   accountState ??= fetch('/api/me')
-    .then((r) => (r.ok ? (r.json() as Promise<{ signedIn: boolean }>) : { signedIn: false }))
-    .then((d) => d.signedIn)
-    .catch(() => false);
+    .then((r) => (r.ok ? (r.json() as Promise<Account>) : SIGNED_OUT))
+    .catch(() => SIGNED_OUT);
   return accountState;
+}
+
+export async function isSignedIn(): Promise<boolean> {
+  return (await getAccount()).signedIn;
 }
 
 /** Call after sign-in or sign-out so the next read goes to the right place. */
@@ -33,7 +52,21 @@ export function resetAccountState(): void {
   accountState = null;
 }
 
+export class SessionEndedError extends Error {
+  constructor() {
+    super('Your session ended. Sign in again — this was not saved to your account.');
+    this.name = 'SessionEndedError';
+  }
+}
+
 async function json<T>(response: Response): Promise<T> {
+  if (response.status === 401) {
+    // The app believed it was signed in and the server disagrees. Falling back
+    // to browser storage here would put the work somewhere the user is not
+    // looking, so this surfaces instead.
+    resetAccountState();
+    throw new SessionEndedError();
+  }
   if (!response.ok) {
     const detail = (await response.json().catch(() => null)) as { error?: string } | null;
     throw new Error(detail?.error ?? `Request failed (${response.status}).`);

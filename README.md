@@ -31,7 +31,7 @@ Rebuild in progress. See `docs/ROADMAP.md`.
 | 3 | Trading opportunity checker, vision provider abstraction, API layer | done |
 | 4 | Investment strategy builder | done (with Phase 2) |
 | 5 | Investment opportunity checker, fundamentals providers | done |
-| 6 | Auth + Postgres schema | partial — local persistence unresolved |
+| 6 | Auth + Postgres persistence | done |
 | 7 | Journal and outcome tracking | done |
 | 8 | Analytics and rule attribution | done |
 | 9–10 | Portfolio, deploy | pending |
@@ -110,6 +110,19 @@ Anything a provider cannot supply stays **absent**, which the engine reports as
 INSUFFICIENT DATA. Nothing is substituted or approximated. Qualitative rules — moat,
 management quality — are never answered by a data feed; the checker asks you, and
 leaving one unanswered reports as insufficient data rather than a pass.
+
+## Accounts
+
+Signed out, everything is held in the browser and nothing is sent anywhere. Signing
+in moves the same data to Postgres behind the same repository interfaces, so no
+feature code knows which store is active.
+
+`npm run dev` writes a stable `AUTH_SECRET` to `.env.local` (gitignored) on first
+run. This matters more than it sounds: Auth.js encrypts the session cookie with it,
+so a secret generated per process invalidates every session on restart — and because
+the client falls back to browser storage when signed out, writes then stop reaching
+the database with no error. Set `AUTH_SECRET` yourself in production; the app refuses
+to serve without one.
 
 ## Journal and outcomes
 

@@ -2,23 +2,20 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { signOut } from 'next-auth/react';
-import { resetAccountState } from '@/lib/repository/client';
-
-interface Me { signedIn: boolean; email: string | null; name: string | null }
+import { getAccount, resetAccountState, type Account } from '@/lib/repository/client';
 
 /** Sidebar footer: says plainly where the user's data currently lives. */
 export function AccountBadge() {
   const router = useRouter();
-  const [me, setMe] = useState<Me | null>(null);
+  const pathname = usePathname();
+  const [me, setMe] = useState<Account | null>(null);
 
-  useEffect(() => {
-    void fetch('/api/me')
-      .then((r) => r.json() as Promise<Me>)
-      .then(setMe)
-      .catch(() => setMe({ signedIn: false, email: null, name: null }));
-  }, []);
+  // The shell lives in the layout and does not remount on navigation, so this
+  // re-reads on every route change. Signing in redirects, which is what makes
+  // the badge notice.
+  useEffect(() => { void getAccount().then(setMe); }, [pathname]);
 
   if (!me) return null;
 
