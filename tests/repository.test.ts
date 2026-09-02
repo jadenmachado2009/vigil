@@ -1,5 +1,7 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { LocalStrategyRepository, type KeyValueStore } from '@/lib/repository/local';
+import { LocalAnalysisRepository } from '@/lib/repository/analyses';
+import type { AnalysisRecord } from '@/types/analysis';
 import { nyAmFvgPreset } from '@/features/strategies/presets';
 
 /** In-memory stand-in for localStorage, injected so no browser is needed. */
@@ -94,5 +96,77 @@ describe('LocalStrategyRepository', () => {
 
   it('rejects updates to a missing strategy', async () => {
     await expect(repo.update('nope', { name: 'x' })).rejects.toThrow(/not found/);
+  });
+});
+
+describe('recording outcomes', () => {
+  function analysis(id: string, overrides: Partial<AnalysisRecord> = {}): AnalysisRecord {
+    return {
+      id,
+      createdAt: '2026-03-10T10:00:00.000Z',
+      mode: 'trading',
+      subject: 'EURUSD',
+      strategyId: 's1',
+      strategyName: 'NY AM FVG',
+      strategyVersionId: 'v1',
+      strategyVersion: 1,
+      verdict: 'QUALIFIED',
+      reason: 'All mandatory rules passed.',
+      summary: { mandatoryTotal: 2, mandatoryPassed: 2, optionalTotal: 0, optionalPassed: 0 },
+      results: [],
+      computed: { rr: 2.5 },
+      observations: {},
+      provider: { name: 'mock', isMock: true },
+      ...overrides,
+    };
+  }
+
+  it('attaches an outcome without touching the verdict it was judged on', async () => {
+    const repo = new LocalAnalysisRepository(memoryStore());
+    await repo.save(analysis('an_1'));
+    const updated = await repo.setOutcome('an_1', {
+      kind: 'trade', status: 'WIN', exit: 105, rMultiple: 2.5,
+      updatedAt: '2026-03-11T00:00:00.000Z',
+    });
+    expect(updated.outcome).toMatchObject({ status: 'WIN', rMultiple: 2.5 });
+    expect(updated.verdict).toBe('QUALIFIED');
+    expect(updated.reason).toBe('All mandatory rules passed.');
+    expect(updated.summary.mandatoryPassed).toBe(2);
+  });
+
+  it('survives a round trip through storage', async () => {
+    const store = memoryStore();
+    await new LocalAnalysisRepository(store).save(analysis('an_2'));
+    await new LocalAnalysisRepository(store).setOutcome('an_2', {
+      kind: 'trade', status: 'LOSS', exit: 98, rMultiple: -1, updatedAt: '2026-03-11T00:00:00.000Z',
+    });
+    const reread = await new LocalAnalysisRepository(store).get('an_2');
+    expect(reread?.outcome).toMatchObject({ status: 'LOSS', rMultiple: -1 });
+  });
+
+  it('clears an outcome without deleting the analysis', async () => {
+    const repo = new LocalAnalysisRepository(memoryStore());
+    await repo.save(analysis('an_3'));
+    await repo.setOutcome('an_3', {
+      kind: 'trade', status: 'WIN', exit: 105, rMultiple: 2.5, updatedAt: '2026-03-11T00:00:00.000Z',
+    });
+    const cleared = await repo.setOutcome('an_3', null);
+    expect(cleared.outcome).toBeUndefined();
+    expect(await repo.get('an_3')).not.toBeNull();
+  });
+
+  it('refuses to record against an analysis that does not exist', async () => {
+    const repo = new LocalAnalysisRepository(memoryStore());
+    await expect(repo.setOutcome('nope', null)).rejects.toThrow(/not found/);
+  });
+
+  it('keeps an investment outcome distinct from a trade outcome', async () => {
+    const repo = new LocalAnalysisRepository(memoryStore());
+    await repo.save(analysis('an_4', { mode: 'investing', subject: 'NVDA' }));
+    const updated = await repo.setOutcome('an_4', {
+      kind: 'investment', status: 'SOLD', buyPrice: 100, sellPrice: 130,
+      returnPercent: 30, updatedAt: '2026-03-11T00:00:00.000Z',
+    });
+    expect(updated.outcome).toMatchObject({ kind: 'investment', status: 'SOLD', returnPercent: 30 });
   });
 });

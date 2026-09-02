@@ -1,13 +1,47 @@
 import type { Mode } from './rules';
 import type { Verdict, RuleResult, AnalysisSummary } from './results';
 import type { ObservationSet } from './observations';
+import type { TradeStatus, InvestmentStatus } from '@/lib/calculations/outcome';
+
+/**
+ * What actually happened after the analysis.
+ *
+ * Kept separate from the analysis itself: a verdict is a statement about
+ * compliance at a moment in time and never changes, while the outcome is
+ * recorded later and can be corrected. Every derived figure here is computed
+ * from the levels, never entered.
+ */
+export interface TradeOutcome {
+  kind: 'trade';
+  status: TradeStatus;
+  /** Price the position was actually closed at. */
+  exit: number | null;
+  /** Derived from entry, stop and exit. Never typed in. */
+  rMultiple: number | null;
+  closedAt?: string;
+  notes?: string;
+  updatedAt: string;
+}
+
+export interface InvestmentOutcome {
+  kind: 'investment';
+  status: InvestmentStatus;
+  buyPrice: number | null;
+  sellPrice: number | null;
+  /** Derived from buy and sell. */
+  returnPercent: number | null;
+  thesis?: string;
+  notes?: string;
+  updatedAt: string;
+}
+
+export type Outcome = TradeOutcome | InvestmentOutcome;
 
 /**
  * A saved analysis. Deliberately stores the rule results and the observations
  * they came from, not just the verdict, so a result stays auditable after the
  * strategy has moved on.
  *
- * Phase 7 extends this with outcome, R multiple and exit data.
  */
 export interface AnalysisRecord {
   id: string;
@@ -27,4 +61,6 @@ export interface AnalysisRecord {
   observations: ObservationSet;
   provider: { name: string; isMock: boolean };
   notes?: string;
+  /** Absent until the user records what happened. */
+  outcome?: Outcome;
 }

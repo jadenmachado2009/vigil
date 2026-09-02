@@ -1,13 +1,11 @@
 import { PageHeader } from '@/components/app-shell';
-import { Card } from '@/components/ui';
+import { Journal } from '@/features/journal/journal';
 
 export default function JournalPage() {
   return (
     <>
-      <PageHeader title="Journal" />
-      <Card>
-        <div className="text-faint px-4 py-12 text-center">Not built yet.</div>
-      </Card>
+      <PageHeader figure="Fig. 04 — Opportunity journal" title="Journal" />
+      <Journal />
     </>
   );
 }

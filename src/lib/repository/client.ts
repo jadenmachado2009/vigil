@@ -1,7 +1,7 @@
 'use client';
 
 import type { Strategy, StrategyVersion } from '@/types/rules';
-import type { AnalysisRecord } from '@/types/analysis';
+import type { AnalysisRecord, Outcome } from '@/types/analysis';
 import type {
   StrategyRepository, StrategyWithVersion, CreateStrategyInput, UpdateStrategyInput,
 } from './types';
@@ -92,6 +92,12 @@ class ApiAnalysisRepository implements AnalysisRepository {
       method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(record),
     }))).analysis;
   }
+  async setOutcome(id: string, outcome: Outcome | null): Promise<AnalysisRecord> {
+    return (await json<{ analysis: AnalysisRecord }>(await fetch(`/api/analyses/${id}`, {
+      method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ outcome }),
+    }))).analysis;
+  }
+
   async remove(id: string): Promise<void> {
     await json(await fetch(`/api/analyses/${id}`, { method: 'DELETE' }));
   }
@@ -122,6 +128,7 @@ export const analysisRepository: AnalysisRepository = {
   list: async () => (await isSignedIn() ? apiAnalyses : localAnalyses).list(),
   get: async (id) => (await isSignedIn() ? apiAnalyses : localAnalyses).get(id),
   save: async (record) => (await isSignedIn() ? apiAnalyses : localAnalyses).save(record),
+  setOutcome: async (id, outcome) => (await isSignedIn() ? apiAnalyses : localAnalyses).setOutcome(id, outcome),
   remove: async (id) => (await isSignedIn() ? apiAnalyses : localAnalyses).remove(id),
 };
 

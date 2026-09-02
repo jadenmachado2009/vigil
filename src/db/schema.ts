@@ -124,6 +124,12 @@ export const analyses = pgTable('analyses', {
   providerName: text('provider_name'),
   providerIsMock: boolean('provider_is_mock'),
   notes: text('notes'),
+  /**
+   * What happened afterwards. JSON because it is read with its analysis and
+   * never queried across rows on its own; the `trades` and `investments`
+   * tables carry the relational view for portfolio-level reporting.
+   */
+  outcome: jsonb('outcome').$type<Record<string, unknown>>(),
   createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
 }, (table) => ({
   userIdx: index('analyses_user_idx').on(table.userId, table.createdAt),

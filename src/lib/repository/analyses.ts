@@ -1,4 +1,4 @@
-import type { AnalysisRecord } from '@/types/analysis';
+import type { AnalysisRecord, Outcome } from '@/types/analysis';
 import type { KeyValueStore } from './local';
 
 const STORAGE_KEY = 'strategyai.analyses.v1';
@@ -7,6 +7,8 @@ export interface AnalysisRepository {
   list(): Promise<AnalysisRecord[]>;
   get(id: string): Promise<AnalysisRecord | null>;
   save(record: AnalysisRecord): Promise<AnalysisRecord>;
+  /** Records or corrects what happened after the analysis. */
+  setOutcome(id: string, outcome: Outcome | null): Promise<AnalysisRecord>;
   remove(id: string): Promise<void>;
 }
 
@@ -51,6 +53,21 @@ export class LocalAnalysisRepository implements AnalysisRepository {
     else records.push(record);
     this.write(records);
     return record;
+  }
+
+  async setOutcome(id: string, outcome: Outcome | null): Promise<AnalysisRecord> {
+    const records = this.read();
+    const index = records.findIndex((r) => r.id === id);
+    const existing = records[index];
+    if (index < 0 || !existing) throw new Error(`Analysis ${id} not found`);
+    // The analysis itself is never rewritten: the verdict stated what was true
+    // at the time and stays that way.
+    const next: AnalysisRecord = { ...existing };
+    if (outcome) next.outcome = outcome;
+    else delete next.outcome;
+    records[index] = next;
+    this.write(records);
+    return next;
   }
 
   async remove(id: string): Promise<void> {

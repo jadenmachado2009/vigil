@@ -1,6 +1,6 @@
 import 'server-only';
 import { and, asc, desc, eq } from 'drizzle-orm';
-import type { AnalysisRecord } from '@/types/analysis';
+import type { AnalysisRecord, Outcome } from '@/types/analysis';
 import type { RuleResult } from '@/types/results';
 import type { ObservationSet } from '@/types/observations';
 import { getDb, schema, type Database } from '@/db/client';
@@ -62,6 +62,7 @@ export class DbAnalysisRepository implements AnalysisRepository {
       observations: (row.observations ?? {}) as ObservationSet,
       provider: { name: row.providerName ?? 'unknown', isMock: row.providerIsMock ?? false },
       ...(row.notes ? { notes: row.notes } : {}),
+      ...(row.outcome ? { outcome: row.outcome as unknown as Outcome } : {}),
     };
   }
 
@@ -131,6 +132,16 @@ export class DbAnalysisRepository implements AnalysisRepository {
     const saved = await this.get(id);
     if (!saved) throw new Error('Analysis could not be saved.');
     return saved;
+  }
+
+  async setOutcome(id: string, outcome: Outcome | null): Promise<AnalysisRecord> {
+    const db = await this.db();
+    await db.update(schema.analyses)
+      .set({ outcome: (outcome as unknown as Record<string, unknown>) ?? null })
+      .where(and(eq(schema.analyses.id, id), eq(schema.analyses.userId, this.userId)));
+    const updated = await this.get(id);
+    if (!updated) throw new Error(`Analysis ${id} not found`);
+    return updated;
   }
 
   async remove(id: string): Promise<void> {

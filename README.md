@@ -31,7 +31,9 @@ Rebuild in progress. See `docs/ROADMAP.md`.
 | 3 | Trading opportunity checker, vision provider abstraction, API layer | done |
 | 4 | Investment strategy builder | done (with Phase 2) |
 | 5 | Investment opportunity checker, fundamentals providers | done |
-| 6–10 | Auth + database, journal, analytics, portfolio, deploy | pending |
+| 6 | Auth + Postgres schema | partial — local persistence unresolved |
+| 7 | Journal and outcome tracking | done |
+| 8–10 | Analytics, portfolio, deploy | pending |
 
 The original static prototype is preserved at `legacy/mvp/` and is the reference
 for the visual design during the UI port.
@@ -55,7 +57,7 @@ npm test
 
 The rules engine is the product. It performs no I/O, contains no randomness, and
 never calls a model — the same strategy and observations always produce the same
-analysis. It is covered by 138 tests, including the repository's version-immutability rules, the
+analysis. It is covered by 160 tests, including the repository's version-immutability rules, the
 parsing layer that guards it from untrusted model output, both data providers, and the strategy parser.
 
 ## Describing a strategy
@@ -107,6 +109,22 @@ Anything a provider cannot supply stays **absent**, which the engine reports as
 INSUFFICIENT DATA. Nothing is substituted or approximated. Qualitative rules — moat,
 management quality — are never answered by a data feed; the checker asks you, and
 leaving one unanswered reports as insufficient data rather than a pass.
+
+## Journal and outcomes
+
+Every analysis is recorded with the rule results that produced it. Afterwards you
+record what happened: a trade closes WIN / LOSS / BREAKEVEN, or was never taken;
+an investment is bought, held, sold, or passed on.
+
+The **R multiple is derived** from entry, stop and exit — never typed in. A
+self-reported "that was a 3R" is the kind of number that flatters a journal into
+uselessness, and every statistic downstream depends on it. Same for an investment's
+return percentage.
+
+The verdict is never rewritten when an outcome is added. A verdict states what was
+true about compliance at a moment; the outcome is a separate fact recorded later.
+That separation is what makes the next phase possible — comparing rule results
+against outcomes to see which of your rules actually earn their place.
 
 ## Cost
 
