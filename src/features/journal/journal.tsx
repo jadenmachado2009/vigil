@@ -125,7 +125,8 @@ export function Journal() {
         <span className="cap self-center ml-2">{visible.length} shown</span>
       </div>
 
-      <div className="border-t border-ink mt-4">
+      <div className="border-t border-ink mt-4 overflow-x-auto -mx-4 px-4 sm:mx-0 sm:px-0">
+        <div className="min-w-[680px]">
         <div className="row row-head grid-cols-[34px_minmax(0,1fr)_150px_120px_110px_84px_28px]">
           <div>No.</div><div>Subject</div><div>Strategy</div><div>Checked</div>
           <div className="text-right">Verdict</div><div className="text-right">Outcome</div><div />
@@ -179,6 +180,7 @@ export function Journal() {
             </div>
           );
         })}
+        </div>
       </div>
     </>
   );

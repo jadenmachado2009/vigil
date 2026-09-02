@@ -53,9 +53,9 @@ export function AppShell({ children }: { children: ReactNode }) {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <header className="border-b border-ink px-6 py-3 flex items-center justify-between gap-6 flex-wrap">
+      <header className="border-b border-ink px-4 sm:px-6 py-3 flex items-center justify-between gap-x-6 gap-y-3 flex-wrap">
         <Link href="/"><Wordmark /></Link>
-        <nav className="flex gap-7">
+        <nav className="flex flex-wrap gap-x-5 sm:gap-x-7 gap-y-2">
           {NAV.map((item) => {
             const active = item.href === '/' ? pathname === '/' : pathname.startsWith(item.href);
             return (
@@ -72,7 +72,7 @@ export function AppShell({ children }: { children: ReactNode }) {
         </nav>
       </header>
 
-      <div className="border-b border-rule px-6 py-2 flex items-center justify-between gap-4 flex-wrap">
+      <div className="border-b border-rule px-4 sm:px-6 py-2 flex items-center justify-between gap-x-4 gap-y-2 flex-wrap">
         <AccountBadge />
         <div className="flex items-center gap-3">
           <span className="cap hidden sm:inline">Press G then a letter to move</span>
@@ -80,7 +80,7 @@ export function AppShell({ children }: { children: ReactNode }) {
         </div>
       </div>
 
-      <main className="px-6 py-7 max-w-[1560px] w-full">{children}</main>
+      <main className="px-4 sm:px-6 py-6 sm:py-7 max-w-[1560px] w-full">{children}</main>
       <CommandPalette commands={commands} />
     </div>
   );

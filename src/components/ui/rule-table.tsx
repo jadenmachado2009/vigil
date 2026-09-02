@@ -20,7 +20,10 @@ const COLUMNS = 'grid-cols-[34px_minmax(0,1fr)_128px_112px_84px]';
  */
 export function RuleTable({ results }: { results: RuleResult[] }) {
   return (
-    <div>
+    // Fixed threshold columns cannot shrink without the figures becoming
+    // unreadable, so on a narrow screen the table scrolls instead.
+    <div className="overflow-x-auto -mx-4 px-4 sm:mx-0 sm:px-0">
+      <div className="min-w-[620px]">
       <div className={`row row-head ${COLUMNS}`}>
         <div>No.</div>
         <div>Rule</div>
@@ -60,6 +63,7 @@ export function RuleTable({ results }: { results: RuleResult[] }) {
           </div>
         );
       })}
+      </div>
     </div>
   );
 }

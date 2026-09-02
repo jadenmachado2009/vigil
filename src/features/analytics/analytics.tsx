@@ -111,14 +111,14 @@ export function Analytics() {
                 )}
               </div>
 
-              <div className="grid sm:grid-cols-2 gap-x-10 gap-y-2 mt-3 pl-0 sm:pl-[50px]">
-                <div className="grid grid-cols-[minmax(0,1fr)_60px_54px_66px] gap-3 items-baseline">
+              <div className="grid sm:grid-cols-2 gap-x-10 gap-y-3 mt-3 pl-0 sm:pl-[50px]">
+                <div className="grid grid-cols-[minmax(0,1fr)_46px_46px_60px] sm:grid-cols-[minmax(0,1fr)_60px_54px_66px] gap-2 sm:gap-3 items-baseline">
                   <span className="cap">Condition held</span>
                   <span className="num text-right text-[13px]">{entry.present.trades}</span>
                   <span className="num text-right text-[13px] text-faint">{pct(entry.present.winRate)}</span>
                   <span className={`num text-right text-[13px] ${tone(entry.present.expectancy)}`}>{r(entry.present.expectancy)}</span>
                 </div>
-                <div className="grid grid-cols-[minmax(0,1fr)_60px_54px_66px] gap-3 items-baseline">
+                <div className="grid grid-cols-[minmax(0,1fr)_46px_46px_60px] sm:grid-cols-[minmax(0,1fr)_60px_54px_66px] gap-2 sm:gap-3 items-baseline">
                   <span className="cap">Condition absent</span>
                   <span className="num text-right text-[13px]">{entry.absent.trades}</span>
                   <span className="num text-right text-[13px] text-faint">{pct(entry.absent.winRate)}</span>
@@ -141,7 +141,8 @@ export function Analytics() {
       {strategies.length > 1 && (
         <div className="mt-14">
           <div className="cap">By strategy</div>
-          <div className="border-t border-ink mt-2.5">
+          <div className="border-t border-ink mt-2.5 overflow-x-auto -mx-4 px-4 sm:mx-0 sm:px-0">
+            <div className="min-w-[520px]">
             <div className="row row-head grid-cols-[minmax(0,1fr)_70px_70px_80px_80px]">
               <div>Strategy</div><div className="text-right">Trades</div><div className="text-right">Win</div>
               <div className="text-right">Expectancy</div><div className="text-right">Total</div>
@@ -155,6 +156,7 @@ export function Analytics() {
                 <div className={`num text-right ${tone(entry.stats.totalR)}`}>{r(entry.stats.totalR)}</div>
               </div>
             ))}
+            </div>
           </div>
         </div>
       )}
