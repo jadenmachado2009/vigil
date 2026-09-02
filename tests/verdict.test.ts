@@ -8,7 +8,7 @@ function r(
   onFail: 'reject' | 'watch' = 'reject',
   label: string = status,
 ): RuleResult {
-  return { ruleId: label, label, status, mandatory, onFail, expected: '', actual: null, reason: '' };
+  return { ruleId: label, metric: label, label, status, mandatory, onFail, expected: '', actual: null, reason: '' };
 }
 
 describe('verdict resolution', () => {

@@ -19,6 +19,7 @@ export interface EvaluationOptions {
 function unknown(rule: Rule, expected: string, reason: string, obs?: Observation): RuleResult {
   return {
     ruleId: rule.id,
+    metric: rule.metric,
     label: rule.label,
     status: 'UNKNOWN',
     mandatory: rule.mandatory,
@@ -92,6 +93,7 @@ export function evaluateRule(
 
   const base = {
     ruleId: rule.id,
+    metric: rule.metric,
     label: rule.label,
     mandatory: rule.mandatory,
     onFail: rule.onFail,

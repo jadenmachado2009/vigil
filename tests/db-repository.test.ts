@@ -140,8 +140,8 @@ function sampleAnalysis(strategyId: string, versionId: string): AnalysisRecord {
     reason: '1 mandatory rule failed: Minimum RR 2.0.',
     summary: { mandatoryTotal: 5, mandatoryPassed: 4, optionalTotal: 1, optionalPassed: 1 },
     results: [
-      { ruleId: 'r1', label: 'HTF FVG exists', status: 'PASS', mandatory: true, onFail: 'reject', expected: 'present', actual: 'present', reason: 'ok', source: 'vision', asOf: '2026-03-10T14:00:00.000Z' },
-      { ruleId: 'r5', label: 'Minimum RR 2.0', status: 'FAIL', mandatory: true, onFail: 'reject', expected: '≥ 2x', actual: '1.5x', reason: 'too low', source: 'computed' },
+      { ruleId: 'r1', metric: 'r1', label: 'HTF FVG exists', status: 'PASS', mandatory: true, onFail: 'reject', expected: 'present', actual: 'present', reason: 'ok', source: 'vision', asOf: '2026-03-10T14:00:00.000Z' },
+      { ruleId: 'r5', metric: 'r5', label: 'Minimum RR 2.0', status: 'FAIL', mandatory: true, onFail: 'reject', expected: '≥ 2x', actual: '1.5x', reason: 'too low', source: 'computed' },
     ],
     computed: { rr: 1.5, risk: 2, reward: 3 },
     observations: { entry: { value: 100, source: 'user', asOf: '2026-03-10T14:00:00.000Z' } },

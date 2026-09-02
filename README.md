@@ -33,7 +33,8 @@ Rebuild in progress. See `docs/ROADMAP.md`.
 | 5 | Investment opportunity checker, fundamentals providers | done |
 | 6 | Auth + Postgres schema | partial — local persistence unresolved |
 | 7 | Journal and outcome tracking | done |
-| 8–10 | Analytics, portfolio, deploy | pending |
+| 8 | Analytics and rule attribution | done |
+| 9–10 | Portfolio, deploy | pending |
 
 The original static prototype is preserved at `legacy/mvp/` and is the reference
 for the visual design during the UI port.
@@ -57,7 +58,7 @@ npm test
 
 The rules engine is the product. It performs no I/O, contains no randomness, and
 never calls a model — the same strategy and observations always produce the same
-analysis. It is covered by 160 tests, including the repository's version-immutability rules, the
+analysis. It is covered by 180 tests, including the repository's version-immutability rules, the
 parsing layer that guards it from untrusted model output, both data providers, and the strategy parser.
 
 ## Describing a strategy
@@ -125,6 +126,31 @@ The verdict is never rewritten when an outcome is added. A verdict states what w
 true about compliance at a moment; the outcome is a separate fact recorded later.
 That separation is what makes the next phase possible — comparing rule results
 against outcomes to see which of your rules actually earn their place.
+
+## Analytics and rule attribution
+
+Standard measures over closed positions only — win rate, expectancy, profit factor,
+average winner and loser, max drawdown — plus the part that matters:
+
+**Rule attribution.** For each condition, how closed trades performed when it held
+against how they performed when it did not:
+
+```
+Inverse FVG confirmation                          +1.28R difference
+  Condition held      12 trades   67%   +1.25R
+  Condition absent    11 trades   45%   -0.03R
+  4 excluded — could not be verified
+```
+
+Three decisions keep it honest. Conditions are grouped by **metric**, so renaming a
+rule does not split its history. A rule that could not be **verified** is excluded
+from both arms — "we do not know whether it held" is not "it was absent", and folding
+one into the other invents evidence. And neither arm is read as a rate until it has a
+usable sample.
+
+Nothing here establishes causation, and the interface says so. Below 20 closed trades
+the figures are shown with an explicit warning that they are arithmetically correct
+and statistically meaningless.
 
 ## Cost
 

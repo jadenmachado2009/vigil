@@ -148,3 +148,16 @@ describe('display formatting', () => {
     expect(formatPercent(46.15384)).toBe('46.2%');
   });
 });
+
+describe('ratio formatting', () => {
+  it('holds two decimals regardless of magnitude', async () => {
+    const { formatRatio } = await import('@/lib/format');
+    // formatFigure would render these at four decimals, implying precision the
+    // sample does not support.
+    expect(formatRatio(2.8917)).toBe('2.89');
+    expect(formatRatio(2.31333333)).toBe('2.31');
+    expect(formatRatio(-0.0312)).toBe('-0.03');
+    expect(formatRatio(2)).toBe('2.00');
+    expect(formatRatio(NaN)).toBe('—');
+  });
+});

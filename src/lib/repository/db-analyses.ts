@@ -47,6 +47,7 @@ export class DbAnalysisRepository implements AnalysisRepository {
       },
       results: results.map((r): RuleResult => ({
         ruleId: r.ruleId,
+        metric: r.metric ?? '',
         label: r.label,
         status: r.status as RuleResult['status'],
         mandatory: r.mandatory,
@@ -115,6 +116,7 @@ export class DbAnalysisRepository implements AnalysisRepository {
         id: uid('res'),
         analysisId: id,
         ruleId: result.ruleId,
+        metric: result.metric,
         label: result.label,
         status: result.status,
         mandatory: result.mandatory,

@@ -4,7 +4,7 @@ import { useMemo, useState } from 'react';
 import type { AnalysisRecord, Outcome } from '@/types/analysis';
 import type { TradeStatus, InvestmentStatus } from '@/lib/calculations/outcome';
 import { computeRMultiple, classifyOutcome, computeReturnPercent } from '@/lib/calculations/outcome';
-import { formatFigure, formatPercent } from '@/lib/format';
+import { formatFigure, formatRatio, formatPercent } from '@/lib/format';
 import { Button } from '@/components/ui';
 
 const TRADE_STATUSES: { value: TradeStatus; label: string }[] = [
@@ -143,7 +143,7 @@ export function OutcomeForm({
                     <div className={`num text-[26px] mt-1.5 ${
                       rMultiple === null ? 'text-dim' : rMultiple > 0 ? 'text-pass' : rMultiple < 0 ? 'text-fail' : ''
                     }`}>
-                      {rMultiple === null ? '—' : `${rMultiple > 0 ? '+' : ''}${formatFigure(rMultiple, 2)}R`}
+                      {rMultiple === null ? '—' : `${rMultiple > 0 ? '+' : ''}${formatRatio(rMultiple)}R`}
                     </div>
                     <p className="text-muted text-[11.5px] mt-1.5 leading-snug">
                       From entry <span className="num">{formatFigure(entry as number)}</span> and stop{' '}

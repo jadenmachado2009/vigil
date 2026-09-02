@@ -5,7 +5,7 @@ import Link from 'next/link';
 import type { AnalysisRecord, Outcome } from '@/types/analysis';
 import { analysisRepository } from '@/lib/repository/client';
 import { isClosed, wasTaken, type TradeStatus } from '@/lib/calculations/outcome';
-import { formatFigure } from '@/lib/format';
+import { formatRatio } from '@/lib/format';
 import { Button, VerdictPill, Empty } from '@/components/ui';
 import { RuleTable } from '@/components/ui/rule-table';
 import { OutcomeForm } from './outcome-form';
@@ -97,7 +97,7 @@ export function Journal() {
           <div className={`num text-[28px] mt-1.5 leading-none ${
             settled.closedCount === 0 ? 'text-dim' : settled.totalR > 0 ? 'text-pass' : settled.totalR < 0 ? 'text-fail' : ''
           }`}>
-            {settled.closedCount === 0 ? '—' : `${settled.totalR > 0 ? '+' : ''}${formatFigure(settled.totalR, 2)}R`}
+            {settled.closedCount === 0 ? '—' : `${settled.totalR > 0 ? '+' : ''}${formatRatio(settled.totalR)}R`}
           </div>
         </div>
       </div>
@@ -152,7 +152,7 @@ export function Journal() {
                 <div className="text-right"><VerdictPill verdict={record.verdict} /></div>
                 <div className={`cap text-right ${OUTCOME_TONE[record.outcome?.status ?? ''] ?? 'text-dim'}`}>
                   {typeof r === 'number'
-                    ? `${r > 0 ? '+' : ''}${formatFigure(r, 2)}R`
+                    ? `${r > 0 ? '+' : ''}${formatRatio(r)}R`
                     : outcomeLabel(record.outcome)}
                 </div>
                 <div className="num text-dim text-right">{open ? '–' : '+'}</div>

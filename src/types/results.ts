@@ -13,6 +13,12 @@ export type Verdict = 'QUALIFIED' | 'WATCH' | 'REJECTED' | 'INSUFFICIENT_DATA';
 
 export interface RuleResult {
   ruleId: string;
+  /**
+   * The metric this rule tested. Stable across strategy versions and across
+   * label edits, so it — not the rule id or the label — is what groups a
+   * condition's history together for attribution.
+   */
+  metric: string;
   label: string;
   status: RuleStatus;
   mandatory: boolean;

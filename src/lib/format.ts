@@ -20,6 +20,16 @@ export function formatFigure(value: number, maxDecimals = 6): string {
   return Number(value.toFixed(decimals)).toString();
 }
 
+/**
+ * Fixed-precision ratio. `formatFigure` adapts precision to magnitude, which is
+ * right for price levels and wrong for derived statistics: an expectancy of
+ * 2.3133R reads as false precision when the sample is twelve trades.
+ */
+export function formatRatio(value: number, decimals = 2): string {
+  if (!Number.isFinite(value)) return '—';
+  return value.toFixed(decimals);
+}
+
 export function formatMultiple(value: number): string {
   return `${Number(value.toFixed(2))}x`;
 }

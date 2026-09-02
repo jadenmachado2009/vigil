@@ -1,13 +1,11 @@
 import { PageHeader } from '@/components/app-shell';
-import { Card } from '@/components/ui';
+import { Analytics } from '@/features/analytics/analytics';
 
 export default function AnalyticsPage() {
   return (
     <>
-      <PageHeader title="Analytics" />
-      <Card>
-        <div className="text-faint px-4 py-12 text-center">Not built yet.</div>
-      </Card>
+      <PageHeader figure="Fig. 05 — Performance" title="Analytics" />
+      <Analytics />
     </>
   );
 }
