@@ -11,6 +11,8 @@ import * as schema from './schema';
  */
 export type Database = Awaited<ReturnType<typeof createDatabase>>;
 
+export { isDatabaseConfigured } from './availability';
+
 const globalForDb = globalThis as unknown as {
   __strategyaiDb?: Promise<Database>;
 };

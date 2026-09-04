@@ -22,9 +22,11 @@ export interface Account {
   signedIn: boolean;
   email: string | null;
   name: string | null;
+  /** False when the deployment has no database, so accounts cannot exist. */
+  accountsAvailable: boolean;
 }
 
-const SIGNED_OUT: Account = { signedIn: false, email: null, name: null };
+const SIGNED_OUT: Account = { signedIn: false, email: null, name: null, accountsAvailable: false };
 
 /**
  * One source of truth for who is signed in.

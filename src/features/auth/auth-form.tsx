@@ -4,8 +4,9 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { signIn } from 'next-auth/react';
+import { useEffect } from 'react';
 import { Button, Card } from '@/components/ui';
-import { resetAccountState, importLocalData } from '@/lib/repository/client';
+import { getAccount, resetAccountState, importLocalData } from '@/lib/repository/client';
 
 export function AuthForm({ mode }: { mode: 'sign-in' | 'sign-up' }) {
   const router = useRouter();
@@ -17,6 +18,9 @@ export function AuthForm({ mode }: { mode: 'sign-in' | 'sign-up' }) {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [status, setStatus] = useState<string | null>(null);
+  const [available, setAvailable] = useState(true);
+
+  useEffect(() => { void getAccount().then((a) => setAvailable(a.accountsAvailable)); }, []);
 
   async function submit(event: React.FormEvent) {
     event.preventDefault();
@@ -68,6 +72,12 @@ export function AuthForm({ mode }: { mode: 'sign-in' | 'sign-up' }) {
   return (
     <div className="max-w-[420px] mx-auto mt-6">
       <Card className="p-5">
+        {!available && (
+          <p className="text-muted text-[12.5px] leading-relaxed border-l-2 border-watch pl-3 mb-5">
+            This deployment has no database, so accounts are unavailable. Everything still works —
+            your strategies and analyses are held in this browser.
+          </p>
+        )}
         <div className="cap">{isSignUp ? 'Create account' : 'Welcome back'}</div>
         <h1 className="text-[18px] font-semibold tracking-[-0.01em] mt-1.5">
           {isSignUp ? 'Keep your strategies' : 'Sign in'}
@@ -106,7 +116,7 @@ export function AuthForm({ mode }: { mode: 'sign-in' | 'sign-up' }) {
             </label>
           )}
 
-          <Button type="submit" disabled={busy} className="w-full">
+          <Button type="submit" disabled={busy || !available} className="w-full">
             {busy ? (status ?? 'Working…') : isSignUp ? 'Create account' : 'Sign in'}
           </Button>
           {error && <p className="text-fail text-[13px]">{error}</p>}

@@ -59,7 +59,7 @@ npm test
 
 The rules engine is the product. It performs no I/O, contains no randomness, and
 never calls a model — the same strategy and observations always produce the same
-analysis. It is covered by 180 tests, including the repository's version-immutability rules, the
+analysis. It is covered by 184 tests, including the repository's version-immutability rules, the
 parsing layer that guards it from untrusted model output, both data providers, and the strategy parser.
 
 ## Describing a strategy
@@ -171,12 +171,15 @@ and statistically meaningless.
 Free tier throughout. Two things must be set; the app refuses to serve without
 either, rather than starting up in a broken state.
 
-**1. A hosted Postgres.** Create a free database (Neon, Supabase, or any other) and
-copy its connection string. The embedded development database writes to the local
-filesystem, which is ephemeral on a serverless host — every deploy would silently
-start empty — so production refuses to boot without `DATABASE_URL`.
+**Nothing is required.** `npx vercel` with no environment set produces a working
+deployment: strategies, analyses, the journal and analytics all run on browser
+storage, and the sign-up form says plainly that accounts are unavailable. The
+rules engine — the actual product — is identical either way.
 
-**2. A session secret.**
+Two variables turn on the rest.
+
+**Accounts.** Create a free Postgres (Neon, Supabase, or any other) and set
+`DATABASE_URL`, plus a session secret:
 
 ```bash
 openssl rand -base64 32
@@ -192,16 +195,16 @@ Set these in the project's environment settings:
 
 | Variable | Required | Notes |
 |---|---|---|
-| `DATABASE_URL` | yes | Hosted Postgres connection string |
-| `AUTH_SECRET` | yes | From the command above |
-| `AUTH_URL` | yes | Your deployed URL |
+| `DATABASE_URL` | no | Hosted Postgres. Without it, accounts are off and everything runs locally in the browser |
+| `AUTH_SECRET` | with a database | From the command above |
+| `AUTH_URL` | with a database | Your deployed URL |
 | `GEMINI_API_KEY` | no | Real chart reading; demo reader without it |
 | `FMP_API_KEY` | no | Real fundamentals; demo figures without it |
 | `VISION_PROVIDER` | no | `mock` (default) or `gemini` |
 | `FINANCIAL_PROVIDER` | no | `mock` (default) or `fmp` |
 | `STRATEGY_PARSER` | no | `pattern` (default) or `gemini` |
 
-Apply the schema once against the deployed database:
+If you set `DATABASE_URL`, apply the schema once against it:
 
 ```bash
 DATABASE_URL="<your connection string>" npm run db:migrate

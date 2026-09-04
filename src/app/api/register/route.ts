@@ -1,11 +1,18 @@
 import { NextResponse } from 'next/server';
 import { eq } from 'drizzle-orm';
 import { getDb, schema } from '@/db/client';
+import { isDatabaseConfigured } from '@/db/availability';
 import { hashPassword, validateCredentials } from '@/lib/auth/passwords';
 
 export const runtime = 'nodejs';
 
 export async function POST(request: Request) {
+  if (!isDatabaseConfigured()) {
+    return NextResponse.json(
+      { error: 'This deployment has no database, so accounts are unavailable. Your work is held in this browser.' },
+      { status: 503 },
+    );
+  }
   let body: { email?: string; password?: string; name?: string };
   try {
     body = await request.json();

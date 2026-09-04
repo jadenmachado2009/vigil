@@ -26,8 +26,12 @@ export function AccountBadge() {
     return (
       <div className="doc flex items-center gap-2">
         <span>Local session</span>
-        <span>·</span>
-        <Link href="/sign-up" className="hover:text-ink">Create account →</Link>
+        {me.accountsAvailable && (
+          <>
+            <span>·</span>
+            <Link href="/sign-up" className="hover:text-ink">Create account →</Link>
+          </>
+        )}
       </div>
     );
   }

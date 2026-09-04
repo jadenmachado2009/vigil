@@ -2,6 +2,7 @@ import NextAuth from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
 import { eq } from 'drizzle-orm';
 import { getDb, schema } from '@/db/client';
+import { isDatabaseConfigured } from '@/db/availability';
 import { verifyPassword } from '@/lib/auth/passwords';
 
 function resolveSecret(): string {
@@ -43,6 +44,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     Credentials({
       credentials: { email: {}, password: {} },
       async authorize(credentials) {
+        if (!isDatabaseConfigured()) return null;
         const email = typeof credentials?.['email'] === 'string' ? credentials['email'].trim().toLowerCase() : '';
         const password = typeof credentials?.['password'] === 'string' ? credentials['password'] : '';
         if (!email || !password) return null;
@@ -79,6 +81,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
  * whole class of confusing failure.
  */
 export async function currentUserId(): Promise<string | null> {
+  if (!isDatabaseConfigured()) return null;
   const session = await auth();
   const id = session?.user?.id;
   if (!id) return null;
