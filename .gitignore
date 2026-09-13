@@ -9,3 +9,4 @@ coverage/
 pgdata/
 
 .next-check/
+.vercel
