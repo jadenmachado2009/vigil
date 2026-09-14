@@ -7,6 +7,8 @@ import type { AnalysisRecord } from '@/types/analysis';
 import type { Analysis } from '@/types/results';
 import type { ObservationSet } from '@/types/observations';
 import { strategyRepository, analysisRepository } from '@/lib/repository/client';
+import { getMetric } from '@/lib/metrics/catalog';
+import type { MetricDef } from '@/types/metrics';
 import { Button, Card, Empty } from '@/components/ui';
 import { VerdictPanel } from './verdict-panel';
 
@@ -19,6 +21,12 @@ interface Upload {
   base64: string;
   preview: string;
 }
+
+/**
+ * What the trader reports seeing on the chart. "Not sure" is the absence of an
+ * entry, which the engine reads as no data — it is never counted as a pass.
+ */
+type Seen = 'present' | 'absent' | 'not_yet';
 
 interface ApiResponse {
   analysis: Analysis;
@@ -43,6 +51,7 @@ export function OpportunityChecker() {
   const [strategyId, setStrategyId] = useState('');
   const [uploads, setUploads] = useState<Upload[]>([]);
   const [manual, setManual] = useState({ instrument: '', direction: '', entry: '', stop: '', target: '', entry_time: '' });
+  const [seen, setSeen] = useState<Record<string, Seen>>({});
   const [notes, setNotes] = useState('');
   const [dragging, setDragging] = useState(false);
   const [running, setRunning] = useState(false);
@@ -61,6 +70,33 @@ export function OpportunityChecker() {
     () => (strategies ?? []).find((s) => s.strategy.id === strategyId) ?? null,
     [strategies, strategyId],
   );
+
+  // A different strategy asks about different conditions.
+  useEffect(() => { setSeen({}); }, [strategyId]);
+
+  /** The strategy's chart conditions: things a person can see, not things code computes. */
+  const structural = useMemo(() => {
+    if (!selected) return [] as { metric: MetricDef; label: string }[];
+    const out: { metric: MetricDef; label: string }[] = [];
+    const taken = new Set<string>();
+    for (const rule of selected.version.rules) {
+      if (!rule.enabled || rule.kind !== 'boolean' || taken.has(rule.metric)) continue;
+      const metric = getMetric(rule.metric);
+      if (!metric || metric.origin !== 'observed' || metric.mode === 'investing') continue;
+      taken.add(rule.metric);
+      out.push({ metric, label: rule.label });
+    }
+    return out;
+  }, [selected]);
+
+  function mark(metricId: string, value: Seen | null) {
+    setSeen((current) => {
+      const next = { ...current };
+      if (value === null) delete next[metricId];
+      else next[metricId] = value;
+      return next;
+    });
+  }
 
   async function addFiles(files: FileList | null) {
     if (!files) return;
@@ -90,17 +126,27 @@ export function OpportunityChecker() {
       const payload = {
         strategy: selected.version,
         images: uploads.map(({ mimeType, base64 }) => ({ mimeType, base64 })),
-        manual: Object.fromEntries(
-          Object.entries(manual)
-            .filter(([, v]) => v !== '')
-            .map(([key, value]) => {
-              if (['entry', 'stop', 'target'].includes(key)) return [key, Number(value)];
-              // datetime-local gives a local wall-clock string with no zone; the
-              // engine needs an absolute instant.
-              if (key === 'entry_time') return [key, new Date(value).toISOString()];
-              return [key, value];
-            }),
-        ),
+        manual: {
+          ...Object.fromEntries(
+            Object.entries(manual)
+              .filter(([, v]) => v !== '')
+              .map(([key, value]) => {
+                if (['entry', 'stop', 'target'].includes(key)) return [key, Number(value)];
+                // datetime-local gives a local wall-clock string with no zone; the
+                // engine needs an absolute instant.
+                if (key === 'entry_time') return [key, new Date(value).toISOString()];
+                return [key, value];
+              }),
+          ),
+          // What the trader saw. "Not yet" is observable but unresolved, which
+          // the engine turns into WATCH rather than a failure.
+          ...Object.fromEntries(
+            Object.entries(seen).map(([metricId, value]) => [
+              metricId,
+              value === 'present' ? true : value === 'absent' ? false : { value: false, pending: true },
+            ]),
+          ),
+        },
         notes,
       };
       const response = await fetch('/api/analyze/chart', {
@@ -209,6 +255,50 @@ export function OpportunityChecker() {
             <div className="doc mt-2">PNG, JPEG or WebP · up to {MAX_IMAGES} · 5 MB each</div>
           </div>
 
+          {structural.length > 0 && (
+            <div>
+              <div className="doc mb-1">What you see</div>
+              <p className="text-faint text-[11.5px] leading-snug mb-2">
+                Mark what's on your chart. Not sure stays as no data — it is never counted as a pass.
+              </p>
+              <div className="border-t border-ink">
+                {structural.map(({ metric, label }) => {
+                  const current = seen[metric.id] ?? null;
+                  const options: { value: Seen | null; text: string }[] = [
+                    { value: 'present', text: 'Present' },
+                    { value: 'absent', text: 'Absent' },
+                    ...(metric.group === 'confirmation' ? [{ value: 'not_yet' as Seen, text: 'Not yet' }] : []),
+                    { value: null, text: 'Not sure' },
+                  ];
+                  return (
+                    <div key={metric.id} className="py-2.5 border-b border-hair">
+                      <div className="text-[12.5px]">{label}</div>
+                      <div className="flex flex-wrap gap-1.5 mt-1.5" role="radiogroup" aria-label={label}>
+                        {options.map((option) => {
+                          const active = current === option.value;
+                          return (
+                            <button
+                              key={option.text}
+                              type="button"
+                              role="radio"
+                              aria-checked={active}
+                              onClick={() => mark(metric.id, option.value)}
+                              className={`cap px-2 py-1 cursor-pointer border ${
+                                active ? 'bg-ink !text-paper border-ink' : 'border-rule hover:border-ink'
+                              }`}
+                            >
+                              {option.text}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
           <div className="grid grid-cols-2 gap-3">
             <Labeled label="Instrument">
               <input className="field" value={manual.instrument} placeholder="e.g. EURUSD"
@@ -267,7 +357,7 @@ export function OpportunityChecker() {
         <Card>
           <Empty>
             
-            Upload a chart or enter levels.
+            Mark what you see and enter your levels — or upload a chart.
           </Empty>
         </Card>
       )}
