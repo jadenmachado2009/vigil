@@ -5,6 +5,7 @@ import { getMetric } from '@/lib/metrics/catalog';
 import { getVisionProvider, ProviderUnavailableError } from '@/lib/ai';
 import { evaluateStrategy } from '@/lib/rules-engine';
 import { parseObservations } from '@/lib/ai/parse';
+import { geminiChosenWithoutKey, MISSING_KEY_WARNING } from '@/lib/ai/config';
 
 export const runtime = 'nodejs';
 
@@ -78,6 +79,7 @@ export async function POST(request: Request) {
 
   if (images.length > 0) {
     const provider = getVisionProvider();
+    if (geminiChosenWithoutKey('VISION_PROVIDER')) warnings.push(MISSING_KEY_WARNING);
     providerName = provider.name;
     isMock = provider.isMock;
     try {

@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getStrategyParser } from '@/lib/strategy-parser';
+import { geminiChosenWithoutKey, MISSING_KEY_WARNING } from '@/lib/ai/config';
 
 export const runtime = 'nodejs';
 
@@ -23,6 +24,7 @@ export async function POST(request: Request) {
 
   const { primary, fallback } = getStrategyParser();
   const warnings: string[] = [];
+  if (geminiChosenWithoutKey('STRATEGY_PARSER')) warnings.push(MISSING_KEY_WARNING);
   try {
     const result = await primary.parse({ description, mode, answers });
     return NextResponse.json({ result, warnings });

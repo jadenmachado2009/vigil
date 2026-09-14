@@ -1,3 +1,4 @@
+import { DEFAULT_GEMINI_MODEL } from './config';
 import type { VisionProvider, VisionRequest, VisionResult } from './types';
 import { ProviderUnavailableError } from './types';
 import { parseObservations } from './parse';
@@ -20,7 +21,7 @@ export class GeminiVisionProvider implements VisionProvider {
 
   constructor(
     private readonly apiKey: string,
-    private readonly model = process.env['GEMINI_VISION_MODEL'] || 'gemini-2.0-flash',
+    private readonly model = process.env['GEMINI_VISION_MODEL'] || DEFAULT_GEMINI_MODEL,
   ) {}
 
   async readChart(request: VisionRequest): Promise<VisionResult> {

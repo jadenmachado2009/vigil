@@ -1,3 +1,4 @@
+import { DEFAULT_GEMINI_MODEL } from '@/lib/ai/config';
 import type { Rule, Mode, ComparisonOperator } from '@/types/rules';
 import type { StrategyParser, ParseResult, ParseQuestion } from './types';
 import { getMetric, ruleableMetrics } from '@/lib/metrics/catalog';
@@ -21,7 +22,7 @@ export class GeminiStrategyParser implements StrategyParser {
 
   constructor(
     private readonly apiKey: string,
-    private readonly model = process.env['GEMINI_TEXT_MODEL'] || 'gemini-2.0-flash',
+    private readonly model = process.env['GEMINI_TEXT_MODEL'] || DEFAULT_GEMINI_MODEL,
   ) {}
 
   async parse({ description, mode, answers = {} }: {
