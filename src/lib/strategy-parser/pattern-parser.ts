@@ -34,6 +34,8 @@ export class PatternStrategyParser implements StrategyParser {
     const rules: Rule[] = [];
     const questions: ParseQuestion[] = [];
     const claimed = new Set<string>();
+    /** Numbers already taken as a metric's own threshold, so a later metric cannot reuse them. */
+    const consumed = new Set<number>();
     let counter = 0;
     const nextId = () => `nl_${Date.now().toString(36)}_${(counter += 1)}`;
 
@@ -92,11 +94,26 @@ export class PatternStrategyParser implements StrategyParser {
         const answered = answers[`${hit.metric}:threshold`] ?? answers[hit.metric];
         // A number inside this metric's own span, otherwise one shared with the
         // metric that follows when they are joined by "and" or a comma.
-        const own = numbers.find((n) => n.start >= hit.start && n.start < spanEnd);
+        // A ratio is only meaningful for a multiple, never for a percentage.
+        const fits = (n: NumberHit) => !n.ratio || def.unit === 'multiple';
+        const own = numbers.find((n) => fits(n) && n.start >= hit.start && n.start < spanEnd);
         const shared = own ?? (sharesThresholdWithNext(lower, hit, hits[i + 1])
-          ? numbers.find((n) => n.start >= (hits[i + 1] as MetricHit).start)
+          ? numbers.find((n) => fits(n) && n.start >= (hits[i + 1] as MetricHit).start)
           : undefined);
-        const value = own?.value ?? shared?.value ?? (answered !== undefined ? Number(answered) : null);
+        // "a 1:2.5 reward to risk", "15% ROIC": the number comes first. Only the
+        // same clause counts, and never a number another metric already took.
+        const clauseStart = (() => {
+          const from = hits[i - 1]?.end ?? 0;
+          const before = lower.slice(from, hit.start);
+          const cut = lastClauseBreak(before);
+          return cut === -1 ? from : from + cut + 1;
+        })();
+        const preceding = own || shared ? undefined : [...numbers].reverse().find(
+          (n) => fits(n) && n.start >= clauseStart && n.end <= hit.start && !consumed.has(n.start),
+        );
+        const taken = own ?? preceding;
+        if (taken) consumed.add(taken.start);
+        const value = own?.value ?? shared?.value ?? preceding?.value ?? (answered !== undefined ? Number(answered) : null);
         const operator = matchComparator(span) ?? matchComparator(sentence) ?? defaultOperator(def.preferred);
 
         if (value === null || !Number.isFinite(value)) {
@@ -161,18 +178,40 @@ function findMetrics(lower: string, allowed: Set<string>): MetricHit[] {
   return taken.sort((a, b) => a.start - b.start);
 }
 
-interface NumberHit { value: number; start: number }
+interface NumberHit { value: number; start: number; end: number; ratio?: boolean }
 
-/** Numbers in the text, ignoring clock times so "09:30" is not a threshold. */
+const CLOCK = /^\d{1,2}:\d{2}$/;
+
+/**
+ * Numbers in the text.
+ *
+ * Ratios come first: "1:2.5" and "2.5:1" both mean a reward of 2.5 per unit of
+ * risk, so either order reads as the larger over the smaller. A colon pair
+ * with exactly two-digit minutes is a clock time ("09:30"), not a ratio, and
+ * is ignored so a session window never becomes a threshold.
+ */
 function findNumbers(lower: string): NumberHit[] {
-  const masked = lower.replace(/\d{1,2}:\d{2}/g, (m) => ' '.repeat(m.length));
   const out: NumberHit[] = [];
+  let masked = lower;
+
+  const ratio = /(\d+(?:\.\d+)?)\s*:\s*(\d+(?:\.\d+)?)/g;
+  let r: RegExpExecArray | null;
+  while ((r = ratio.exec(lower)) !== null) {
+    if (CLOCK.test(r[0].replace(/\s+/g, ''))) continue;
+    const a = Number(r[1]);
+    const b = Number(r[2]);
+    if (!(a > 0 && b > 0)) continue;
+    out.push({ value: Math.max(a, b) / Math.min(a, b), start: r.index, end: r.index + r[0].length, ratio: true });
+    masked = masked.slice(0, r.index) + ' '.repeat(r[0].length) + masked.slice(r.index + r[0].length);
+  }
+
+  masked = masked.replace(/\d{1,2}:\d{2}/g, (m) => ' '.repeat(m.length));
   const pattern = /-?\d+(?:\.\d+)?/g;
   let match: RegExpExecArray | null;
   while ((match = pattern.exec(masked)) !== null) {
-    out.push({ value: Number(match[0]), start: match.index });
+    out.push({ value: Number(match[0]), start: match.index, end: match.index + match[0].length });
   }
-  return out;
+  return out.sort((x, y) => x.start - y.start);
 }
 
 /**
@@ -186,25 +225,57 @@ function sharesThresholdWithNext(lower: string, hit: MetricHit, next: MetricHit 
   return /^[\s,]*(and|or|&|,)[\s]*$/.test(between);
 }
 
+/**
+ * Whether the character at `i` ends a clause.
+ *
+ * A dot between two digits is a decimal point, not a full stop. Treating it as
+ * one split "at least a 2.5 reward to risk" in the middle of the number, so the
+ * threshold fell outside the clause and was never read.
+ */
+export function isClauseBreak(text: string, i: number): boolean {
+  const ch = text[i];
+  if (ch === ',' || ch === ';' || ch === '\n') return true;
+  if (ch !== '.') return false;
+  return !(/\d/.test(text[i - 1] ?? '') && /\d/.test(text[i + 1] ?? ''));
+}
+
+/** Index of the last clause break in `text`, or -1. */
+export function lastClauseBreak(text: string): number {
+  for (let i = text.length - 1; i >= 0; i -= 1) {
+    if (isClauseBreak(text, i)) return i;
+  }
+  return -1;
+}
+
 /** Keeps only the text after the last clause break, where qualifiers apply. */
 function trimToClause(text: string): string {
-  const cut = Math.max(
-    text.lastIndexOf('.'), text.lastIndexOf(','),
-    text.lastIndexOf(';'), text.lastIndexOf('\n'),
-  );
+  const cut = lastClauseBreak(text);
   return cut === -1 ? text : text.slice(cut + 1);
 }
 
+/**
+ * Whether the character at `i` ends a sentence. Same decimal rule as
+ * isClauseBreak: "above 12.5x EV/EBITDA" split at the dot lost "above", and the
+ * rule silently fell back to the metric's default direction — the opposite of
+ * what was written.
+ */
+function isSentenceBreak(text: string, i: number, semicolonBreaks: boolean): boolean {
+  const ch = text[i];
+  if (ch === '\n') return true;
+  if (ch === ';') return semicolonBreaks;
+  if (ch !== '.') return false;
+  return !(/\d/.test(text[i - 1] ?? '') && /\d/.test(text[i + 1] ?? ''));
+}
+
 function sentenceAround(lower: string, index: number): string {
-  const start = Math.max(
-    lower.lastIndexOf('.', index) + 1,
-    lower.lastIndexOf('\n', index) + 1,
-    lower.lastIndexOf(';', index) + 1,
-  );
-  const dot = lower.indexOf('.', index);
-  const newline = lower.indexOf('\n', index);
-  const ends = [dot, newline].filter((n) => n !== -1);
-  const end = ends.length ? Math.min(...ends) : lower.length;
+  let start = 0;
+  for (let i = Math.min(index, lower.length - 1); i >= 0; i -= 1) {
+    if (isSentenceBreak(lower, i, true)) { start = i + 1; break; }
+  }
+  let end = lower.length;
+  for (let i = index; i < lower.length; i += 1) {
+    if (isSentenceBreak(lower, i, false)) { end = i; break; }
+  }
   return lower.slice(start, end);
 }
 

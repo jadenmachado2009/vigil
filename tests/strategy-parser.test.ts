@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { PatternStrategyParser } from '@/lib/strategy-parser/pattern-parser';
+import { PatternStrategyParser, isClauseBreak } from '@/lib/strategy-parser/pattern-parser';
 import { evaluateStrategy } from '@/lib/rules-engine';
 
 const parser = new PatternStrategyParser();
@@ -175,5 +175,89 @@ describe('regressions', () => {
     );
     expect(result.rules.find((r) => r.metric === 'roic')).toMatchObject({ operator: '>=', value: 18 });
     expect(result.rules.find((r) => r.metric === 'revenue_growth')).toMatchObject({ operator: '>=', value: 12 });
+  });
+});
+
+describe('ratios and numbers written before the metric', () => {
+  it('reads "1:2.5 reward to risk" as a 2.5 ratio', async () => {
+    const result = await trading('I need at least a 1:2.5 reward to risk');
+    expect(result.rules.find((r) => r.metric === 'rr')).toMatchObject({ kind: 'numeric', operator: '>=', value: 2.5 });
+    expect(result.questions.map((q) => q.metric)).not.toContain('rr');
+  });
+
+  it('reads the reversed form "2.5:1" the same way', async () => {
+    const result = await trading('minimum rr 2.5:1');
+    expect(result.rules.find((r) => r.metric === 'rr')).toMatchObject({ value: 2.5 });
+  });
+
+  it('takes a number that comes before its metric', async () => {
+    const result = await investing('I want 15% ROIC');
+    expect(result.rules.find((r) => r.metric === 'roic')).toMatchObject({ value: 15, operator: '>=' });
+  });
+
+  it('never lets a later metric reuse a number an earlier one took', async () => {
+    const result = await investing('roic above 15% and not much debt');
+    expect(result.rules.find((r) => r.metric === 'roic')).toMatchObject({ value: 15 });
+    expect(result.rules.find((r) => r.metric === 'debt_ebitda')).toBeUndefined();
+    expect(result.questions.map((q) => q.metric)).toContain('debt_ebitda');
+  });
+
+  it('never attaches a ratio to a percentage metric', async () => {
+    const result = await investing('a 1:3 roic');
+    expect(result.rules.find((r) => r.metric === 'roic')).toBeUndefined();
+    expect(result.questions.map((q) => q.metric)).toContain('roic');
+  });
+
+  it('still treats a clock time as a time, not a ratio', async () => {
+    const result = await trading('session 09:30 to 11:00 new york');
+    expect(result.rules.some((r) => r.kind === 'numeric')).toBe(false);
+    expect(result.rules[0]).toMatchObject({ kind: 'temporal', window: { start: '09:30', end: '11:00' } });
+  });
+
+  it('recognises "New York morning" as the NY AM window', async () => {
+    const result = await trading('only in the New York morning');
+    expect(result.rules.find((r) => r.metric === 'entry_time')).toMatchObject({
+      kind: 'temporal', window: { start: '09:30', end: '11:00', timezone: 'America/New_York' },
+    });
+  });
+
+  it('reads the full description that exposed the gap', async () => {
+    const result = await trading(
+      'I only take longs in the New York morning when price sweeps the Asian low, then shows a bullish break of structure, and I need at least a 1:2.5 reward to risk',
+    );
+    const metrics = result.rules.map((r) => r.metric);
+    expect(metrics).toEqual(expect.arrayContaining(['entry_time', 'liquidity_sweep', 'bos', 'rr']));
+    expect(result.rules.find((r) => r.metric === 'rr')).toMatchObject({ value: 2.5 });
+  });
+});
+
+describe('a decimal point is not a full stop', () => {
+  it('knows a dot between digits is part of a number', () => {
+    expect(isClauseBreak('2.5', 1)).toBe(false);
+    expect(isClauseBreak('end. next', 3)).toBe(true);
+    expect(isClauseBreak('above 15.', 8)).toBe(true);
+    expect(isClauseBreak('a, b', 1)).toBe(true);
+    expect(isClauseBreak('a b', 1)).toBe(false);
+  });
+
+  it('reads a decimal threshold written before the metric', async () => {
+    const result = await trading('at least a 2.5 reward to risk');
+    expect(result.rules.find((r) => r.metric === 'rr')).toMatchObject({ operator: '>=', value: 2.5 });
+  });
+
+  it('keeps "ideally" when a decimal sits between it and the metric', async () => {
+    const result = await trading('ideally a 2.5 rr');
+    expect(result.rules.find((r) => r.metric === 'rr')).toMatchObject({ value: 2.5, mandatory: false });
+  });
+
+  it('keeps the written direction when a decimal precedes the metric', async () => {
+    // Before: the dot in 12.5 cut "above" away and EV/EBITDA defaulted to "at most".
+    const result = await investing('above 12.5x ev/ebitda');
+    expect(result.rules.find((r) => r.metric === 'ev_ebitda')).toMatchObject({ operator: '>', value: 12.5 });
+  });
+
+  it('still ends a sentence at a real full stop', async () => {
+    const result = await investing('roic above 15% and not much debt. Ideally a wide moat.');
+    expect(result.rules.find((r) => r.metric === 'moat')).toMatchObject({ expected: true, mandatory: false });
   });
 });

@@ -32,7 +32,7 @@ export async function POST(request: Request) {
     // A parser outage must not block strategy creation. The built-in parser
     // still handles most descriptions, and the user reviews everything anyway.
     warnings.push(
-      `${error instanceof Error ? error.message : 'The parser failed.'} Fell back to the built-in parser.`,
+      `${error instanceof Error ? error.message : 'The AI parser failed.'} Used the built-in parser instead.`,
     );
     const result = await fallback.parse({ description, mode, answers });
     return NextResponse.json({ result, warnings });

@@ -1,9 +1,8 @@
-import { DEFAULT_GEMINI_MODEL } from './config';
+import { DEFAULT_GEMINI_MODEL, geminiFallbackModels } from './config';
+import { generateJson } from './gemini-client';
 import type { VisionProvider, VisionRequest, VisionResult } from './types';
 import { ProviderUnavailableError } from './types';
 import { parseObservations } from './parse';
-
-const ENDPOINT = 'https://generativelanguage.googleapis.com/v1beta/models';
 
 /**
  * Reads chart screenshots with Google's vision models.
@@ -64,47 +63,31 @@ export class GeminiVisionProvider implements VisionProvider {
       generationConfig: { responseMimeType: 'application/json', temperature: 0 },
     };
 
-    let response: Response;
+    let text: string;
+    let model: string;
     try {
-      response = await fetch(`${ENDPOINT}/${this.model}:generateContent`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'x-goog-api-key': this.apiKey },
-        body: JSON.stringify(body),
-        signal: AbortSignal.timeout(45_000),
-      });
+      ({ text, model } = await generateJson({
+        apiKey: this.apiKey,
+        models: [this.model, ...geminiFallbackModels()],
+        body,
+        timeoutMs: 45_000,
+        budgetMs: 60_000,
+      }));
     } catch (error) {
-      throw new ProviderUnavailableError(
-        `Could not reach the vision provider: ${error instanceof Error ? error.message : 'network error'}`,
-        true,
-      );
-    }
-
-    if (response.status === 429) {
-      throw new ProviderUnavailableError('The vision provider rate limit was reached. Try again shortly.', true);
-    }
-    if (!response.ok) {
-      throw new ProviderUnavailableError(`The vision provider returned ${response.status}.`, response.status >= 500);
-    }
-
-    const payload = (await response.json()) as {
-      candidates?: { content?: { parts?: { text?: string }[] } }[];
-    };
-    const text = payload.candidates?.[0]?.content?.parts?.[0]?.text;
-    if (!text) {
-      throw new ProviderUnavailableError('The vision provider returned an empty response.', true);
+      throw new ProviderUnavailableError(error instanceof Error ? error.message : 'The chart reader failed.', true);
     }
 
     let raw: unknown;
     try {
       raw = JSON.parse(text);
     } catch {
-      throw new ProviderUnavailableError('The vision provider returned malformed JSON.', true);
+      throw new ProviderUnavailableError('The chart reader returned malformed JSON.', true);
     }
 
     const { observations, warnings } = parseObservations(raw, request.requestedMetrics, {
       source: 'vision',
       asOf: new Date().toISOString(),
     });
-    return { observations, providerName: `${this.name} (${this.model})`, warnings };
+    return { observations, providerName: `${this.name} (${model})`, warnings };
   }
 }

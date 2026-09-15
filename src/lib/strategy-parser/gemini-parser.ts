@@ -1,10 +1,9 @@
-import { DEFAULT_GEMINI_MODEL } from '@/lib/ai/config';
+import { DEFAULT_GEMINI_MODEL, geminiFallbackModels } from '@/lib/ai/config';
+import { generateJson } from '@/lib/ai/gemini-client';
 import type { Rule, Mode, ComparisonOperator } from '@/types/rules';
 import type { StrategyParser, ParseResult, ParseQuestion } from './types';
 import { getMetric, ruleableMetrics } from '@/lib/metrics/catalog';
 import { ProviderUnavailableError } from '@/lib/ai/types';
-
-const ENDPOINT = 'https://generativelanguage.googleapis.com/v1beta/models';
 
 /**
  * Model-backed strategy parsing, for descriptions the pattern parser cannot
@@ -63,30 +62,22 @@ export class GeminiStrategyParser implements StrategyParser {
       description,
     ].join('\n');
 
-    let response: Response;
+    let text: string;
+    let model: string;
     try {
-      response = await fetch(`${ENDPOINT}/${this.model}:generateContent`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'x-goog-api-key': this.apiKey },
-        body: JSON.stringify({
+      ({ text, model } = await generateJson({
+        apiKey: this.apiKey,
+        models: [this.model, ...geminiFallbackModels()],
+        body: {
           contents: [{ parts: [{ text: prompt }] }],
           generationConfig: { responseMimeType: 'application/json', temperature: 0 },
-        }),
-        signal: AbortSignal.timeout(30_000),
-      });
+        },
+        timeoutMs: 30_000,
+        budgetMs: 35_000,
+      }));
     } catch (error) {
-      throw new ProviderUnavailableError(
-        `Could not reach the parser: ${error instanceof Error ? error.message : 'network error'}`, true,
-      );
+      throw new ProviderUnavailableError(error instanceof Error ? error.message : 'The parser failed.', true);
     }
-    if (response.status === 429) throw new ProviderUnavailableError('Parser rate limit reached.', true);
-    if (!response.ok) throw new ProviderUnavailableError(`Parser returned ${response.status}.`, response.status >= 500);
-
-    const payload = (await response.json()) as {
-      candidates?: { content?: { parts?: { text?: string }[] } }[];
-    };
-    const text = payload.candidates?.[0]?.content?.parts?.[0]?.text;
-    if (!text) throw new ProviderUnavailableError('Parser returned an empty response.', true);
 
     let raw: { rules?: unknown[]; questions?: unknown[]; unmatched?: unknown[]; name?: unknown };
     try {
@@ -137,7 +128,7 @@ export class GeminiStrategyParser implements StrategyParser {
       unmatched: (Array.isArray(raw.unmatched) ? raw.unmatched : []).filter((u): u is string => typeof u === 'string'),
       meta: {},
       ...(typeof raw.name === 'string' && raw.name ? { suggestedName: raw.name } : {}),
-      parserName: `${this.name} (${this.model})`,
+      parserName: `${this.name} (${model})`,
       isMock: false,
     };
   }

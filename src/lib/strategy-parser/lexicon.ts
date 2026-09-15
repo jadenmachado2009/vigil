@@ -59,13 +59,16 @@ export const SYNONYMS: Record<string, string[]> = {
   // trading - risk
   rr: ['rr', 'risk reward', 'risk/reward', 'risk to reward', 'r:r', 'reward to risk'],
   risk_percent: ['risk per trade', 'account risk', 'risk percent', 'risk %'],
-  entry_time: ['session', 'ny am', 'new york am', 'london session', 'new york session', 'asian session', 'killzone', 'kill zone'],
+  entry_time: ['session', 'ny am', 'new york am', 'new york morning', 'ny morning', 'london morning', 'london session', 'new york session', 'asian session', 'killzone', 'kill zone'],
 };
 
 /** Named sessions, so "NY AM" becomes a real window instead of a question. */
 export const SESSIONS: Record<string, { start: string; end: string; timezone: string; label: string }> = {
   'ny am': { start: '09:30', end: '11:00', timezone: 'America/New_York', label: 'New York AM' },
   'new york am': { start: '09:30', end: '11:00', timezone: 'America/New_York', label: 'New York AM' },
+  'new york morning': { start: '09:30', end: '11:00', timezone: 'America/New_York', label: 'New York AM' },
+  'ny morning': { start: '09:30', end: '11:00', timezone: 'America/New_York', label: 'New York AM' },
+  'london morning': { start: '08:00', end: '11:00', timezone: 'Europe/London', label: 'London' },
   'new york session': { start: '09:30', end: '16:00', timezone: 'America/New_York', label: 'New York' },
   'london session': { start: '08:00', end: '11:00', timezone: 'Europe/London', label: 'London' },
   'asian session': { start: '00:00', end: '06:00', timezone: 'Asia/Tokyo', label: 'Asia' },

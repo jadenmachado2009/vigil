@@ -20,3 +20,16 @@ export function geminiChosenWithoutKey(setting: 'VISION_PROVIDER' | 'STRATEGY_PA
 
 export const MISSING_KEY_WARNING =
   'Gemini is switched on but GEMINI_API_KEY is empty, so the built-in fallback was used. Add the key to .env.local and restart.';
+
+/**
+ * Models to try when the primary is saturated or unavailable. gemini-3.6-flash
+ * answered during the demand spike that refused the primary. Override with a
+ * comma-separated GEMINI_FALLBACK_MODELS.
+ */
+export const DEFAULT_FALLBACK_MODELS = ['gemini-3.6-flash'];
+
+export function geminiFallbackModels(): string[] {
+  const raw = process.env['GEMINI_FALLBACK_MODELS'];
+  if (raw === undefined) return DEFAULT_FALLBACK_MODELS;
+  return raw.split(',').map((m) => m.trim()).filter(Boolean);
+}
