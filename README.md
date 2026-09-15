@@ -19,7 +19,7 @@ USER STRATEGY → STRUCTURED RULES → AI / DATA ANALYSIS → STRUCTURED OBSERVA
 may not compute a risk/reward ratio, and it may not decide whether one is
 acceptable. Those are arithmetic, and arithmetic belongs in code.
 
-**Live:** https://strategyai-mvp.vercel.app — no account needed; everything runs in your browser.
+**Live:** https://vigil-strategy-app.vercel.app — no account needed; everything runs in your browser.
 
 ## Status
 
