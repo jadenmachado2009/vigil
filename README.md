@@ -34,7 +34,7 @@ Rebuild in progress. See `docs/ROADMAP.md`.
 | 6 | Auth + Postgres persistence | done |
 | 7 | Journal and outcome tracking | done |
 | 8 | Analytics and rule attribution | done |
-| 9 | Portfolio rules | not built |
+| 9 | Portfolio limits | done |
 | 10 | Production polish, deployment | ready to deploy |
 
 The original static prototype is preserved at `legacy/mvp/` and is the reference
@@ -59,7 +59,7 @@ npm test
 
 The rules engine is the product. It performs no I/O, contains no randomness, and
 never calls a model — the same strategy and observations always produce the same
-analysis. It is covered by 184 tests, including the repository's version-immutability rules, the
+analysis. It is covered by 210 tests, including the repository's version-immutability rules, the
 parsing layer that guards it from untrusted model output, both data providers, and the strategy parser.
 
 ## Describing a strategy
@@ -165,6 +165,33 @@ usable sample.
 Nothing here establishes causation, and the interface says so. Below 20 closed trades
 the figures are shown with an explicit warning that they are arithmetically correct
 and statistically meaningless.
+
+## Trading without any AI
+
+On the trading checker, **What you see** lists every chart condition in the selected
+strategy. Mark each Present, Absent, Not yet, or Not sure. *Not sure* sends nothing and
+stays no data — it is never counted as a pass. *Not yet* is sent as pending, which the
+engine turns into WATCH rather than a failure. Your marks outrank any chart reading, so
+they still win once an AI reader is configured.
+
+## Portfolio limits
+
+`/portfolio` measures holdings against limits you write: largest single position,
+largest sector exposure, minimum cash, position-count bounds. A breach reports the limit
+and the actual figure; a limit left blank is never assumed. Unknown sectors are reported
+as a note rather than counted or ignored.
+
+## DCF and news
+
+The investing result carries a collapsed **Discounted cash flow — your assumptions**
+panel. Every input is yours; free cash flow is pre-filled from the analysis where it was
+observed. The model refuses a terminal growth at or above the discount rate rather than
+returning infinity, and shows what share of the value rests on the terminal assumption.
+
+**Recent coverage** shows headlines with source and date behind `FINNHUB_API_KEY`.
+Nothing is summarised or read into a rule — a clickable headline is a citation. Like the
+market strip it has no demo fallback, because an invented headline about a real company
+is a false statement about the world.
 
 ## Deployment
 
