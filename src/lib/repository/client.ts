@@ -7,6 +7,8 @@ import type {
 } from './types';
 import { LocalStrategyRepository } from './local';
 import { LocalAnalysisRepository, type AnalysisRepository } from './analyses';
+import { LocalPortfolioRepository, type PortfolioRepository } from './portfolios';
+import type { Portfolio } from '@/lib/portfolio/types';
 
 /**
  * Storage selection.
@@ -138,6 +140,20 @@ class ApiAnalysisRepository implements AnalysisRepository {
   }
 }
 
+class ApiPortfolioRepository implements PortfolioRepository {
+  async get(): Promise<Portfolio | null> {
+    return (await json<{ portfolio: Portfolio | null }>(await fetch('/api/portfolio'))).portfolio;
+  }
+  async save(portfolio: Portfolio): Promise<Portfolio> {
+    return (await json<{ portfolio: Portfolio }>(await fetch('/api/portfolio', {
+      method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(portfolio),
+    }))).portfolio;
+  }
+}
+
+const apiPortfolio = new ApiPortfolioRepository();
+const localPortfolio = new LocalPortfolioRepository();
+
 const apiStrategies = new ApiStrategyRepository();
 const localStrategies = new LocalStrategyRepository();
 const apiAnalyses = new ApiAnalysisRepository();
@@ -165,6 +181,11 @@ export const analysisRepository: AnalysisRepository = {
   save: async (record) => (await isSignedIn() ? apiAnalyses : localAnalyses).save(record),
   setOutcome: async (id, outcome) => (await isSignedIn() ? apiAnalyses : localAnalyses).setOutcome(id, outcome),
   remove: async (id) => (await isSignedIn() ? apiAnalyses : localAnalyses).remove(id),
+};
+
+export const portfolioRepository: PortfolioRepository = {
+  get: async () => (await isSignedIn() ? apiPortfolio : localPortfolio).get(),
+  save: async (portfolio) => (await isSignedIn() ? apiPortfolio : localPortfolio).save(portfolio),
 };
 
 /** Copies anything saved in this browser into the signed-in account. */
