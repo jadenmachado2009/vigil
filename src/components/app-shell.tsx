@@ -14,6 +14,7 @@ const NAV = [
   { href: '/journal', label: 'Journal', key: 'j', no: '04' },
   { href: '/analytics', label: 'Analytics', key: 'n', no: '05' },
   { href: '/portfolio', label: 'Portfolio', key: 'p', no: '06' },
+  { href: '/how-it-works', label: 'How it works', key: 'h', no: '07' },
 ];
 
 const GOTO = Object.fromEntries(NAV.map((item) => [item.key, item.href]));

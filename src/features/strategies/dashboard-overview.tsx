@@ -65,6 +65,7 @@ export function DashboardOverview() {
         <div className="flex flex-wrap gap-3 mt-7">
           <Link href="/analyze"><Button>{copy.cta} →</Button></Link>
           <Link href="/strategies"><Button variant="secondary">View strategies</Button></Link>
+          <Link href="/how-it-works" className="doc hover:!text-ink self-center ml-2">How it works →</Link>
         </div>
 
         {/* Status → explanation → count. The figure is the quietest thing in the row. */}
