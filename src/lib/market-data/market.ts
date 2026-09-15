@@ -14,8 +14,15 @@ import 'server-only';
 export interface Quote {
   symbol: string;
   label: string;
-  price: number;
+  /** Null when the provider returned nothing for this instrument. */
+  price: number | null;
   changePercent: number | null;
+  /**
+   * False when the provider had no data. Kept in the list rather than dropped:
+   * a watchlist that silently loses a row reads as if the instrument were
+   * never there, when in fact it could not be priced.
+   */
+  available: boolean;
 }
 
 export interface MarketDataProvider {
@@ -41,20 +48,25 @@ class FinnhubMarketProvider implements MarketDataProvider {
           `https://finnhub.io/api/v1/quote?symbol=${encodeURIComponent(symbol)}&token=${this.apiKey}`,
           { signal: AbortSignal.timeout(8000), next: { revalidate: 60 } },
         );
-        if (!response.ok) return null;
+        if (!response.ok) return unavailable(symbol, label);
         const data = (await response.json()) as { c?: number; dp?: number };
-        if (typeof data.c !== 'number' || data.c === 0) return null;
+        if (typeof data.c !== 'number' || data.c === 0) return unavailable(symbol, label);
         return {
           symbol, label, price: data.c,
           changePercent: typeof data.dp === 'number' ? data.dp : null,
+          available: true,
         };
       } catch {
         // One unreachable symbol should not empty the whole strip.
-        return null;
+        return unavailable(symbol, label);
       }
     }));
-    return results.filter((q): q is Quote => q !== null);
+    return results;
   }
+}
+
+function unavailable(symbol: string, label: string): Quote {
+  return { symbol, label, price: null, changePercent: null, available: false };
 }
 
 /** Null when no provider is configured — the caller must render an honest absence. */

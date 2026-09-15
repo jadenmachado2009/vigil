@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 
-interface Quote { symbol: string; label: string; price: number; changePercent: number | null }
+interface Quote { symbol: string; label: string; price: number | null; changePercent: number | null; available: boolean }
 interface Payload { configured: boolean; quotes: Quote[]; source: string | null }
 
 const price = (value: number) =>
@@ -34,7 +34,7 @@ export function MarketWatch() {
     <section>
       <div className="doc">Market watch</div>
       <div className="border-t border-ink mt-2">
-        {!data.configured || data.quotes.length === 0 ? (
+        {!data.configured ? (
           <p className="text-muted text-[12px] leading-relaxed pt-3">
             No market data source configured. Vigil will not display prices it has not been given —
             set <span className="num text-ink">FINNHUB_API_KEY</span> to enable this.
@@ -43,7 +43,13 @@ export function MarketWatch() {
           <>
             {data.quotes.map((quote) => (
               <div key={quote.symbol} className="row grid-cols-[minmax(0,1fr)_auto_52px] !py-2 gap-3">
-                <div className="cap truncate !text-ink">{quote.label}</div>
+                <div className={`cap truncate ${quote.available ? '!text-ink' : ''}`}>{quote.label}</div>
+                {!quote.available || quote.price === null ? (
+                  <div className="doc text-right col-span-2" title={`${data.source ?? 'The provider'} returned no data for this instrument`}>
+                    No data from {data.source ?? 'provider'}
+                  </div>
+                ) : (
+                <>
                 <div className="num text-[12.5px] text-right">{price(quote.price)}</div>
                 <div className={`num text-[11px] text-right ${
                   quote.changePercent === null ? 'text-dim'
@@ -53,6 +59,8 @@ export function MarketWatch() {
                   {quote.changePercent === null ? '—'
                     : `${quote.changePercent > 0 ? '+' : ''}${quote.changePercent.toFixed(1)}%`}
                 </div>
+                </>
+                )}
               </div>
             ))}
             <div className="doc pt-2.5">Source · {data.source}</div>
