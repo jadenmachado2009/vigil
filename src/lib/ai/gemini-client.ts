@@ -106,6 +106,13 @@ export async function generateJson(options: GenerateOptions): Promise<{ text: st
           signal: AbortSignal.timeout(Math.max(1000, Math.min(options.timeoutMs, remaining))),
         });
       } catch (error) {
+        // A timeout means this model is slow right now. Waiting on it again
+        // spends the budget the fallback model needs, so move on instead.
+        const timedOut = error instanceof Error && (error.name === 'TimeoutError' || error.name === 'AbortError');
+        if (timedOut) {
+          last = fail('Gemini took too long to read the chart.', null, true);
+          break;
+        }
         last = fail(`Could not reach Gemini: ${error instanceof Error ? error.message : 'network error'}`, null, true);
         if (attempt < attempts - 1) await sleep(Math.min(backoff(attempt, random), Math.max(0, deadline - now())));
         continue;

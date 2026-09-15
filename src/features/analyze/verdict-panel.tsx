@@ -88,20 +88,53 @@ function Field({ label, value }: { label: string; value: string }) {
 }
 
 export function VerdictPanel({
-  record, warnings, demoLabel,
+  record, warnings, demoLabel, readerError, onRetry, retrying = false,
 }: {
   record: AnalysisRecord;
   warnings: string[];
   demoLabel: string;
+  /** The chart was sent but could not be read at all. */
+  readerError?: string | null;
+  onRetry?: () => void;
+  retrying?: boolean;
 }) {
   const { summary } = record;
-  const phrase = sentence(record);
+  const raw = sentence(record);
+  // A sentence can open on its emphasised count ("three required rules…").
+  const phrase = raw.before
+    ? raw
+    : { ...raw, emphasis: raw.emphasis.charAt(0).toUpperCase() + raw.emphasis.slice(1) };
   return (
     <div>
       {record.provider.isMock && (
         <div className="border-y border-rule py-2 mb-6 flex gap-3">
           <span className="cap shrink-0 !text-watch">Demo</span>
           <span className="text-muted text-[14px]">{demoLabel}</span>
+        </div>
+      )}
+
+      {/* A failed reading changes what the verdict means, so it leads the report. */}
+      {readerError && (
+        <div className="border-l-2 border-watch pl-4 py-1 mb-7">
+          <div className="cap !text-watch">Your chart was not read</div>
+          <p className="text-[15px] leading-relaxed mt-1.5 max-w-[64ch]">
+            {readerError} <strong className="em">Nothing from the screenshot was used</strong>, so the
+            verdict below reflects only what you entered by hand.
+          </p>
+          <p className="text-muted text-[14px] leading-relaxed mt-1.5 max-w-[64ch]">
+            Try again — the free AI tier is sometimes busy — or mark each condition under
+            “What you see” and check without the AI.
+          </p>
+          {onRetry && (
+            <button
+              type="button"
+              onClick={onRetry}
+              disabled={retrying}
+              className="cap !text-ink border border-ink px-3 py-1.5 mt-3 cursor-pointer hover:bg-paper-2 disabled:opacity-40"
+            >
+              {retrying ? 'Reading the chart…' : 'Try reading the chart again'}
+            </button>
+          )}
         </div>
       )}
 

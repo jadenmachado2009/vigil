@@ -77,8 +77,10 @@ export class GeminiVisionProvider implements VisionProvider {
         apiKey: this.apiKey,
         models: [this.model, ...geminiFallbackModels()],
         body,
-        timeoutMs: 45_000,
-        budgetMs: 60_000,
+        // Short enough per model that the fallback still gets a turn inside the
+        // route's 60-second limit.
+        timeoutMs: 26_000,
+        budgetMs: 55_000,
       }));
     } catch (error) {
       throw new ProviderUnavailableError(error instanceof Error ? error.message : 'The chart reader failed.', true);

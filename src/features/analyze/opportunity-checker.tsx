@@ -36,8 +36,12 @@ interface ApiResponse {
   observations: ObservationSet;
   provider: { name: string; isMock: boolean };
   warnings: string[];
+  readerError?: string | null;
   error?: string;
 }
+
+/** Long edge sent to the chart reader. Labels stay legible; uploads stay small and fast. */
+const READER_EDGE = 1600;
 
 function Labeled({ label, hint, children }: { label: string; hint?: string; children: React.ReactNode }) {
   return (
@@ -59,7 +63,7 @@ export function OpportunityChecker() {
   const [dragging, setDragging] = useState(false);
   const [running, setRunning] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [result, setResult] = useState<{ record: AnalysisRecord; warnings: string[] } | null>(null);
+  const [result, setResult] = useState<{ record: AnalysisRecord; warnings: string[]; readerError: string | null } | null>(null);
 
   useEffect(() => {
     void strategyRepository.list().then((all) => {
@@ -124,11 +128,20 @@ export function OpportunityChecker() {
     if (!selected || running) return;
     setRunning(true);
     setError(null);
-    setResult(null);
     try {
+      // Full-size screenshots are slow to upload and slow to read. A reduced copy
+      // keeps every label legible; fall back to the originals if reduction fails.
+      let images: { mimeType: string; base64: string }[];
+      try {
+        images = (await Promise.all(uploads.map((u) => reduceImage(u.file, READER_EDGE))))
+          .map(({ mimeType, base64 }) => ({ mimeType, base64 }));
+      } catch {
+        images = uploads.map(({ mimeType, base64 }) => ({ mimeType, base64 }));
+      }
+
       const payload = {
         strategy: selected.version,
-        images: uploads.map(({ mimeType, base64 }) => ({ mimeType, base64 })),
+        images,
         manual: {
           ...Object.fromEntries(
             Object.entries(manual)
@@ -193,7 +206,7 @@ export function OpportunityChecker() {
         ...(screenshots?.length ? { screenshots } : {}),
       };
       await analysisRepository.save(record);
-      setResult({ record, warnings: data.warnings });
+      setResult({ record, warnings: data.warnings, readerError: data.readerError ?? null });
     } catch (e) {
       setError(e instanceof Error ? e.message : 'The analysis could not be completed.');
     } finally {
@@ -404,11 +417,13 @@ export function OpportunityChecker() {
 
       {result ? (
         <VerdictPanel record={result.record} warnings={result.warnings}
+          readerError={result.readerError}
+          onRetry={uploads.length > 0 ? () => void run() : undefined}
+          retrying={running}
           demoLabel="Chart observations were generated locally, not read from your screenshot." />
       ) : (
         <Card>
           <Empty>
-            
             Mark what you see and enter your levels — or upload a chart.
           </Empty>
         </Card>

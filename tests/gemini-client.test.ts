@@ -87,6 +87,21 @@ describe('gemini client', () => {
     expect((await generateJson({ ...base, models: ['primary'], fetchImpl })).model).toBe('primary');
   });
 
+  it('moves to the next model on a timeout instead of waiting on the slow one again', async () => {
+    const timeout = Object.assign(new Error('The operation was aborted due to timeout'), { name: 'TimeoutError' });
+    const { fetchImpl, calls } = fakeGemini({ primary: [timeout], backup: [ok('{}')] });
+    const out = await generateJson({ ...base, models: ['primary', 'backup'], fetchImpl });
+    expect(out.model).toBe('backup');
+    expect(calls).toEqual(['primary', 'backup']);
+  });
+
+  it('says plainly when every model timed out', async () => {
+    const timeout = () => Object.assign(new Error('aborted'), { name: 'TimeoutError' });
+    const { fetchImpl } = fakeGemini({ primary: [timeout()], backup: [timeout()] });
+    await expect(generateJson({ ...base, models: ['primary', 'backup'], fetchImpl }))
+      .rejects.toThrow(/took too long/);
+  });
+
   it('stops when the time budget runs out', async () => {
     let clock = 0;
     const { fetchImpl, calls } = fakeGemini({ primary: [busy, busy], backup: [ok('{}')] });

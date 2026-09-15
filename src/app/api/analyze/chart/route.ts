@@ -8,6 +8,8 @@ import { parseObservations } from '@/lib/ai/parse';
 import { geminiChosenWithoutKey, MISSING_KEY_WARNING } from '@/lib/ai/config';
 
 export const runtime = 'nodejs';
+// Chart reading can take most of a minute on the free tier.
+export const maxDuration = 60;
 
 const MAX_IMAGES = 4;
 const MAX_IMAGE_BYTES = 5 * 1024 * 1024;
@@ -76,6 +78,8 @@ export async function POST(request: Request) {
   let observations: ObservationSet = {};
   let providerName = 'none';
   let isMock = false;
+  /** Set when screenshots were sent but could not be read at all. */
+  let readerError: string | null = null;
 
   if (images.length > 0) {
     const provider = getVisionProvider();
@@ -97,6 +101,7 @@ export async function POST(request: Request) {
       const message = error instanceof ProviderUnavailableError
         ? error.message
         : 'The chart reader failed unexpectedly.';
+      readerError = message;
       warnings.push(`${message} No chart observations were used.`);
     }
   } else {
@@ -127,5 +132,6 @@ export async function POST(request: Request) {
     observations,
     provider: { name: providerName, isMock },
     warnings,
+    readerError,
   });
 }
