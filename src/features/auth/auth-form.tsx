@@ -1,11 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { signIn } from 'next-auth/react';
-import { useEffect } from 'react';
-import { Button, Card } from '@/components/ui';
+import { Button } from '@/components/ui';
+import { AsideSection, AsideList } from '@/components/ui/blank-page';
 import { getAccount, resetAccountState, importLocalData } from '@/lib/repository/client';
 
 export function AuthForm({ mode }: { mode: 'sign-in' | 'sign-up' }) {
@@ -70,69 +70,97 @@ export function AuthForm({ mode }: { mode: 'sign-in' | 'sign-up' }) {
   }
 
   return (
-    <div className="max-w-[420px] mx-auto mt-6">
-      <Card className="p-5">
-        {!available && (
-          <p className="text-muted text-[12.5px] leading-relaxed border-l-2 border-watch pl-3 mb-5">
-            This deployment has no database, so accounts are unavailable. Everything still works —
-            your strategies and analyses are held in this browser.
-          </p>
-        )}
-        <div className="cap">{isSignUp ? 'Create account' : 'Welcome back'}</div>
-        <h1 className="text-[18px] font-semibold tracking-[-0.01em] mt-1.5">
-          {isSignUp ? 'Keep your strategies' : 'Sign in'}
+    <div className="grid lg:grid-cols-[65fr_35fr] gap-x-16 gap-y-12 items-start">
+      <div className="min-w-0 max-w-[620px]">
+        <div className="doc">Account · {isSignUp ? 'New' : 'Sign in'}</div>
+        <h1 className="ser text-[40px] leading-[1.08] font-light mt-3">
+          {isSignUp ? 'Keep your record in one place.' : 'Welcome back.'}
         </h1>
-        <p className="text-muted mt-2 text-[13px] leading-relaxed">
+        <p className="text-muted leading-relaxed mt-4 max-w-[52ch]">
           {isSignUp
-            ? 'An account stores your strategies and analyses on the server instead of in this browser.'
-            : 'Your strategies and analyses are waiting.'}
+            ? 'An account holds your strategies, checks, and outcomes on the server, so they follow you to any device.'
+            : 'Sign in to open the strategies, journal, and analytics saved to your account.'}
         </p>
 
-        <form onSubmit={submit} className="mt-6 flex flex-col gap-4">
+        {!available && (
+          <div className="border-l-2 border-watch pl-4 mt-7">
+            <div className="cap !text-watch">Accounts are not switched on for this site yet</div>
+            <p className="text-muted text-[13px] leading-relaxed mt-1.5">
+              No database is connected, so accounts cannot be created or opened here. Everything else
+              works — your strategies and checks are kept in this browser.
+            </p>
+          </div>
+        )}
+
+        <form onSubmit={submit} className="border-t border-ink mt-8 pt-6 grid sm:grid-cols-2 gap-x-6 gap-y-5">
           {isSignUp && (
-            <label className="field-label block">
-              Name <span className="text-faint font-normal">optional</span>
-              <input className="field" value={name} onChange={(e) => setName(e.target.value)} autoComplete="name" />
+            <label className="field-label block sm:col-span-2">
+              Name <span className="text-faint font-normal normal-case tracking-normal">optional</span>
+              <input className="field mt-1.5" value={name} onChange={(e) => setName(e.target.value)} autoComplete="name" />
             </label>
           )}
           <label className="field-label block">
             Email
-            <input className="field" type="email" required value={email}
+            <input className="field mt-1.5" type="email" required value={email}
               onChange={(e) => setEmail(e.target.value)} autoComplete="email" />
           </label>
           <label className="field-label block">
             Password
-            <input className="field" type="password" required value={password}
+            <input className="field mt-1.5" type="password" required value={password}
               onChange={(e) => setPassword(e.target.value)}
               autoComplete={isSignUp ? 'new-password' : 'current-password'} />
-            {isSignUp && <span className="block text-faint font-normal text-[11px] mt-1.5">At least 10 characters.</span>}
+            {isSignUp && (
+              <span className="block text-faint font-normal text-[11px] mt-1.5 normal-case tracking-normal">
+                At least 10 characters.
+              </span>
+            )}
           </label>
 
           {isSignUp && (
-            <label className="flex items-start gap-2.5 text-[13px] text-muted cursor-pointer font-normal">
+            <label className="flex items-start gap-2.5 text-[13px] text-muted cursor-pointer font-normal sm:col-span-2">
               <input type="checkbox" checked={bringLocal} onChange={(e) => setBringLocal(e.target.checked)}
-                className="mt-0.5 accent-white" />
+                className="mt-0.5 accent-[#14130f]" />
               Bring the strategies and analyses saved in this browser with me
             </label>
           )}
 
-          <Button type="submit" disabled={busy || !available} className="w-full">
-            {busy ? (status ?? 'Working…') : isSignUp ? 'Create account' : 'Sign in'}
-          </Button>
-          {error && <p className="text-fail text-[13px]">{error}</p>}
+          <div className="sm:col-span-2 flex items-center gap-5 flex-wrap">
+            <Button type="submit" disabled={busy || !available}>
+              {busy ? (status ?? 'Working…') : isSignUp ? 'Create account →' : 'Sign in →'}
+            </Button>
+            <span className="text-faint text-[12px]">
+              {isSignUp ? (
+                <>Already have one? <Link href="/sign-in" className="text-ink underline underline-offset-4">Sign in</Link></>
+              ) : (
+                <>No account? <Link href="/sign-up" className="text-ink underline underline-offset-4">Create one</Link></>
+              )}
+            </span>
+          </div>
+          {error && <p className="text-fail text-[13px] sm:col-span-2">{error}</p>}
         </form>
+      </div>
 
-        <p className="text-faint text-[12px] mt-5">
-          {isSignUp ? (
-            <>Already have an account? <Link href="/sign-in" className="text-ink underline underline-offset-4">Sign in</Link></>
-          ) : (
-            <>No account? <Link href="/sign-up" className="text-ink underline underline-offset-4">Create one</Link></>
-          )}
-        </p>
-      </Card>
-      <p className="text-dim text-[11px] mt-3 text-center leading-snug">
-        You can keep using StrategyAI without an account — your work stays in this browser only.
-      </p>
+      <aside className="flex flex-col gap-9">
+        <AsideSection label="An account keeps">
+          <AsideList items={[
+            { term: 'Strategies', detail: 'Every version, so old checks stay tied to the rules they were judged by.' },
+            { term: 'The journal', detail: 'Each check, its rule findings, charts, and the outcome you recorded.' },
+            { term: 'Analytics', detail: 'Built from that record, the same on every device.' },
+            { term: 'Portfolio limits', detail: 'Your holdings and the limits they are measured against.' },
+          ]} />
+        </AsideSection>
+        <AsideSection label="Without one">
+          <p className="text-muted text-[12px] leading-relaxed">
+            Vigil works fully. Your work is held in this browser only — clearing site data or
+            switching device leaves it behind.
+          </p>
+        </AsideSection>
+        <AsideSection label="Passwords">
+          <p className="text-muted text-[12px] leading-relaxed">
+            Stored only as a salted scrypt hash. Nobody, including Vigil, can read them back.
+          </p>
+        </AsideSection>
+      </aside>
     </div>
   );
 }

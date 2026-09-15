@@ -24,14 +24,13 @@ export function AccountBadge() {
 
   if (!me.signedIn) {
     return (
-      <div className="doc flex items-center gap-2">
-        <span>Local session</span>
-        {me.accountsAvailable && (
-          <>
-            <span>·</span>
-            <Link href="/sign-up" className="hover:text-ink">Create account →</Link>
-          </>
-        )}
+      <div className="doc flex items-center gap-3">
+        <span className="hidden sm:inline">Local session</span>
+        <span className="hidden sm:inline">·</span>
+        <Link href="/sign-in" className="hover:text-ink">Sign in</Link>
+        <Link href="/sign-up" className="border border-ink !text-ink px-2.5 py-1 hover:bg-paper-2">
+          Create account
+        </Link>
       </div>
     );
   }

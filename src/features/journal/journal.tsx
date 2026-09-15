@@ -9,6 +9,7 @@ import { useMode } from '@/features/mode/mode-context';
 import { formatRatio, formatFigure } from '@/lib/format';
 import { Button, VerdictPill, Empty } from '@/components/ui';
 import { RuleTable } from '@/components/ui/rule-table';
+import { BlankPage, AsideSection, AsideList, SpecimenTable } from '@/components/ui/blank-page';
 import { OutcomeForm } from './outcome-form';
 
 type Filter = 'all' | 'trading' | 'investing' | 'pending';
@@ -79,11 +80,65 @@ export function Journal() {
 
   if (all.length === 0) {
     return (
-      <Empty>
-        Nothing checked yet. The journal fills itself — every opportunity you check is recorded here,
-        and you add what happened afterwards.
-        <div className="mt-6"><Link href="/analyze"><Button>Check an opportunity</Button></Link></div>
-      </Empty>
+      <BlankPage
+        headline="The ledger is open. Nothing entered."
+        lede="The journal fills itself. Every opportunity you check is recorded here with the verdict and the rule findings behind it — you add what happened afterwards."
+        actions={
+          <>
+            <Link href="/analyze"><Button>{isTrading ? 'Analyze opportunity' : 'Analyze company'} →</Button></Link>
+            <Link href="/strategies"><Button variant="secondary">View strategies</Button></Link>
+          </>
+        }
+        steps={[
+          { title: 'Check an opportunity.', body: 'Run a chart or a company against a strategy. The verdict is written here automatically.' },
+          { title: 'Record the outcome.', body: isTrading
+            ? 'Win, loss, breakeven, still open, or not taken. The R multiple is worked out from your levels.'
+            : 'Bought, holding, sold, or passed on — with the return when there is one.' },
+          { title: 'Let it accumulate.', body: 'Once outcomes are recorded, Analytics can show which of your rules actually precede results.' },
+        ]}
+        specimen={{
+          title: 'a filled ledger',
+          body: (
+            <SpecimenTable
+              minWidth={700}
+              template="grid-cols-[62px_minmax(0,1fr)_150px_110px_86px_92px]"
+              columns={['Date', 'Asset', 'Strategy', <span key="v" className="block text-right">Verdict</span>,
+                <span key="r" className="block text-right">RR</span>, <span key="o" className="block text-right">Outcome</span>]}
+              rows={([
+                ['12 SEP', 'EUR/USD', 'London open sweep', 'QUALIFIED', '2.8x', '+2.6R', 'text-pass'],
+                ['11 SEP', 'NAS100', 'London open sweep', 'REJECTED', '1.4x', 'Not taken', 'text-dim'],
+                ['09 SEP', 'XAU/USD', 'London open sweep', 'WATCH', '3.1x', 'Open', 'text-watch'],
+                ['05 SEP', 'GBP/JPY', 'London open sweep', 'QUALIFIED', '2.5x', '−1R', 'text-fail'],
+              ] as const).map(([date, asset, strategy, verdict, rr, outcome, tone]) => [
+                <span key="d" className="num text-[11.5px] text-faint">{date}</span>,
+                <span key="a" className="ser text-[16px]">{asset}</span>,
+                <span key="s" className="text-muted text-[12px]">{strategy}</span>,
+                <span key="v" className="block text-right"><VerdictPill verdict={verdict} /></span>,
+                <span key="r" className="num block text-right text-[12.5px] text-muted">{rr}</span>,
+                <span key="o" className={`cap block text-right ${tone}`}>{outcome}</span>,
+              ])}
+            />
+          ),
+        }}
+        aside={
+          <>
+            <AsideSection label="Each entry keeps">
+              <AsideList items={[
+                { term: 'The verdict', detail: 'Qualified, watch, rejected, or insufficient data — as it stood when you checked.' },
+                { term: 'The rules as judged', detail: 'Every rule, what was required, what was observed, and the finding.' },
+                { term: 'The strategy version', detail: 'Later edits to a strategy never rewrite an old entry.' },
+                { term: 'The chart', detail: 'A reduced copy of any screenshot you analysed.' },
+              ]} />
+            </AsideSection>
+            <AsideSection label="Why outcomes matter">
+              <p className="text-muted text-[12px] leading-relaxed">
+                A verdict says whether an opportunity followed your rules. Only the outcome says
+                whether following them paid. Without outcomes, nothing can be measured.
+              </p>
+            </AsideSection>
+          </>
+        }
+      />
     );
   }
 

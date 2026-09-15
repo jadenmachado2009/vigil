@@ -5,6 +5,7 @@ import Link from 'next/link';
 import type { StrategyWithVersion } from '@/lib/repository/types';
 import { strategyRepository } from '@/lib/repository/client';
 import { Button, Card, Toggle } from '@/components/ui';
+import { BlankPage, AsideSection, AsideList, SpecimenTable } from '@/components/ui/blank-page';
 import { nyAmFvgPreset, qualityGrowthPreset } from './presets';
 
 type Filter = 'active' | 'all' | 'archived';
@@ -30,6 +31,74 @@ export function StrategyLibrary() {
 
   if (items === null) return <Card><div className="text-muted py-12 text-center">Loading…</div></Card>;
 
+  if (items.length === 0) {
+    return (
+      <BlankPage
+        headline="No mandate on file."
+        lede="A strategy is the written framework you trade or invest by. Vigil holds you to it — every opportunity you check is measured against these rules, and nothing else."
+        actions={
+          <>
+            <Link href="/strategies/new?mode=trading"><Button>New trading strategy →</Button></Link>
+            <Link href="/strategies/new?mode=investing"><Button variant="secondary">New investing strategy</Button></Link>
+            <Button variant="ghost" onClick={seed}>Load two examples</Button>
+          </>
+        }
+        steps={[
+          { title: 'Describe it in words.', body: 'Write the setup the way you would explain it to someone. No forms to fill first.' },
+          { title: 'Answer what is unclear.', body: 'Where a threshold or condition is ambiguous, Vigil asks rather than guessing.' },
+          { title: 'Mark what is required.', body: 'Required rules can reject an opportunity. The rest only inform the verdict.' },
+        ]}
+        specimen={{
+          title: 'the mandate register',
+          body: (
+            <SpecimenTable
+              template="grid-cols-[30px_minmax(0,1fr)_96px_84px_92px_78px]"
+              columns={['No.', 'Mandate', 'Mode', <span key="c" className="block text-right">Conditions</span>,
+                <span key="r" className="block text-right">Required</span>, <span key="s" className="block text-right">Status</span>]}
+              rows={[
+                ['London open liquidity sweep', 'trading', 8, 5, 'active'],
+                ['Quality compounders', 'investing', 7, 4, 'active'],
+                ['Higher-timeframe breakout', 'trading', 6, 3, 'inactive'],
+              ].map(([name, mode, rules, required, status], i) => [
+                <span key="n" className="doc">{String(i + 1).padStart(2, '0')}</span>,
+                <span key="m" className="ser text-[18px]">{name}</span>,
+                <span key="o" className="cap">{mode}</span>,
+                <span key="c" className="num block text-right text-[12.5px] text-muted">{String(rules).padStart(2, '0')}</span>,
+                <span key="r" className="num block text-right text-[12.5px] text-muted">{String(required).padStart(2, '0')}</span>,
+                <span key="s" className={`cap block text-right ${status === 'active' ? '!text-pass' : ''}`}>{status}</span>,
+              ])}
+            />
+          ),
+        }}
+        aside={
+          <>
+            <AsideSection label="What a rule can check">
+              <AsideList items={[
+                { term: 'Numeric', detail: 'A figure against a threshold — risk to reward of at least 1:2.5, P/E under 30.' },
+                { term: 'Present or absent', detail: 'Something on the chart — a liquidity sweep, a fair value gap, a break of structure.' },
+                { term: 'Time', detail: 'When it may happen — the New York morning session, no trades before a news release.' },
+                { term: 'Category', detail: 'Which instruments or sectors qualify at all.' },
+              ]} />
+            </AsideSection>
+            <AsideSection label="Versions">
+              <p className="text-muted text-[12px] leading-relaxed">
+                Editing a strategy writes a new version. Past checks keep the exact rules they were
+                judged against, so the record never changes underneath you.
+              </p>
+            </AsideSection>
+            <AsideSection label="Examples">
+              <p className="text-muted text-[12px] leading-relaxed">
+                Two worked examples — a New York morning fair value gap setup and a quality growth
+                screen — can be loaded, edited, or deleted.
+              </p>
+              <button type="button" onClick={seed} className="doc hover:!text-ink mt-2.5 cursor-pointer">Load them →</button>
+            </AsideSection>
+          </>
+        }
+      />
+    );
+  }
+
   const visible = items.filter(({ strategy }) =>
     filter === 'all' ? true : filter === 'archived' ? strategy.status === 'archived' : strategy.status === 'active',
   );
@@ -47,17 +116,7 @@ export function StrategyLibrary() {
 
       {visible.length === 0 ? (
         <Card>
-          <div className="text-center py-14 px-5">
-            <p className="text-faint">
-              {items.length === 0 ? 'No strategies yet.' : 'Nothing matches this filter.'}
-            </p>
-            {items.length === 0 && (
-              <div className="flex gap-3 justify-center mt-5 flex-wrap">
-                <Link href="/strategies/new?mode=trading"><Button>Build one</Button></Link>
-                <Button variant="secondary" onClick={seed}>Load examples</Button>
-              </div>
-            )}
-          </div>
+          <p className="text-faint py-14">Nothing matches this filter.</p>
         </Card>
       ) : (
         // A register of mandates, not a wall of cards.

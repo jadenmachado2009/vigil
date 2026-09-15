@@ -7,6 +7,7 @@ import type { AnalysisRecord } from '@/types/analysis';
 import { strategyRepository, analysisRepository } from '@/lib/repository/client';
 import { useMode, MODE_COPY } from '@/features/mode/mode-context';
 import { Button, VerdictPill } from '@/components/ui';
+import { Procedure } from '@/components/ui/blank-page';
 import { MarketWatch } from './market-watch';
 
 const REGISTER: { verdict: AnalysisRecord['verdict']; label: string; note: string }[] = [
@@ -87,6 +88,19 @@ export function DashboardOverview() {
             );
           })}
         </div>
+
+        {scoped.length === 0 && (
+          <Procedure
+            className="mt-12"
+            steps={[
+              { title: 'Write your rules.', body: `Describe the ${mode === 'trading' ? 'setup you trade' : 'companies you buy'} in plain words. Vigil turns it into rules and asks about anything unclear.` },
+              { title: mode === 'trading' ? 'Check a chart.' : 'Check a company.', body: mode === 'trading'
+                ? 'Drop a screenshot or say what you see. Each rule is marked pass, fail, pending, or no data.'
+                : 'Search a ticker. Fundamentals are measured against each criterion, with a valuation alongside.' },
+              { title: 'Record what happened.', body: 'Outcomes go in the journal. Over time, Analytics shows which rules earn their place.' },
+            ]}
+          />
+        )}
       </div>
 
       {/* A quiet information column rather than empty margin. */}
@@ -126,7 +140,12 @@ export function DashboardOverview() {
           <div className="doc">Recent</div>
           <div className="border-t border-ink mt-2">
             {scoped.length === 0 ? (
-              <div className="text-dim text-[12px] pt-3">Nothing yet</div>
+              <div className="pt-3">
+                <div className="text-muted text-[12.5px] leading-relaxed">
+                  Checks you run appear here, newest first, with their verdict.
+                </div>
+                <Link href="/analyze" className="doc hover:text-ink mt-2 inline-block">{copy.cta} →</Link>
+              </div>
             ) : (
               scoped.slice(0, 5).map((a) => (
                 <div key={a.id} className="row grid-cols-[minmax(0,1fr)_auto] !py-2.5 gap-3">

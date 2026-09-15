@@ -8,6 +8,7 @@ import { computeTradeStatistics, computeInvestmentStatistics, byStrategy } from 
 import { computeRuleAttribution, MIN_ARM } from '@/lib/analytics/attribution';
 import { formatRatio, formatPercent } from '@/lib/format';
 import { Button, Empty } from '@/components/ui';
+import { BlankPage, AsideSection, AsideList } from '@/components/ui/blank-page';
 
 const r = (value: number | null) =>
   value === null ? '—' : `${value > 0 ? '+' : ''}${formatRatio(value)}R`;
@@ -44,11 +45,50 @@ export function Analytics() {
 
   if (stats.trades === 0) {
     return (
-      <Empty>
-        Nothing has closed yet. Analytics reads recorded outcomes — record what happened to a few
-        trades in the journal and this fills in.
-        <div className="mt-6"><Link href="/journal"><Button>Open the journal</Button></Link></div>
-      </Empty>
+      <BlankPage
+        headline="Nothing has closed yet."
+        lede="Analytics reads the outcomes you record in the journal. It reports what your trades did — and, once there is enough of a record, how they did when each of your rules held against when it did not."
+        actions={
+          <>
+            <Link href="/journal"><Button>Open the journal →</Button></Link>
+            <Link href="/analyze"><Button variant="secondary">Analyze opportunity</Button></Link>
+          </>
+        }
+        steps={[
+          { title: 'Check opportunities.', body: 'Each check is logged in the journal with its verdict and rule findings.' },
+          { title: 'Close them out.', body: 'Record a win, loss, or breakeven with your levels. Open and untaken trades are counted separately.' },
+          { title: 'Read the record.', body: `Figures appear from the first closed trade, and are flagged as too small to trust until there are ${stats.sampleShortfall}.` },
+        ]}
+        after={
+          <div className="mt-12">
+            <div className="doc">Measures — awaiting closed trades</div>
+            <div className="border-t border-ink mt-2 pt-4 grid grid-cols-2 md:grid-cols-4 gap-7">
+              <Measure label="Win rate" value="—" className="text-dim" note="Wins ÷ closed trades" />
+              <Measure label="Expectancy" value="—" className="text-dim" note="Mean R per trade" />
+              <Measure label="Profit factor" value="—" className="text-dim" note="Gross won ÷ gross lost" />
+              <Measure label="Max drawdown" value="—" className="text-dim" note="Deepest peak to trough" />
+            </div>
+          </div>
+        }
+        aside={
+          <>
+            <AsideSection label="Thresholds">
+              <AsideList items={[
+                { term: `${stats.sampleShortfall} closed trades`, detail: 'Below this, every figure carries a “too small to read” warning.' },
+                { term: `${MIN_ARM} on each side`, detail: 'A rule is only compared when it held on at least this many trades and was absent on as many.' },
+                { term: 'Unverified is excluded', detail: 'A trade whose condition could not be confirmed counts on neither side.' },
+              ]} />
+            </AsideSection>
+            <AsideSection label="Rule performance">
+              <p className="text-muted text-[12px] leading-relaxed">
+                The point of the journal. For every rule: how trades went when it held, against when
+                it did not. It describes what happened alongside a condition — it does not prove the
+                condition caused it.
+              </p>
+            </AsideSection>
+          </>
+        }
+      />
     );
   }
 
