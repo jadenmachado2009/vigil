@@ -2,27 +2,21 @@ import NextAuth from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
 import { eq } from 'drizzle-orm';
 import { getDb, schema } from '@/db/client';
-import { isDatabaseConfigured } from '@/db/availability';
+import { isDatabaseConfigured, authSecretRequired } from '@/db/availability';
 import { verifyPassword } from '@/lib/auth/passwords';
 
 function resolveSecret(): string {
   const secret = process.env['AUTH_SECRET'];
   if (secret) return secret;
 
-  // A production BUILD has no requests to sign, and env vars are commonly
-  // injected only at runtime, so a missing secret must not fail compilation.
-  // A production SERVER with no secret is a different matter and is refused.
-  const building = process.env['NEXT_PHASE'] === 'phase-production-build';
-  if (process.env.NODE_ENV === 'production' && !building) {
-    throw new Error('AUTH_SECRET must be set in production. Generate one with: openssl rand -base64 32');
+  // Only fatal where it matters: a production deployment that actually has
+  // accounts. Without a database there is nothing to sign, and throwing here
+  // would 500 every route that imports this module.
+  if (authSecretRequired()) {
+    throw new Error('AUTH_SECRET must be set when DATABASE_URL is set. Generate one with: openssl rand -base64 32');
   }
 
-  // Last resort. `npm run dev` writes a stable secret to .env.local first, so
-  // this is only reached during a build or if that step was skipped. A
-  // per-process secret invalidates every session on restart, and because the
-  // client falls back to browser storage when signed out, writes then stop
-  // reaching the database silently.
-  if (!building) {
+  if (process.env.NODE_ENV !== 'production' && process.env['NEXT_PHASE'] !== 'phase-production-build') {
     console.warn(
       'AUTH_SECRET is not set. Sessions will not survive a restart. Run: node scripts/ensure-dev-secret.mjs',
     );
