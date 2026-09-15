@@ -4,7 +4,7 @@ import type { ObservationSet } from '@/types/observations';
 import { getMetric } from '@/lib/metrics/catalog';
 import { getVisionProvider, ProviderUnavailableError } from '@/lib/ai';
 import { evaluateStrategy } from '@/lib/rules-engine';
-import { parseObservations } from '@/lib/ai/parse';
+import { parseObservations, UNREADABLE_CHART_WARNING } from '@/lib/ai/parse';
 import { geminiChosenWithoutKey, MISSING_KEY_WARNING } from '@/lib/ai/config';
 
 export const runtime = 'nodejs';
@@ -95,6 +95,9 @@ export async function POST(request: Request) {
       observations = result.observations;
       providerName = result.providerName;
       warnings.push(...result.warnings);
+      if (result.warnings.includes(UNREADABLE_CHART_WARNING)) {
+        readerError = 'The screenshot was not recognised as a readable price chart.';
+      }
     } catch (error) {
       // A provider failure must never become a passing rule. Every unread metric
       // simply stays absent, which the engine reports as INSUFFICIENT DATA.

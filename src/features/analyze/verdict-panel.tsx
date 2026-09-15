@@ -122,8 +122,8 @@ export function VerdictPanel({
             verdict below reflects only what you entered by hand.
           </p>
           <p className="text-muted text-[14px] leading-relaxed mt-1.5 max-w-[64ch]">
-            Try again — the free AI tier is sometimes busy — or mark each condition under
-            “What you see” and check without the AI.
+            Try again with a clear, full-size screenshot — the free AI tier is sometimes busy — or
+            mark each condition under “What you see” and check without the AI.
           </p>
           {onRetry && (
             <button
