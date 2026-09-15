@@ -63,7 +63,7 @@ export function DescribeStrategy({ mode, onReady, onSkip }: Props) {
     <div className="grid grid-cols-1 xl:grid-cols-[minmax(0,1fr)_420px] gap-5 items-start">
       <Card className="p-4">
         <div className="cap">Describe it</div>
-        <p className="text-faint text-[12px] mt-1.5 leading-snug">
+        <p className="text-faint text-[14px] mt-1.5 leading-snug">
           Plain English. Anything left vague becomes a question rather than a guess.
         </p>
         <textarea
@@ -80,18 +80,18 @@ export function DescribeStrategy({ mode, onReady, onSkip }: Props) {
           <button
             type="button"
             onClick={() => setDescription(EXAMPLES[mode])}
-            className="text-[12px] text-faint hover:text-ink cursor-pointer whitespace-nowrap"
+            className="text-[14px] text-faint hover:text-ink cursor-pointer whitespace-nowrap"
           >
             Use an example
           </button>
-          <span className="ml-auto text-dim text-[11px]">
+          <span className="ml-auto text-dim text-[12.5px]">
             <span className="kbd">⌘</span> <span className="kbd">↵</span>
           </span>
         </div>
-        {error && <p className="text-fail text-[12px] mt-2">{error}</p>}
+        {error && <p className="text-fail text-[14px] mt-2">{error}</p>}
 
         <div className="border-t border-rule mt-4 pt-3">
-          <button type="button" onClick={onSkip} className="text-[12px] text-faint hover:text-ink cursor-pointer">
+          <button type="button" onClick={onSkip} className="text-[14px] text-faint hover:text-ink cursor-pointer">
             Skip and build it by hand →
           </button>
         </div>
@@ -111,7 +111,7 @@ export function DescribeStrategy({ mode, onReady, onSkip }: Props) {
                   <div key={question.id} className="px-3 py-3 border-b border-rule last:border-0">
                     <div className="leading-snug">{question.question}</div>
                     {question.quote && (
-                      <div className="text-dim text-[11px] mt-1 italic">“{question.quote}”</div>
+                      <div className="text-dim text-[12.5px] mt-1 italic">“{question.quote}”</div>
                     )}
                     <div className="flex gap-1.5 mt-2 flex-wrap items-center">
                       {question.suggestions?.map((suggestion) => (
@@ -119,7 +119,7 @@ export function DescribeStrategy({ mode, onReady, onSkip }: Props) {
                           key={suggestion.value}
                           type="button"
                           onClick={() => answer(question, suggestion.value)}
-                          className="num text-[12px] px-2 py-1  border border-ink text-muted hover:text-ink hover:border-[#14130f] cursor-pointer"
+                          className="num text-[14px] px-2 py-1  border border-ink text-muted hover:text-ink hover:border-[#14130f] cursor-pointer"
                         >
                           {suggestion.label}
                         </button>
@@ -151,7 +151,7 @@ export function DescribeStrategy({ mode, onReady, onSkip }: Props) {
                 <div key={rule.id} className="row grid-cols-[minmax(0,1fr)_auto_58px]">
                   <div className="truncate">{getMetric(rule.metric)?.label ?? rule.metric}</div>
                   <div className="num text-muted">{describe(rule)}</div>
-                  <div className={`num text-[11px] text-right ${rule.mandatory ? 'text-muted' : 'text-dim'}`}>
+                  <div className={`num text-[12.5px] text-right ${rule.mandatory ? 'text-muted' : 'text-dim'}`}>
                     {rule.mandatory ? 'required' : 'optional'}
                   </div>
                 </div>
@@ -162,14 +162,14 @@ export function DescribeStrategy({ mode, onReady, onSkip }: Props) {
               <div className="border-t border-rule px-3 py-2.5">
                 <div className="cap">Not understood</div>
                 {result.unmatched.map((phrase, i) => (
-                  <div key={i} className="text-dim text-[12px] mt-1 italic">“{phrase}”</div>
+                  <div key={i} className="text-dim text-[14px] mt-1 italic">“{phrase}”</div>
                 ))}
-                <div className="text-dim text-[11px] mt-1.5">Add these by hand in the builder.</div>
+                <div className="text-dim text-[12.5px] mt-1.5">Add these by hand in the builder.</div>
               </div>
             )}
 
             {warnings.map((warning, i) => (
-              <div key={i} className="border-t border-rule px-3 py-2 text-watch text-[12px]">{warning}</div>
+              <div key={i} className="border-t border-rule px-3 py-2 text-watch text-[14px]">{warning}</div>
             ))}
 
             <div className="border-t border-rule px-3 py-3 flex items-center gap-2 flex-wrap">
@@ -184,11 +184,11 @@ export function DescribeStrategy({ mode, onReady, onSkip }: Props) {
               >
                 Review in builder →
               </Button>
-              <span className="text-dim text-[11px]">
+              <span className="text-dim text-[12.5px]">
                 {open.length > 0 ? 'Unanswered questions are left out.' : 'Nothing is saved until you review it.'}
               </span>
             </div>
-            <div className="border-t border-rule px-3 py-2 text-dim text-[11px]">
+            <div className="border-t border-rule px-3 py-2 text-dim text-[12.5px]">
               Read by: {result.parserName}
             </div>
           </>

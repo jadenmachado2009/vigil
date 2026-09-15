@@ -47,9 +47,9 @@ export function DashboardOverview() {
   return (
     <div className="grid lg:grid-cols-[65fr_35fr] gap-x-16 gap-y-12 items-start">
       <div>
-        <div className="ser text-[40px] leading-[1.08] font-light max-w-[18ch]">
+        <div className="ser text-[48px] leading-[1.08] font-light max-w-[18ch]">
           {scoped.length === 0 ? (
-            'Nothing under review.'
+            <>Nothing under <em className="em">review.</em></>
           ) : (
             <>
               {scoped.length} {copy.subject}.{' '}
@@ -58,8 +58,8 @@ export function DashboardOverview() {
           )}
         </div>
         <p className="text-muted leading-relaxed mt-5 max-w-[52ch]">
-          Define the framework you {mode === 'trading' ? 'trade' : 'invest'} by. Every opportunity is
-          measured against it.
+          Define the <strong className="em">framework</strong> you {mode === 'trading' ? 'trade' : 'invest'} by.
+          Every opportunity is <strong className="em">measured against it</strong> — and nothing else.
         </p>
 
         <div className="flex flex-wrap gap-3 mt-7">
@@ -76,12 +76,12 @@ export function DashboardOverview() {
                 <div className="doc">{pad(index + 1)}</div>
                 <div>
                   {/* Status leads, explanation supports, figure is quietest. */}
-                  <div className={`ser text-[19px] leading-none ${n > 0 ? TONE[entry.verdict] : ''}`}>
+                  <div className={`ser text-[22px] leading-none ${TONE[entry.verdict]}`}>
                     {entry.label}
                   </div>
-                  <div className="text-muted text-[12px] mt-1.5">{entry.note}</div>
+                  <div className="text-muted text-[14px] mt-1.5">{entry.note}</div>
                 </div>
-                <div className={`num text-right text-[13px] ${n > 0 ? TONE[entry.verdict] : 'text-dim'}`}>
+                <div className={`num text-right text-[15px] ${n > 0 ? TONE[entry.verdict] : 'text-dim'}`}>
                   {analyses === null ? '––' : pad(n)}
                 </div>
               </div>
@@ -109,10 +109,10 @@ export function DashboardOverview() {
           <div className="doc">Strategy in force</div>
           <div className="border-t border-ink mt-2 pt-3">
             {items === null ? (
-              <div className="text-dim text-[12px]">Loading</div>
+              <div className="text-dim text-[14px]">Loading</div>
             ) : inForce ? (
               <Link href={`/strategies/${inForce.strategy.id}`} className="block group">
-                <div className="ser text-[19px] group-hover:underline underline-offset-4">
+                <div className="ser text-[22px] group-hover:underline underline-offset-4">
                   {inForce.strategy.name}
                 </div>
                 <div className="doc mt-2">
@@ -125,7 +125,7 @@ export function DashboardOverview() {
               </Link>
             ) : (
               <div>
-                <div className="text-muted text-[12.5px] leading-relaxed">
+                <div className="text-muted text-[14.5px] leading-relaxed">
                   No {mode} framework defined.
                 </div>
                 <Link href={`/strategies/new?mode=${mode}`} className="doc hover:text-ink mt-2 inline-block">
@@ -141,7 +141,7 @@ export function DashboardOverview() {
           <div className="border-t border-ink mt-2">
             {scoped.length === 0 ? (
               <div className="pt-3">
-                <div className="text-muted text-[12.5px] leading-relaxed">
+                <div className="text-muted text-[14.5px] leading-relaxed">
                   Checks you run appear here, newest first, with their verdict.
                 </div>
                 <Link href="/analyze" className="doc hover:text-ink mt-2 inline-block">{copy.cta} →</Link>
@@ -150,7 +150,7 @@ export function DashboardOverview() {
               scoped.slice(0, 5).map((a) => (
                 <div key={a.id} className="row grid-cols-[minmax(0,1fr)_auto] !py-2.5 gap-3">
                   <div className="min-w-0">
-                    <div className="num text-[12.5px] truncate">{a.subject}</div>
+                    <div className="num text-[14.5px] truncate">{a.subject}</div>
                     <div className="doc mt-1 truncate">{a.strategyName}</div>
                   </div>
                   <VerdictPill verdict={a.verdict} />
@@ -164,7 +164,7 @@ export function DashboardOverview() {
 
         <section className="border-t border-rule pt-3">
           <div className="doc">Source</div>
-          <div className="text-muted text-[12px] mt-1.5 leading-relaxed">
+          <div className="text-muted text-[14px] mt-1.5 leading-relaxed">
             Vigil analysis engine · deterministic
           </div>
         </section>

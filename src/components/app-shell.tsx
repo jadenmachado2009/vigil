@@ -25,11 +25,11 @@ const GOTO = Object.fromEntries(NAV.map((item) => [item.key, item.href]));
 export function Wordmark() {
   return (
     <div className="flex items-center gap-5">
-      <span className="ser text-[40px] leading-[0.7] font-light">V</span>
+      <span className="ser text-[48px] leading-[0.7] font-light">V</span>
       <span className="w-px self-stretch bg-ink/70" />
       <span>
-        <span className="wordmark block text-[17px] leading-none">VIGIL</span>
-        <span className="doc block mt-2 !text-[7.5px] !tracking-[0.24em] text-faint">
+        <span className="wordmark block text-[19px] leading-none">VIGIL</span>
+        <span className="doc block mt-2 !text-[8.5px] !tracking-[0.24em] text-faint">
           Watch the market. Protect your edge.
         </span>
       </span>
@@ -131,7 +131,7 @@ export function PageHeader({
         {asOf && <div className="doc">{asOf}</div>}
       </div>
       <div className="flex items-baseline justify-between gap-4 flex-wrap mt-3">
-        <h1 className="ser text-[34px] leading-none font-light">{title}</h1>
+        <h1 className="ser text-[40px] leading-none font-light">{title}</h1>
         {action}
       </div>
     </header>

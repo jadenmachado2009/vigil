@@ -98,13 +98,13 @@ export function CommandPalette({ commands }: { commands: Command[] }) {
                   }`}
                 >
                   <span>{command.label}</span>
-                  {command.hint && <span className="num text-[11px] text-dim">{command.hint}</span>}
+                  {command.hint && <span className="num text-[12.5px] text-dim">{command.hint}</span>}
                 </button>
               </div>
             );
           })}
         </div>
-        <div className="border-t border-rule px-4 py-2 flex gap-4 text-[11px] text-dim">
+        <div className="border-t border-rule px-4 py-2 flex gap-4 text-[12.5px] text-dim">
           <span><span className="kbd">↑↓</span> move</span>
           <span><span className="kbd">↵</span> open</span>
           <span><span className="kbd">esc</span> close</span>

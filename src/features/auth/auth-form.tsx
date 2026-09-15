@@ -73,7 +73,7 @@ export function AuthForm({ mode }: { mode: 'sign-in' | 'sign-up' }) {
     <div className="grid lg:grid-cols-[65fr_35fr] gap-x-16 gap-y-12 items-start">
       <div className="min-w-0 max-w-[620px]">
         <div className="doc">Account · {isSignUp ? 'New' : 'Sign in'}</div>
-        <h1 className="ser text-[40px] leading-[1.08] font-light mt-3">
+        <h1 className="ser text-[48px] leading-[1.08] font-light mt-3">
           {isSignUp ? 'Keep your record in one place.' : 'Welcome back.'}
         </h1>
         <p className="text-muted leading-relaxed mt-4 max-w-[52ch]">
@@ -85,7 +85,7 @@ export function AuthForm({ mode }: { mode: 'sign-in' | 'sign-up' }) {
         {!available && (
           <div className="border-l-2 border-watch pl-4 mt-7">
             <div className="cap !text-watch">Accounts are not switched on for this site yet</div>
-            <p className="text-muted text-[13px] leading-relaxed mt-1.5">
+            <p className="text-muted text-[15px] leading-relaxed mt-1.5">
               No database is connected, so accounts cannot be created or opened here. Everything else
               works — your strategies and checks are kept in this browser.
             </p>
@@ -110,14 +110,14 @@ export function AuthForm({ mode }: { mode: 'sign-in' | 'sign-up' }) {
               onChange={(e) => setPassword(e.target.value)}
               autoComplete={isSignUp ? 'new-password' : 'current-password'} />
             {isSignUp && (
-              <span className="block text-faint font-normal text-[11px] mt-1.5 normal-case tracking-normal">
+              <span className="block text-faint font-normal text-[12.5px] mt-1.5 normal-case tracking-normal">
                 At least 10 characters.
               </span>
             )}
           </label>
 
           {isSignUp && (
-            <label className="flex items-start gap-2.5 text-[13px] text-muted cursor-pointer font-normal sm:col-span-2">
+            <label className="flex items-start gap-2.5 text-[15px] text-muted cursor-pointer font-normal sm:col-span-2">
               <input type="checkbox" checked={bringLocal} onChange={(e) => setBringLocal(e.target.checked)}
                 className="mt-0.5 accent-[#14130f]" />
               Bring the strategies and analyses saved in this browser with me
@@ -128,7 +128,7 @@ export function AuthForm({ mode }: { mode: 'sign-in' | 'sign-up' }) {
             <Button type="submit" disabled={busy || !available}>
               {busy ? (status ?? 'Working…') : isSignUp ? 'Create account →' : 'Sign in →'}
             </Button>
-            <span className="text-faint text-[12px]">
+            <span className="text-faint text-[14px]">
               {isSignUp ? (
                 <>Already have one? <Link href="/sign-in" className="text-ink underline underline-offset-4">Sign in</Link></>
               ) : (
@@ -136,7 +136,7 @@ export function AuthForm({ mode }: { mode: 'sign-in' | 'sign-up' }) {
               )}
             </span>
           </div>
-          {error && <p className="text-fail text-[13px] sm:col-span-2">{error}</p>}
+          {error && <p className="text-fail text-[15px] sm:col-span-2">{error}</p>}
         </form>
       </div>
 
@@ -150,13 +150,13 @@ export function AuthForm({ mode }: { mode: 'sign-in' | 'sign-up' }) {
           ]} />
         </AsideSection>
         <AsideSection label="Without one">
-          <p className="text-muted text-[12px] leading-relaxed">
+          <p className="text-muted text-[14px] leading-relaxed">
             Vigil works fully. Your work is held in this browser only — clearing site data or
             switching device leaves it behind.
           </p>
         </AsideSection>
         <AsideSection label="Passwords">
-          <p className="text-muted text-[12px] leading-relaxed">
+          <p className="text-muted text-[14px] leading-relaxed">
             Stored only as a salted scrypt hash. Nobody, including Vigil, can read them back.
           </p>
         </AsideSection>

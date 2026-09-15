@@ -23,19 +23,19 @@ export function NewsStrip({ symbol }: { symbol: string }) {
     <section className="border-t border-rule pt-3">
       <div className="doc">Recent coverage</div>
       {!data.configured ? (
-        <p className="text-muted text-[12px] leading-relaxed mt-2">
+        <p className="text-muted text-[14px] leading-relaxed mt-2">
           No news source configured. Set <span className="num text-ink">FINNHUB_API_KEY</span> to see recent
           headlines with their sources.
         </p>
       ) : data.items.length === 0 ? (
-        <p className="text-muted text-[12px] mt-2">{data.error ?? 'Nothing in the last two weeks.'}</p>
+        <p className="text-muted text-[14px] mt-2">{data.error ?? 'Nothing in the last two weeks.'}</p>
       ) : (
         <>
           <div className="mt-2">
             {data.items.map((item) => (
               <a key={item.url} href={item.url} target="_blank" rel="noopener noreferrer"
                 className="block py-2.5 border-b border-hair last:border-b-0 group">
-                <div className="text-[12.5px] leading-snug group-hover:underline underline-offset-4">{item.headline}</div>
+                <div className="text-[14.5px] leading-snug group-hover:underline underline-offset-4">{item.headline}</div>
                 <div className="doc mt-1">
                   {item.source} · {new Date(item.publishedAt).toLocaleDateString('en-GB', { day: '2-digit', month: 'short' })}
                 </div>

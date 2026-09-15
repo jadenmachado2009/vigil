@@ -82,7 +82,7 @@ function Field({ label, value }: { label: string; value: string }) {
   return (
     <div className="min-w-0">
       <div className="cap">{label}</div>
-      <div className="num text-[13px] mt-1.5 text-ink-2 truncate">{value}</div>
+      <div className="num text-[15px] mt-1.5 text-ink-2 truncate">{value}</div>
     </div>
   );
 }
@@ -101,7 +101,7 @@ export function VerdictPanel({
       {record.provider.isMock && (
         <div className="border-y border-rule py-2 mb-6 flex gap-3">
           <span className="cap shrink-0 !text-watch">Demo</span>
-          <span className="text-muted text-[12px]">{demoLabel}</span>
+          <span className="text-muted text-[14px]">{demoLabel}</span>
         </div>
       )}
 
@@ -113,13 +113,13 @@ export function VerdictPanel({
             : 'Fig. 04 — Strategy compliance report'}
         </div>
         <div className="flex items-baseline justify-between gap-4 flex-wrap mt-2.5">
-          <span className="ser text-[26px] leading-none">{record.subject}</span>
+          <span className="ser text-[30px] leading-none">{record.subject}</span>
           <span className="cap">{record.strategyName} · v{record.strategyVersion}</span>
         </div>
       </div>
 
       {/* The finding, stated before the evidence. */}
-      <div className="ser text-[40px] leading-[1.05] text-muted max-w-[22ch]">
+      <div className="ser text-[48px] leading-[1.05] text-muted max-w-[22ch]">
         {phrase.before}
         <span className={VERDICT_TONE[record.verdict]}>{phrase.emphasis}</span>
         {phrase.after}
@@ -148,14 +148,14 @@ export function VerdictPanel({
           {/* A stamp on a document rather than a badge in an interface. */}
           <div className={`border-y-2 py-5 text-center ${VERDICT_BORDER[record.verdict]}`}>
             <div className="doc">Verdict</div>
-            <div className={`ser text-[34px] leading-none mt-3 tracking-[0.06em] ${VERDICT_TONE[record.verdict]}`}>
+            <div className={`ser text-[40px] leading-none mt-3 tracking-[0.06em] ${VERDICT_TONE[record.verdict]}`}>
               {record.verdict === 'INSUFFICIENT_DATA' ? 'INSUFFICIENT DATA' : record.verdict}
             </div>
             <div className="doc mt-3">{stampLine(record)}</div>
           </div>
-          <p className="text-muted text-[12.5px] mt-4 leading-relaxed">{record.reason}</p>
+          <p className="text-muted text-[14.5px] mt-4 leading-relaxed">{record.reason}</p>
           {typeof record.computed['rr'] === 'number' && (
-            <p className="text-faint text-[12px] mt-3">
+            <p className="text-faint text-[14px] mt-3">
               Ratio computed from your levels: <span className="num text-ink-2">{formatMultiple(record.computed['rr'])}</span>
               {typeof record.computed['risk'] === 'number' && typeof record.computed['reward'] === 'number' && (
                 <> · risk <span className="num">{formatFigure(record.computed['risk'])}</span> · reward{' '}
@@ -164,7 +164,7 @@ export function VerdictPanel({
             </p>
           )}
           {typeof record.computed['fcf_margin'] === 'number' && (
-            <p className="text-faint text-[12px] mt-1.5">
+            <p className="text-faint text-[14px] mt-1.5">
               FCF margin computed: <span className="num text-ink-2">{formatPercent(record.computed['fcf_margin'])}</span>
             </p>
           )}
@@ -172,7 +172,7 @@ export function VerdictPanel({
 
         <div>
           <div className="cap">Method &amp; provenance</div>
-          <p className="text-muted text-[12px] leading-relaxed mt-2">
+          <p className="text-muted text-[14px] leading-relaxed mt-2">
             The reading and the decision are separate. A model may report what it sees; it is never
             asked for a ratio and never asked whether a setup is good. Every threshold here was
             compared by application code against rules you wrote, and an unverified condition is
@@ -180,10 +180,10 @@ export function VerdictPanel({
           </p>
           {warnings.length > 0 && (
             <ul className="mt-3 space-y-1.5">
-              {warnings.map((w, i) => <li key={i} className="text-dim text-[11.5px] leading-snug">{w}</li>)}
+              {warnings.map((w, i) => <li key={i} className="text-dim text-[13px] leading-snug">{w}</li>)}
             </ul>
           )}
-          <p className="text-dim text-[11px] mt-4 leading-relaxed">
+          <p className="text-dim text-[12.5px] mt-4 leading-relaxed">
             Compliance with your own framework. Not a prediction, recommendation, or financial advice.
           </p>
         </div>

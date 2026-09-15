@@ -35,7 +35,7 @@ export function MarketWatch() {
       <div className="doc">Market watch</div>
       <div className="border-t border-ink mt-2">
         {!data.configured ? (
-          <p className="text-muted text-[12px] leading-relaxed pt-3">
+          <p className="text-muted text-[14px] leading-relaxed pt-3">
             No market data source configured. Vigil will not display prices it has not been given —
             set <span className="num text-ink">FINNHUB_API_KEY</span> to enable this.
           </p>
@@ -50,8 +50,8 @@ export function MarketWatch() {
                   </div>
                 ) : (
                 <>
-                <div className="num text-[12.5px] text-right">{price(quote.price)}</div>
-                <div className={`num text-[11px] text-right ${
+                <div className="num text-[14.5px] text-right">{price(quote.price)}</div>
+                <div className={`num text-[12.5px] text-right ${
                   quote.changePercent === null ? 'text-dim'
                   : quote.changePercent > 0 ? 'text-pass'
                   : quote.changePercent < 0 ? 'text-fail' : 'text-muted'

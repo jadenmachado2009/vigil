@@ -25,8 +25,8 @@ function Measure({ label, value, note, className = '' }: {
   return (
     <div>
       <div className="cap">{label}</div>
-      <div className={`num text-[26px] mt-1.5 leading-none ${className}`}>{value}</div>
-      {note && <div className="text-dim text-[11px] mt-1.5">{note}</div>}
+      <div className={`num text-[30px] mt-1.5 leading-none ${className}`}>{value}</div>
+      {note && <div className="text-dim text-[12.5px] mt-1.5">{note}</div>}
     </div>
   );
 }
@@ -46,8 +46,8 @@ export function Analytics() {
   if (stats.trades === 0) {
     return (
       <BlankPage
-        headline="Nothing has closed yet."
-        lede="Analytics reads the outcomes you record in the journal. It reports what your trades did — and, once there is enough of a record, how they did when each of your rules held against when it did not."
+        headline={<>Nothing has <em className="em">closed</em> yet.</>}
+        lede={<>Analytics reads the <strong className="em">outcomes you record</strong> in the journal. It reports what your trades did — and, once there is enough of a record, how they did <strong className="em">when each of your rules held</strong> against when it did not.</>}
         actions={
           <>
             <Link href="/journal"><Button>Open the journal →</Button></Link>
@@ -80,7 +80,7 @@ export function Analytics() {
               ]} />
             </AsideSection>
             <AsideSection label="Rule performance">
-              <p className="text-muted text-[12px] leading-relaxed">
+              <p className="text-muted text-[14px] leading-relaxed">
                 The point of the journal. For every rule: how trades went when it held, against when
                 it did not. It describes what happened alongside a condition — it does not prove the
                 condition caused it.
@@ -95,13 +95,13 @@ export function Analytics() {
   return (
     <>
       {/* The state of the record, stated plainly. */}
-      <div className="ser text-[38px] leading-[1.05] text-muted max-w-[24ch]">
+      <div className="ser text-[44px] leading-[1.05] text-muted max-w-[24ch]">
         {stats.trades} closed.{' '}
         <span className={tone(stats.totalR)}>{r(stats.totalR)} settled.</span>
       </div>
 
       {!stats.sufficient && (
-        <p className="text-muted text-[13px] leading-relaxed mt-5 max-w-[62ch] border-l-2 border-watch pl-4">
+        <p className="text-muted text-[15px] leading-relaxed mt-5 max-w-[62ch] border-l-2 border-watch pl-4">
           <span className="cap !text-watch">Too small to read</span><br />
           These figures are arithmetically correct but statistically meaningless at{' '}
           <span className="num">{stats.trades}</span> trades. {stats.sampleShortfall} more closed
@@ -125,7 +125,7 @@ export function Analytics() {
       {/* Rule attribution — the reason the journal is worth filling in. */}
       <div className="mt-14">
         <div className="doc">Rule performance — historical observation</div>
-        <p className="text-muted text-[12.5px] leading-relaxed mt-2 max-w-[70ch]">
+        <p className="text-muted text-[14.5px] leading-relaxed mt-2 max-w-[70ch]">
           How closed trades performed when each condition held, against how they performed when it
           did not. A trade whose condition could not be verified is excluded from both sides rather
           than counted as absent. <span className="text-ink">This describes what happened alongside a
@@ -139,11 +139,11 @@ export function Analytics() {
             <div key={entry.metric} className="border-b border-hair py-5">
               <div className="flex items-baseline justify-between gap-4 flex-wrap">
                 <div className="flex items-baseline gap-4">
-                  <span className="num text-[11px] text-dim">{String(index + 1).padStart(2, '0')}</span>
-                  <span className="ser text-[17px]">{entry.label}</span>
+                  <span className="num text-[12.5px] text-dim">{String(index + 1).padStart(2, '0')}</span>
+                  <span className="ser text-[19px]">{entry.label}</span>
                 </div>
                 {entry.comparable ? (
-                  <span className={`num text-[15px] ${tone(entry.expectancyDelta)}`}>
+                  <span className={`num text-[17px] ${tone(entry.expectancyDelta)}`}>
                     {r(entry.expectancyDelta)} difference
                   </span>
                 ) : (
@@ -154,19 +154,19 @@ export function Analytics() {
               <div className="grid sm:grid-cols-2 gap-x-10 gap-y-3 mt-3 pl-0 sm:pl-[50px]">
                 <div className="grid grid-cols-[minmax(0,1fr)_46px_46px_60px] sm:grid-cols-[minmax(0,1fr)_60px_54px_66px] gap-2 sm:gap-3 items-baseline">
                   <span className="cap">Condition held</span>
-                  <span className="num text-right text-[13px]">{entry.present.trades}</span>
-                  <span className="num text-right text-[13px] text-faint">{pct(entry.present.winRate)}</span>
-                  <span className={`num text-right text-[13px] ${tone(entry.present.expectancy)}`}>{r(entry.present.expectancy)}</span>
+                  <span className="num text-right text-[15px]">{entry.present.trades}</span>
+                  <span className="num text-right text-[15px] text-faint">{pct(entry.present.winRate)}</span>
+                  <span className={`num text-right text-[15px] ${tone(entry.present.expectancy)}`}>{r(entry.present.expectancy)}</span>
                 </div>
                 <div className="grid grid-cols-[minmax(0,1fr)_46px_46px_60px] sm:grid-cols-[minmax(0,1fr)_60px_54px_66px] gap-2 sm:gap-3 items-baseline">
                   <span className="cap">Condition absent</span>
-                  <span className="num text-right text-[13px]">{entry.absent.trades}</span>
-                  <span className="num text-right text-[13px] text-faint">{pct(entry.absent.winRate)}</span>
-                  <span className={`num text-right text-[13px] ${tone(entry.absent.expectancy)}`}>{r(entry.absent.expectancy)}</span>
+                  <span className="num text-right text-[15px]">{entry.absent.trades}</span>
+                  <span className="num text-right text-[15px] text-faint">{pct(entry.absent.winRate)}</span>
+                  <span className={`num text-right text-[15px] ${tone(entry.absent.expectancy)}`}>{r(entry.absent.expectancy)}</span>
                 </div>
               </div>
 
-              <div className="text-dim text-[11px] mt-2.5 sm:pl-[50px]">
+              <div className="text-dim text-[12.5px] mt-2.5 sm:pl-[50px]">
                 Trades · win rate · expectancy
                 {entry.unverified > 0 && (
                   <> · <span className="text-watch">{entry.unverified} excluded — could not be verified</span></>
@@ -189,7 +189,7 @@ export function Analytics() {
             </div>
             {strategies.map((entry) => (
               <div key={entry.name} className="row grid-cols-[minmax(0,1fr)_70px_70px_80px_80px]">
-                <div className="ser text-[15px] truncate">{entry.name}</div>
+                <div className="ser text-[17px] truncate">{entry.name}</div>
                 <div className="num text-right">{entry.stats.trades}</div>
                 <div className="num text-right text-faint">{pct(entry.stats.winRate)}</div>
                 <div className={`num text-right ${tone(entry.stats.expectancy)}`}>{r(entry.stats.expectancy)}</div>
@@ -216,7 +216,7 @@ export function Analytics() {
         </div>
       )}
 
-      <p className="text-dim text-[11px] mt-14 leading-relaxed max-w-[70ch]">
+      <p className="text-dim text-[12.5px] mt-14 leading-relaxed max-w-[70ch]">
         Every figure is derived from outcomes you recorded, over {stats.trades} closed{' '}
         {stats.trades === 1 ? 'trade' : 'trades'}. Compliance and profitability are different
         questions: a perfectly followed strategy can still lose money, and a broken rule can still

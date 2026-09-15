@@ -35,7 +35,7 @@ body {
   color: var(--color-ink);
   /* Helvetica Neue first, so it is used where it exists. */
   font-family: 'Helvetica Neue', var(--font-sans), Helvetica, Arial, sans-serif;
-  font-size: 13px;
+  font-size: 15px;
   line-height: 1.55;
   -webkit-font-smoothing: antialiased;
 }
@@ -59,21 +59,25 @@ body {
   /* Document furniture: FIG numbers, AS OF lines, SOURCE attributions. */
   .doc {
     font-family: var(--font-mono), monospace;
-    font-size: 9px;
+    font-size: 10.5px;
     letter-spacing: 0.2em;
     text-transform: uppercase;
-    color: var(--color-dim);
+    color: var(--color-faint);
   }
 
   /* Section labels and status words. Never a sentence. */
   .cap {
     font-family: var(--font-mono), monospace;
-    font-size: 9px;
+    font-size: 10.5px;
     letter-spacing: 0.2em;
     text-transform: uppercase;
     color: var(--color-faint);
     font-weight: 400;
   }
+
+  /* Emphasis in running copy: the words a skim should land on. */
+  .em { color: var(--color-ink); font-weight: 500; font-style: normal; }
+  .ser .em, .ser.em { font-style: italic; font-weight: inherit; }
 
   /* Figures. Tabular so columns align on the decimal. */
   .num {
@@ -88,7 +92,7 @@ body {
     border: 1px solid var(--color-ink);
     border-radius: 0;
     color: var(--color-ink);
-    padding: 7px 10px;
+    padding: 9px 12px;
     font: inherit;
     outline: none;
   }
@@ -97,7 +101,7 @@ body {
 
   .field-label {
     display: block;
-    font-size: 9.5px;
+    font-size: 11px;
     letter-spacing: 0.22em;
     text-transform: uppercase;
     color: var(--color-faint);
@@ -108,17 +112,17 @@ body {
   .row {
     display: grid;
     align-items: center;
-    gap: 14px;
-    padding: 11px 0;
+    gap: 16px;
+    padding: 13px 0;
     border-bottom: 1px solid var(--color-hair);
-    min-height: 38px;
+    min-height: 44px;
   }
   .row:last-child { border-bottom: 0; }
   .row-head {
     min-height: 0;
     padding: 0 0 7px;
     border-bottom: 1px solid var(--color-ink);
-    font-size: 9.5px;
+    font-size: 11px;
     letter-spacing: 0.22em;
     text-transform: uppercase;
     color: var(--color-faint);
@@ -126,7 +130,7 @@ body {
 
   .kbd {
     font-family: var(--font-mono), monospace;
-    font-size: 9.5px;
+    font-size: 11px;
     letter-spacing: 0.14em;
     border: 1px solid var(--color-ink);
     padding: 3px 7px;

@@ -11,6 +11,7 @@ import { getMetric } from '@/lib/metrics/catalog';
 import { reduceImage } from '@/lib/images';
 import type { MetricDef } from '@/types/metrics';
 import { Button, Card, Empty } from '@/components/ui';
+import { BlankPage, AsideSection, AsideList, SpecimenTable } from '@/components/ui/blank-page';
 import { VerdictPanel } from './verdict-panel';
 
 const MAX_IMAGES = 4;
@@ -43,7 +44,7 @@ function Labeled({ label, hint, children }: { label: string; hint?: string; chil
     <label className="field-label block">
       {label}
       {children}
-      {hint && <span className="block text-faint font-normal text-[11px] mt-1.5">{hint}</span>}
+      {hint && <span className="block text-faint font-normal text-[12.5px] mt-1.5">{hint}</span>}
     </label>
   );
 }
@@ -204,14 +205,52 @@ export function OpportunityChecker() {
 
   if (strategies.length === 0) {
     return (
-      <Card>
-        <Empty>
-          You need an active trading strategy before you can check a setup.
-          <div className="mt-5">
-            <Link href="/strategies/new?mode=trading"><Button>Build one</Button></Link>
-          </div>
-        </Empty>
-      </Card>
+      <BlankPage
+        headline={<>Nothing to check <em className="em">against.</em></>}
+        lede={<>A setup is only judged against <strong className="em">your own rules</strong>. Write an active trading strategy first — then drop a chart here and every rule is marked <strong className="em">pass, fail, pending, or no data</strong>.</>}
+        actions={
+          <>
+            <Link href="/strategies/new?mode=trading"><Button>New trading strategy →</Button></Link>
+            <Link href="/strategies"><Button variant="secondary">Load examples</Button></Link>
+          </>
+        }
+        steps={[
+          { title: 'Choose a strategy.', body: 'Pick the active trading strategy this setup should follow.' },
+          { title: 'Show the chart.', body: 'Drop a screenshot, or mark what you see yourself — no AI needed. Add your entry, stop, and target.' },
+          { title: 'Read the verdict.', body: 'Each rule is checked in code. Anything that cannot be confirmed is never counted as a pass.' },
+        ]}
+        specimen={{
+          title: 'a compliance report',
+          body: (
+            <SpecimenTable
+              template="grid-cols-[34px_minmax(0,1fr)_120px_120px_80px]"
+              columns={['No.', 'Rule', 'Required', 'Observed', <span key="f" className="block text-right">Finding</span>]}
+              rows={([
+                ['Liquidity sweep of the Asian low', 'Present', 'Present', 'Pass', 'text-pass'],
+                ['Risk to reward', '≥ 2.5', '2.8', 'Pass', 'text-pass'],
+                ['Session', 'London open', '07:40', 'Pass', 'text-pass'],
+                ['Break of structure', 'Present', 'Not yet', 'Pending', 'text-watch'],
+              ] as const).map(([rule, required, observed, finding, tone], i) => [
+                <span key="n" className="doc">{String(i + 1).padStart(2, '0')}</span>,
+                <span key="r" className="ser text-[17px]">{rule}</span>,
+                <span key="q" className="num text-[14px] text-muted">{required}</span>,
+                <span key="o" className="num text-[14px]">{observed}</span>,
+                <span key="f" className={`cap block text-right ${tone}`}>{finding}</span>,
+              ])}
+            />
+          ),
+        }}
+        aside={
+          <AsideSection label="The four verdicts">
+            <AsideList items={[
+              { term: 'Qualified', detail: 'Every required rule passed.' },
+              { term: 'Watch', detail: 'Nothing broken, but something is not confirmed yet.' },
+              { term: 'Rejected', detail: 'A required rule was broken.' },
+              { term: 'Insufficient data', detail: 'A required rule could not be verified either way.' },
+            ]} />
+          </AsideSection>
+        }
+      />
     );
   }
 
@@ -271,7 +310,7 @@ export function OpportunityChecker() {
           {structural.length > 0 && (
             <div>
               <div className="doc mb-1">What you see</div>
-              <p className="text-faint text-[11.5px] leading-snug mb-2">
+              <p className="text-faint text-[13px] leading-snug mb-2">
                 Mark what's on your chart. Not sure stays as no data — it is never counted as a pass.
               </p>
               <div className="border-t border-ink">
@@ -285,7 +324,7 @@ export function OpportunityChecker() {
                   ];
                   return (
                     <div key={metric.id} className="py-2.5 border-b border-hair">
-                      <div className="text-[12.5px]">{label}</div>
+                      <div className="text-[14.5px]">{label}</div>
                       <div className="flex flex-wrap gap-1.5 mt-1.5" role="radiogroup" aria-label={label}>
                         {options.map((option) => {
                           const active = current === option.value;
@@ -356,7 +395,7 @@ export function OpportunityChecker() {
             {error && <p className="text-fail mt-3">{error}</p>}
           </div>
 
-          <p className="text-faint text-[12px] leading-relaxed">
+          <p className="text-faint text-[14px] leading-relaxed">
             Risk/reward is calculated from your levels by the app, never read from the chart or
             supplied by a model.
           </p>

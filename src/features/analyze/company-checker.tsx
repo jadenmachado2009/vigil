@@ -9,6 +9,7 @@ import type { ObservationSet } from '@/types/observations';
 import { strategyRepository, analysisRepository } from '@/lib/repository/client';
 import { getMetric } from '@/lib/metrics/catalog';
 import { Button, Card, Empty } from '@/components/ui';
+import { BlankPage, AsideSection, AsideList } from '@/components/ui/blank-page';
 import { VerdictPanel } from './verdict-panel';
 import { DcfPanel } from './dcf-panel';
 import { NewsStrip } from './news-strip';
@@ -126,14 +127,31 @@ export function CompanyChecker() {
 
   if (strategies.length === 0) {
     return (
-      <Card>
-        <Empty>
-          You need an active investment strategy before you can check a company.
-          <div className="mt-5">
-            <Link href="/strategies/new?mode=investing"><Button>Build one</Button></Link>
-          </div>
-        </Empty>
-      </Card>
+      <BlankPage
+        headline={<>Nothing to measure <em className="em">against.</em></>}
+        lede={<>A company is only judged against <strong className="em">your own criteria</strong>. Write an active investing strategy first — then search a ticker and each criterion is checked against <strong className="em">reported figures</strong>.</>}
+        actions={
+          <>
+            <Link href="/strategies/new?mode=investing"><Button>New investing strategy →</Button></Link>
+            <Link href="/strategies"><Button variant="secondary">Load examples</Button></Link>
+          </>
+        }
+        steps={[
+          { title: 'Choose a strategy.', body: 'Pick the active investing strategy this company should meet.' },
+          { title: 'Search a ticker.', body: 'Fundamentals are pulled and derived figures — PEG, margins — are calculated in code, not guessed.' },
+          { title: 'Read the report.', body: 'Criteria, a valuation alongside, and recent headlines. A missing figure is reported as missing.' },
+        ]}
+        aside={
+          <AsideSection label="The four verdicts">
+            <AsideList items={[
+              { term: 'Qualified', detail: 'Every required criterion passed.' },
+              { term: 'Watch', detail: 'Nothing broken, but something is not confirmed yet.' },
+              { term: 'Rejected', detail: 'A required criterion was broken.' },
+              { term: 'Insufficient data', detail: 'A required figure was not available.' },
+            ]} />
+          </AsideSection>
+        }
+      />
     );
   }
 
@@ -174,8 +192,8 @@ export function CompanyChecker() {
                     onClick={() => { setTicker(s.ticker); setShowSuggestions(false); }}
                     className="w-full text-left px-3 py-2 hover:bg-[#e9e6df] cursor-pointer flex items-baseline gap-2 font-normal"
                   >
-                    <span className="num text-ink text-[13px] w-16 shrink-0">{s.ticker}</span>
-                    <span className="text-muted text-[13px] truncate">{s.name}</span>
+                    <span className="num text-ink text-[15px] w-16 shrink-0">{s.ticker}</span>
+                    <span className="text-muted text-[15px] truncate">{s.name}</span>
                   </button>
                 ))}
               </div>
@@ -185,7 +203,7 @@ export function CompanyChecker() {
           {qualitativeRules.length > 0 && (
             <div className="border-t border-rule pt-4">
               <div className="cap">Your judgement</div>
-              <p className="text-dim text-[11px] mt-1 leading-snug">
+              <p className="text-dim text-[12.5px] mt-1 leading-snug">
                 Unanswered reports as no data, never as a pass.
               </p>
               <div className="mt-3 flex flex-col gap-3">
@@ -211,10 +229,10 @@ export function CompanyChecker() {
             <Button onClick={run} disabled={running || !ticker.trim()} className="w-full">
               {running ? 'Fetching and checking…' : 'Check against strategy'}
             </Button>
-            {error && <p className="text-fail mt-3 text-[13px]">{error}</p>}
+            {error && <p className="text-fail mt-3 text-[15px]">{error}</p>}
           </div>
 
-          <p className="text-dim text-[11px] leading-snug">
+          <p className="text-dim text-[12.5px] leading-snug">
             Ratios are compared by the app. No model judges a valuation.
           </p>
         </div>
@@ -225,10 +243,10 @@ export function CompanyChecker() {
           <Card className="px-5 py-4">
             <div className="flex items-baseline justify-between gap-4 flex-wrap">
               <div className="min-w-0">
-                <span className="num text-[14px] font-semibold">{result.company.ticker}</span>
-                <span className="text-muted ml-3 text-[14px]">{result.company.name}</span>
+                <span className="num text-[16px] font-semibold">{result.company.ticker}</span>
+                <span className="text-muted ml-3 text-[16px]">{result.company.name}</span>
               </div>
-              <div className="flex items-baseline gap-5 text-[12px]">
+              <div className="flex items-baseline gap-5 text-[14px]">
                 {result.company.sector && <span className="text-faint">{result.company.sector}</span>}
                 {result.company.price !== undefined && (
                   <span className="num text-[#c3ccd5]">

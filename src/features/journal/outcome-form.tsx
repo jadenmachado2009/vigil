@@ -140,12 +140,12 @@ export function OutcomeForm({
                 <div className="cap">R multiple — computed</div>
                 {canCompute ? (
                   <>
-                    <div className={`num text-[26px] mt-1.5 ${
+                    <div className={`num text-[30px] mt-1.5 ${
                       rMultiple === null ? 'text-dim' : rMultiple > 0 ? 'text-pass' : rMultiple < 0 ? 'text-fail' : ''
                     }`}>
                       {rMultiple === null ? '—' : `${rMultiple > 0 ? '+' : ''}${formatRatio(rMultiple)}R`}
                     </div>
-                    <p className="text-muted text-[11.5px] mt-1.5 leading-snug">
+                    <p className="text-muted text-[13px] mt-1.5 leading-snug">
                       From entry <span className="num">{formatFigure(entry as number)}</span> and stop{' '}
                       <span className="num">{formatFigure(stop as number)}</span>. Never typed in.
                       {suggestion && suggestion !== status && (
@@ -155,7 +155,7 @@ export function OutcomeForm({
                     </p>
                   </>
                 ) : (
-                  <p className="text-muted text-[11.5px] mt-1.5 leading-snug">
+                  <p className="text-muted text-[13px] mt-1.5 leading-snug">
                     This analysis has no entry and stop on record, so no R multiple can be derived.
                     It will be logged without one rather than with a guess.
                   </p>
@@ -177,7 +177,7 @@ export function OutcomeForm({
           </label>
           <div>
             <div className="cap">Return — computed</div>
-            <div className={`num text-[26px] mt-1.5 ${
+            <div className={`num text-[30px] mt-1.5 ${
               returnPercent === null ? 'text-dim' : returnPercent > 0 ? 'text-pass' : returnPercent < 0 ? 'text-fail' : ''
             }`}>
               {returnPercent === null ? '—' : `${returnPercent > 0 ? '+' : ''}${formatPercent(returnPercent)}`}
@@ -205,7 +205,7 @@ export function OutcomeForm({
         {existing && (
           <Button variant="ghost" onClick={() => void onClear()} disabled={busy}>Clear</Button>
         )}
-        <span className="text-dim text-[11px]">The verdict above is never rewritten.</span>
+        <span className="text-dim text-[12.5px]">The verdict above is never rewritten.</span>
       </div>
     </div>
   );

@@ -26,7 +26,7 @@ export function RuleEditor({ rule, onChange, onRemove }: Props) {
       <div className="flex flex-wrap items-center gap-x-3 gap-y-2.5">
         <div className="min-w-[160px] flex-1">
           <div>{metric?.label ?? rule.metric}</div>
-          {metric && <div className="text-dim text-[11px] mt-0.5 leading-snug">{metric.description}</div>}
+          {metric && <div className="text-dim text-[12.5px] mt-0.5 leading-snug">{metric.description}</div>}
         </div>
 
         {/* --- condition --------------------------------------------------- */}
@@ -50,7 +50,7 @@ export function RuleEditor({ rule, onChange, onRemove }: Props) {
                   value={Number.isFinite(rule.value) ? rule.value : ''}
                   onChange={(e) => onChange({ ...rule, value: e.target.value === '' ? NaN : Number(e.target.value) })}
                 />
-                {unitSuffix && <span className="absolute right-2.5 top-1/2 -translate-y-1/2 text-faint text-[12px]">{unitSuffix}</span>}
+                {unitSuffix && <span className="absolute right-2.5 top-1/2 -translate-y-1/2 text-faint text-[14px]">{unitSuffix}</span>}
               </div>
             </>
           )}
@@ -123,12 +123,12 @@ export function RuleEditor({ rule, onChange, onRemove }: Props) {
           type="button"
           onClick={onRemove}
           aria-label={`Remove ${metric?.label ?? rule.metric}`}
-          className="text-dim hover:text-fail px-1.5 cursor-pointer text-[15px] leading-none"
+          className="text-dim hover:text-fail px-1.5 cursor-pointer text-[17px] leading-none"
         >
           ×
         </button>
       </div>
-      {problem && <div className="text-watch text-[12px] mt-1.5">{problem}</div>}
+      {problem && <div className="text-watch text-[14px] mt-1.5">{problem}</div>}
     </div>
   );
 }

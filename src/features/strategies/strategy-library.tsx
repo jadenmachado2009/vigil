@@ -34,8 +34,8 @@ export function StrategyLibrary() {
   if (items.length === 0) {
     return (
       <BlankPage
-        headline="No mandate on file."
-        lede="A strategy is the written framework you trade or invest by. Vigil holds you to it — every opportunity you check is measured against these rules, and nothing else."
+        headline={<>No mandate <em className="em">on file.</em></>}
+        lede={<>A strategy is the <strong className="em">written framework</strong> you trade or invest by. Vigil <strong className="em">holds you to it</strong> — every opportunity you check is measured against these rules, and nothing else.</>}
         actions={
           <>
             <Link href="/strategies/new?mode=trading"><Button>New trading strategy →</Button></Link>
@@ -61,10 +61,10 @@ export function StrategyLibrary() {
                 ['Higher-timeframe breakout', 'trading', 6, 3, 'inactive'],
               ].map(([name, mode, rules, required, status], i) => [
                 <span key="n" className="doc">{String(i + 1).padStart(2, '0')}</span>,
-                <span key="m" className="ser text-[18px]">{name}</span>,
+                <span key="m" className="ser text-[20px]">{name}</span>,
                 <span key="o" className="cap">{mode}</span>,
-                <span key="c" className="num block text-right text-[12.5px] text-muted">{String(rules).padStart(2, '0')}</span>,
-                <span key="r" className="num block text-right text-[12.5px] text-muted">{String(required).padStart(2, '0')}</span>,
+                <span key="c" className="num block text-right text-[14.5px] text-muted">{String(rules).padStart(2, '0')}</span>,
+                <span key="r" className="num block text-right text-[14.5px] text-muted">{String(required).padStart(2, '0')}</span>,
                 <span key="s" className={`cap block text-right ${status === 'active' ? '!text-pass' : ''}`}>{status}</span>,
               ])}
             />
@@ -81,13 +81,13 @@ export function StrategyLibrary() {
               ]} />
             </AsideSection>
             <AsideSection label="Versions">
-              <p className="text-muted text-[12px] leading-relaxed">
+              <p className="text-muted text-[14px] leading-relaxed">
                 Editing a strategy writes a new version. Past checks keep the exact rules they were
                 judged against, so the record never changes underneath you.
               </p>
             </AsideSection>
             <AsideSection label="Examples">
-              <p className="text-muted text-[12px] leading-relaxed">
+              <p className="text-muted text-[14px] leading-relaxed">
                 Two worked examples — a New York morning fair value gap setup and a quality growth
                 screen — can be loaded, edited, or deleted.
               </p>
@@ -111,7 +111,7 @@ export function StrategyLibrary() {
           onChange={(v) => setFilter(v as Filter)}
           options={[{ value: 'active', label: 'Active' }, { value: 'all', label: 'All' }, { value: 'archived', label: 'Archived' }]}
         />
-        <span className="text-faint text-[12px]">{visible.length} shown</span>
+        <span className="text-faint text-[14px]">{visible.length} shown</span>
       </div>
 
       {visible.length === 0 ? (
@@ -133,18 +133,18 @@ export function StrategyLibrary() {
                 <div key={strategy.id} className="row grid-cols-[30px_minmax(0,1fr)_96px_84px_92px_78px_minmax(0,220px)]">
                   <div className="doc">{String(index + 1).padStart(2, '0')}</div>
                   <div className="min-w-0">
-                    <Link href={`/strategies/${strategy.id}`} className="ser text-[18px] hover:underline underline-offset-4">
+                    <Link href={`/strategies/${strategy.id}`} className="ser text-[20px] hover:underline underline-offset-4">
                       {strategy.name}
                     </Link>
                     {strategy.description && (
-                      <div className="text-muted text-[12px] truncate mt-0.5">{strategy.description}</div>
+                      <div className="text-muted text-[14px] truncate mt-0.5">{strategy.description}</div>
                     )}
                   </div>
                   <div className="cap">{strategy.mode}</div>
-                  <div className="num text-right text-[12.5px] text-muted">
+                  <div className="num text-right text-[14.5px] text-muted">
                     {String(version.rules.length).padStart(2, '0')}
                   </div>
-                  <div className="num text-right text-[12.5px] text-muted">{String(mandatory).padStart(2, '0')}</div>
+                  <div className="num text-right text-[14.5px] text-muted">{String(mandatory).padStart(2, '0')}</div>
                   <div className={`cap text-right ${strategy.status === 'active' ? '!text-pass' : ''}`}>
                     {strategy.status}
                   </div>

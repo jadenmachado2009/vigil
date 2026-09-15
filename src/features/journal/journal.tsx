@@ -81,8 +81,8 @@ export function Journal() {
   if (all.length === 0) {
     return (
       <BlankPage
-        headline="The ledger is open. Nothing entered."
-        lede="The journal fills itself. Every opportunity you check is recorded here with the verdict and the rule findings behind it — you add what happened afterwards."
+        headline={<>The ledger is open. <em className="em">Nothing entered.</em></>}
+        lede={<>The journal <strong className="em">fills itself</strong>. Every opportunity you check is recorded here with the verdict and the rule findings behind it — you add <strong className="em">what happened afterwards</strong>.</>}
         actions={
           <>
             <Link href="/analyze"><Button>{isTrading ? 'Analyze opportunity' : 'Analyze company'} →</Button></Link>
@@ -110,11 +110,11 @@ export function Journal() {
                 ['09 SEP', 'XAU/USD', 'London open sweep', 'WATCH', '3.1x', 'Open', 'text-watch'],
                 ['05 SEP', 'GBP/JPY', 'London open sweep', 'QUALIFIED', '2.5x', '−1R', 'text-fail'],
               ] as const).map(([date, asset, strategy, verdict, rr, outcome, tone]) => [
-                <span key="d" className="num text-[11.5px] text-faint">{date}</span>,
-                <span key="a" className="ser text-[16px]">{asset}</span>,
-                <span key="s" className="text-muted text-[12px]">{strategy}</span>,
+                <span key="d" className="num text-[13px] text-faint">{date}</span>,
+                <span key="a" className="ser text-[18px]">{asset}</span>,
+                <span key="s" className="text-muted text-[14px]">{strategy}</span>,
                 <span key="v" className="block text-right"><VerdictPill verdict={verdict} /></span>,
-                <span key="r" className="num block text-right text-[12.5px] text-muted">{rr}</span>,
+                <span key="r" className="num block text-right text-[14.5px] text-muted">{rr}</span>,
                 <span key="o" className={`cap block text-right ${tone}`}>{outcome}</span>,
               ])}
             />
@@ -131,7 +131,7 @@ export function Journal() {
               ]} />
             </AsideSection>
             <AsideSection label="Why outcomes matter">
-              <p className="text-muted text-[12px] leading-relaxed">
+              <p className="text-muted text-[14px] leading-relaxed">
                 A verdict says whether an opportunity followed your rules. Only the outcome says
                 whether following them paid. Without outcomes, nothing can be measured.
               </p>
@@ -147,19 +147,19 @@ export function Journal() {
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 border-t border-ink pt-3">
         <div>
           <div className="cap">Checked</div>
-          <div className="num text-[28px] mt-1.5 leading-none">{all.length}</div>
+          <div className="num text-[32px] mt-1.5 leading-none">{all.length}</div>
         </div>
         <div>
           <div className="cap">Taken</div>
-          <div className="num text-[28px] mt-1.5 leading-none">{settled.taken}</div>
+          <div className="num text-[32px] mt-1.5 leading-none">{settled.taken}</div>
         </div>
         <div>
           <div className="cap">Closed</div>
-          <div className="num text-[28px] mt-1.5 leading-none">{settled.closedCount}</div>
+          <div className="num text-[32px] mt-1.5 leading-none">{settled.closedCount}</div>
         </div>
         <div>
           <div className="cap">Settled R — sum</div>
-          <div className={`num text-[28px] mt-1.5 leading-none ${
+          <div className={`num text-[32px] mt-1.5 leading-none ${
             settled.closedCount === 0 ? 'text-dim' : settled.totalR > 0 ? 'text-pass' : settled.totalR < 0 ? 'text-fail' : ''
           }`}>
             {settled.closedCount === 0 ? '—' : `${settled.totalR > 0 ? '+' : ''}${formatRatio(settled.totalR)}R`}
@@ -167,7 +167,7 @@ export function Journal() {
         </div>
       </div>
       {settled.pending > 0 && (
-        <p className="text-muted text-[12px] mt-3">
+        <p className="text-muted text-[14px] mt-3">
           {settled.pending} {settled.pending === 1 ? 'entry has' : 'entries have'} no outcome recorded.
           Until {settled.pending === 1 ? 'it does' : 'they do'}, nothing here can say whether your
           rules earn their place.
@@ -215,20 +215,20 @@ export function Journal() {
                 onClick={() => setOpenId(open ? null : record.id)}
                 className={`row w-full text-left cursor-pointer ${COLUMNS} hover:bg-paper-2 ${open ? '!border-b-0' : ''}`}
               >
-                <div className="num text-[11.5px] text-faint whitespace-nowrap">
+                <div className="num text-[13px] text-faint whitespace-nowrap">
                   {new Date(record.createdAt).toLocaleDateString('en-GB', { day: '2-digit', month: 'short' }).toUpperCase()}
                 </div>
-                <div className="ser text-[16px] truncate">{record.subject}</div>
-                <div className="text-muted truncate text-[12px]">
+                <div className="ser text-[18px] truncate">{record.subject}</div>
+                <div className="text-muted truncate text-[14px]">
                   {record.strategyName} <span className="num text-dim">v{record.strategyVersion}</span>
                 </div>
                 <div className="text-right"><VerdictPill verdict={record.verdict} /></div>
-                <div className="num text-right text-[12.5px] text-muted">
+                <div className="num text-right text-[14.5px] text-muted">
                   {isTrading
                     ? (observed(record, 'entry') !== null ? formatFigure(observed(record, 'entry') as number) : '—')
                     : (observed(record, 'pe') !== null ? formatFigure(observed(record, 'pe') as number) : '—')}
                 </div>
-                <div className="num text-right text-[12.5px] text-muted">
+                <div className="num text-right text-[14.5px] text-muted">
                   {isTrading
                     ? (typeof record.computed['rr'] === 'number' ? `${formatRatio(record.computed['rr'])}x` : '—')
                     : (observed(record, 'forward_pe') !== null ? `${formatRatio(observed(record, 'forward_pe') as number)}x` : '—')}
@@ -266,7 +266,7 @@ export function Journal() {
                       </div>
                     )}
                     {record.notes && (
-                      <p className="text-muted text-[12px] mt-4 leading-relaxed">{record.notes}</p>
+                      <p className="text-muted text-[14px] mt-4 leading-relaxed">{record.notes}</p>
                     )}
                   </div>
                   <div className="border-t border-ink pt-4">

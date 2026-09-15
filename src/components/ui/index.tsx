@@ -17,7 +17,7 @@ export function Button({ variant = 'primary', className = '', ...rest }: ButtonP
   return (
     <button
       {...rest}
-      className={`px-4 py-2 cursor-pointer transition-colors uppercase tracking-[0.18em] text-[9.5px] disabled:opacity-40 disabled:cursor-not-allowed ${VARIANTS[variant]} ${className}`}
+      className={`px-4 py-2 cursor-pointer transition-colors uppercase tracking-[0.18em] text-[11px] disabled:opacity-40 disabled:cursor-not-allowed ${VARIANTS[variant]} ${className}`}
     />
   );
 }

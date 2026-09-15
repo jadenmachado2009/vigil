@@ -16,8 +16,8 @@ export function Procedure({ steps, className = '' }: { steps: Step[]; className?
             className="border-b border-hair md:border-b-0 md:border-r md:last:border-r-0 py-5 md:px-5 md:first:pl-0"
           >
             <div className="doc">{pad(index + 1)}</div>
-            <div className="ser text-[19px] leading-tight mt-2">{step.title}</div>
-            <p className="text-muted text-[12.5px] leading-relaxed mt-2">{step.body}</p>
+            <div className="ser text-[22px] leading-tight mt-2">{step.title}</div>
+            <p className="text-muted text-[14.5px] leading-relaxed mt-2">{step.body}</p>
           </li>
         ))}
       </ol>
@@ -41,7 +41,7 @@ export function AsideList({ items }: { items: { term: string; detail: string }[]
       {items.map((item) => (
         <div key={item.term} className="border-b border-hair py-2.5">
           <dt className="cap !text-ink">{item.term}</dt>
-          <dd className="text-muted text-[12px] leading-relaxed mt-1">{item.detail}</dd>
+          <dd className="text-muted text-[14px] leading-relaxed mt-1">{item.detail}</dd>
         </div>
       ))}
     </dl>
@@ -92,7 +92,7 @@ export function BlankPage({ headline, lede, actions, steps, after, specimen, asi
   return (
     <div className="grid lg:grid-cols-[65fr_35fr] gap-x-16 gap-y-12 items-start">
       <div className="min-w-0">
-        <div className="ser text-[40px] leading-[1.08] font-light max-w-[20ch]">{headline}</div>
+        <div className="ser text-[48px] leading-[1.08] font-light max-w-[20ch]">{headline}</div>
         <p className="text-muted leading-relaxed mt-5 max-w-[58ch]">{lede}</p>
         {actions && <div className="flex flex-wrap gap-3 mt-7">{actions}</div>}
 

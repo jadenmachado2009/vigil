@@ -35,18 +35,18 @@ export function RuleTable({ results }: { results: RuleResult[] }) {
         const broke = result.status === 'FAIL';
         return (
           <div key={result.ruleId} className={`row ${COLUMNS} !items-start`}>
-            <div className={`num text-[11px] ${broke ? 'text-fail' : 'text-dim'}`}>
+            <div className={`num text-[12.5px] ${broke ? 'text-fail' : 'text-dim'}`}>
               {String(index + 1).padStart(2, '0')}
             </div>
             <div className="min-w-0">
-              <div className={`ser text-[15px] ${broke ? 'text-fail' : ''}`}>
+              <div className={`ser text-[17px] ${broke ? 'text-fail' : ''}`}>
                 {result.label}
                 {!result.mandatory && <span className="cap ml-2">Optional</span>}
                 {result.mandatory && result.onFail === 'watch' && (
                   <span className="cap ml-2 !text-watch">Fails to watch</span>
                 )}
               </div>
-              <div className="text-muted text-[12px] leading-snug mt-1">
+              <div className="text-muted text-[14px] leading-snug mt-1">
                 {result.reason}
                 {result.source && <span className="text-dim"> · {SOURCE_LABEL[result.source]}</span>}
                 {result.stale && <span className="text-watch"> · Stale</span>}

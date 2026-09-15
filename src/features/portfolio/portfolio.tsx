@@ -35,7 +35,7 @@ function LimitField({ label, value, onChange, hint }: {
         placeholder="not set"
         onChange={(e) => onChange(e.target.value === '' ? undefined : Number(e.target.value))}
       />
-      <span className="block text-faint font-normal text-[11px] mt-1.5 normal-case tracking-normal">{hint}</span>
+      <span className="block text-faint font-normal text-[12.5px] mt-1.5 normal-case tracking-normal">{hint}</span>
     </label>
   );
 }
@@ -77,7 +77,7 @@ export function PortfolioScreen() {
     <div className="grid lg:grid-cols-[65fr_35fr] gap-x-16 gap-y-12 items-start">
       <div>
         {/* The finding first. */}
-        <div className={`ser text-[38px] leading-[1.08] font-light max-w-[20ch] ${breaches.length ? 'text-fail' : 'text-muted'}`}>
+        <div className={`ser text-[44px] leading-[1.08] font-light max-w-[20ch] ${breaches.length ? 'text-fail' : 'text-muted'}`}>
           {breaches.length === 0
             ? <>Within <span className="text-ink">every limit</span> you set.</>
             : <>{breaches.length === 1 ? 'One limit' : `${breaches.length} limits`} breached.</>}
@@ -90,16 +90,16 @@ export function PortfolioScreen() {
                 <span className="doc text-fail">{String(i + 1).padStart(2, '0')}</span>
                 <div>
                   <div className="cap !text-fail">Portfolio rule violation</div>
-                  <div className="mt-1 text-[13px]">{v.message}</div>
+                  <div className="mt-1 text-[15px]">{v.message}</div>
                 </div>
-                <div className="text-right"><div className="doc">Limit</div><div className="num text-[13px] mt-1">{v.limit}</div></div>
-                <div className="text-right"><div className="doc">Actual</div><div className="num text-[13px] mt-1 text-fail">{v.actual}</div></div>
+                <div className="text-right"><div className="doc">Limit</div><div className="num text-[15px] mt-1">{v.limit}</div></div>
+                <div className="text-right"><div className="doc">Actual</div><div className="num text-[15px] mt-1 text-fail">{v.actual}</div></div>
               </div>
             ))}
             {notes.map((v, i) => (
               <div key={`n${i}`} className="row grid-cols-[30px_minmax(0,1fr)] !py-3 !items-start">
                 <span className="doc">–</span>
-                <div className="text-muted text-[12.5px]">{v.message}</div>
+                <div className="text-muted text-[14.5px]">{v.message}</div>
               </div>
             ))}
           </div>
@@ -124,7 +124,7 @@ export function PortfolioScreen() {
                 <div className="relative">
                   <input className="field num !py-1.5 text-right pr-6" type="number" step="any" min="0" value={p.weight}
                     onChange={(e) => setPosition(i, { weight: Number(e.target.value) })} />
-                  <span className="absolute right-2.5 top-1/2 -translate-y-1/2 text-dim text-[11px]">%</span>
+                  <span className="absolute right-2.5 top-1/2 -translate-y-1/2 text-dim text-[12.5px]">%</span>
                 </div>
                 <button type="button" aria-label={`Remove ${p.ticker}`} className="text-dim hover:text-fail cursor-pointer"
                   onClick={() => update({ positions: portfolio.positions.filter((_, j) => j !== i) })}>×</button>
@@ -134,7 +134,7 @@ export function PortfolioScreen() {
           <div className="row grid-cols-[minmax(0,1fr)_90px_28px] !py-2.5 !border-b-0">
             <button type="button" className="cap text-left hover:!text-ink cursor-pointer"
               onClick={() => update({ positions: [...portfolio.positions, { ticker: '', weight: 0 }] })}>+ Add position</button>
-            <span className={`num text-right text-[12.5px] ${Math.abs(review.cashWeight + review.investedWeight - 100) > 0.5 ? 'text-watch' : 'text-muted'}`}>
+            <span className={`num text-right text-[14.5px] ${Math.abs(review.cashWeight + review.investedWeight - 100) > 0.5 ? 'text-watch' : 'text-muted'}`}>
               {pct(review.cashWeight + review.investedWeight)}
             </span>
             <span />
@@ -163,7 +163,7 @@ export function PortfolioScreen() {
               <LimitField label="Max positions" value={portfolio.limits.maxPositions}
                 onChange={(v) => setLimit({ maxPositions: v })} hint="Excluding cash." />
             </div>
-            <p className="text-dim text-[11px] leading-snug">A limit left blank is not checked. Nothing is assumed.</p>
+            <p className="text-dim text-[12.5px] leading-snug">A limit left blank is not checked. Nothing is assumed.</p>
           </div>
         </section>
 
@@ -172,7 +172,7 @@ export function PortfolioScreen() {
           <div className="border-t border-ink mt-2">
             <div className="row grid-cols-[minmax(0,1fr)_70px] !py-2.5">
               <span className="cap !text-ink">Cash</span>
-              <span className="num text-right text-[12.5px]">{pct(review.cashWeight)}</span>
+              <span className="num text-right text-[14.5px]">{pct(review.cashWeight)}</span>
             </div>
             {review.sectors.map((s) => {
               const over = portfolio.limits.maxSectorExposure !== undefined && s.sector !== 'Unknown' && s.weight > portfolio.limits.maxSectorExposure;
@@ -182,7 +182,7 @@ export function PortfolioScreen() {
                     <div className={`cap ${over ? '!text-fail' : '!text-ink'}`}>{s.sector}</div>
                     <div className="doc mt-1 truncate">{s.tickers.join(' · ')}</div>
                   </div>
-                  <span className={`num text-right text-[12.5px] ${over ? 'text-fail' : ''}`}>{pct(s.weight)}</span>
+                  <span className={`num text-right text-[14.5px] ${over ? 'text-fail' : ''}`}>{pct(s.weight)}</span>
                 </div>
               );
             })}
@@ -191,7 +191,7 @@ export function PortfolioScreen() {
 
         <section className="border-t border-rule pt-3">
           <div className="doc">Method</div>
-          <p className="text-muted text-[12px] mt-1.5 leading-relaxed">
+          <p className="text-muted text-[14px] mt-1.5 leading-relaxed">
             Holdings are measured against limits you wrote. A breach reports the limit and the actual
             figure. Vigil does not suggest what to buy or sell.
           </p>

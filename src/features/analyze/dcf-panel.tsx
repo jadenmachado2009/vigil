@@ -25,9 +25,9 @@ function Field({ label, value, onChange, suffix, hint }: {
       <div className="relative mt-1.5">
         <input className={`field num !py-1.5 ${suffix ? 'pr-7' : ''}`} type="number" step="any" value={value}
           onChange={(e) => onChange(e.target.value)} />
-        {suffix && <span className="absolute right-2.5 top-1/2 -translate-y-1/2 text-dim text-[11px]">{suffix}</span>}
+        {suffix && <span className="absolute right-2.5 top-1/2 -translate-y-1/2 text-dim text-[12.5px]">{suffix}</span>}
       </div>
-      {hint && <span className="block text-faint font-normal text-[11px] mt-1 normal-case tracking-normal">{hint}</span>}
+      {hint && <span className="block text-faint font-normal text-[12.5px] mt-1 normal-case tracking-normal">{hint}</span>}
     </label>
   );
 }
@@ -85,32 +85,32 @@ export function DcfPanel({ observedFcf, price, currency }: {
           </div>
 
           <div>
-            {!ready && <p className="text-muted text-[12.5px]">Enter free cash flow and shares outstanding.</p>}
-            {out && 'problem' in out && <p className="text-watch text-[12.5px]">{PROBLEM_TEXT[out.problem]}</p>}
+            {!ready && <p className="text-muted text-[14.5px]">Enter free cash flow and shares outstanding.</p>}
+            {out && 'problem' in out && <p className="text-watch text-[14.5px]">{PROBLEM_TEXT[out.problem]}</p>}
             {out && !('problem' in out) && (
               <>
                 <div className="doc">Implied value per share</div>
-                <div className="num text-[30px] leading-none mt-2">
-                  {formatRatio(out.perShare, 2)} <span className="text-dim text-[14px]">{currency ?? ''}</span>
+                <div className="num text-[34px] leading-none mt-2">
+                  {formatRatio(out.perShare, 2)} <span className="text-dim text-[16px]">{currency ?? ''}</span>
                 </div>
                 {out.impliedDifferencePercent !== null && (
-                  <div className={`num text-[13px] mt-2 ${out.impliedDifferencePercent > 0 ? 'text-pass' : out.impliedDifferencePercent < 0 ? 'text-fail' : ''}`}>
+                  <div className={`num text-[15px] mt-2 ${out.impliedDifferencePercent > 0 ? 'text-pass' : out.impliedDifferencePercent < 0 ? 'text-fail' : ''}`}>
                     {out.impliedDifferencePercent > 0 ? '+' : ''}{formatPercent(out.impliedDifferencePercent)} against the price of {formatRatio(price as number, 2)}
                   </div>
                 )}
-                <div className="border-t border-hair mt-4 pt-3 grid grid-cols-2 gap-y-2 text-[12px]">
+                <div className="border-t border-hair mt-4 pt-3 grid grid-cols-2 gap-y-2 text-[14px]">
                   <span className="text-muted">PV of forecast</span><span className="num text-right">{money(out.presentValueOfForecast)}</span>
                   <span className="text-muted">PV of terminal</span><span className="num text-right">{money(out.presentValueOfTerminal)}</span>
                   <span className="text-muted">Enterprise value</span><span className="num text-right">{money(out.enterpriseValue)}</span>
                   <span className="text-muted">Equity value</span><span className="num text-right">{money(out.equityValue)}</span>
                 </div>
-                <p className={`text-[11.5px] mt-3 leading-snug ${out.terminalShare > 75 ? 'text-watch' : 'text-faint'}`}>
+                <p className={`text-[13px] mt-3 leading-snug ${out.terminalShare > 75 ? 'text-watch' : 'text-faint'}`}>
                   {formatPercent(out.terminalShare, 0)} of this value rests on the terminal assumption — the part least
                   supported by evidence.
                 </p>
               </>
             )}
-            <p className="text-dim text-[11px] mt-4 leading-snug">
+            <p className="text-dim text-[12.5px] mt-4 leading-snug">
               Arithmetic on assumptions you entered. Vigil chose none of them and does not judge the result.
             </p>
           </div>

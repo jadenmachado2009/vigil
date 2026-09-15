@@ -176,7 +176,7 @@ export function StrategyBuilder({ initial }: { initial: BuilderInitial }) {
 
         <SectionHead
           title="Rules"
-          action={<span className="num text-[11px] text-dim">{rules.length} rules · {mandatoryCount} required</span>}
+          action={<span className="num text-[12.5px] text-dim">{rules.length} rules · {mandatoryCount} required</span>}
         />
         <Card>
           {rules.length === 0 ? (
@@ -199,13 +199,13 @@ export function StrategyBuilder({ initial }: { initial: BuilderInitial }) {
           </Button>
           <Button variant="secondary" onClick={() => router.push('/strategies')}>Cancel</Button>
           {!canSave && rules.length > 0 && mandatoryCount === 0 && (
-            <span className="text-watch text-[12px]">At least one rule must be required, or no verdict can be reached.</span>
+            <span className="text-watch text-[14px]">At least one rule must be required, or no verdict can be reached.</span>
           )}
-          {problems > 0 && <span className="text-watch text-[12px]">{problems} rule{problems > 1 ? 's' : ''} still need values.</span>}
-          {error && <span className="text-fail text-[12px]">{error}</span>}
+          {problems > 0 && <span className="text-watch text-[14px]">{problems} rule{problems > 1 ? 's' : ''} still need values.</span>}
+          {error && <span className="text-fail text-[14px]">{error}</span>}
         </div>
         {initial.id && (
-          <p className="text-faint text-[12px] mt-4 leading-relaxed max-w-[60ch]">
+          <p className="text-faint text-[14px] mt-4 leading-relaxed max-w-[60ch]">
             Editing rules creates a new version of this strategy. Past analyses stay attached to the
             version they were evaluated against, so your historical results keep their meaning.
           </p>

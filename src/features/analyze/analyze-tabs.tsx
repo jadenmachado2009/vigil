@@ -29,7 +29,7 @@ export function AnalyzeTabs() {
             }`}
           >
             {tab.label}
-            <span className="num text-[10px] ml-2 text-dim">{tab.hint}</span>
+            <span className="num text-[11.5px] ml-2 text-dim">{tab.hint}</span>
           </button>
         ))}
       </div>
