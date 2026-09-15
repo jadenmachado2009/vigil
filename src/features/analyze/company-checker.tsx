@@ -10,6 +10,8 @@ import { strategyRepository, analysisRepository } from '@/lib/repository/client'
 import { getMetric } from '@/lib/metrics/catalog';
 import { Button, Card, Empty } from '@/components/ui';
 import { VerdictPanel } from './verdict-panel';
+import { DcfPanel } from './dcf-panel';
+import { NewsStrip } from './news-strip';
 
 interface CompanyRef { ticker: string; name: string; exchange?: string }
 
@@ -241,6 +243,12 @@ export function CompanyChecker() {
             warnings={result.warnings}
             demoLabel="These fundamentals were generated locally from the ticker, not taken from filings."
           />
+          <DcfPanel
+            observedFcf={typeof result.record.observations['fcf']?.value === 'number' ? result.record.observations['fcf'].value : null}
+            price={result.company.price ?? null}
+            currency={result.company.currency}
+          />
+          <NewsStrip symbol={result.company.ticker} />
         </div>
       ) : (
         <Card>
