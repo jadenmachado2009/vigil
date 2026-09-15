@@ -130,6 +130,8 @@ export const analyses = pgTable('analyses', {
    * tables carry the relational view for portfolio-level reporting.
    */
   outcome: jsonb('outcome').$type<Record<string, unknown>>(),
+  /** Reduced chart images, kept with the record. */
+  screenshots: jsonb('screenshots').$type<Record<string, unknown>[]>(),
   createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
 }, (table) => ({
   userIdx: index('analyses_user_idx').on(table.userId, table.createdAt),

@@ -15,6 +15,13 @@
       "when": 1788327302385,
       "tag": "0001_wet_jimmy_woo",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1789449165362,
+      "tag": "0002_hot_romulus",
+      "breakpoints": true
     }
   ]
 }

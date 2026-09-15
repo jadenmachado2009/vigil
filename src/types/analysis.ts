@@ -63,4 +63,18 @@ export interface AnalysisRecord {
   notes?: string;
   /** Absent until the user records what happened. */
   outcome?: Outcome;
+  /**
+   * Reduced copies of the charts that were analysed, kept with the record so a
+   * journal entry shows what was actually on screen. Reduced, because a 5 MB
+   * original stored per entry would exhaust browser storage within a week.
+   */
+  screenshots?: StoredImage[];
+}
+
+export interface StoredImage {
+  mimeType: string;
+  /** Raw base64, no data: prefix. */
+  base64: string;
+  width: number;
+  height: number;
 }

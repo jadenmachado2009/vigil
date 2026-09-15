@@ -191,6 +191,25 @@ export function Journal() {
                   <div>
                     <div className="cap mb-2">Rules as judged — version {record.strategyVersion}</div>
                     <RuleTable results={record.results} />
+                    {record.screenshots && record.screenshots.length > 0 && (
+                      <div className="mt-5">
+                        <div className="doc mb-2">Chart as analysed</div>
+                        <div className="flex flex-wrap gap-3">
+                          {record.screenshots.map((shot, i) => (
+                            // eslint-disable-next-line @next/next/no-img-element
+                            <img
+                              key={i}
+                              src={`data:${shot.mimeType};base64,${shot.base64}`}
+                              alt={`Chart ${i + 1} for ${record.subject}`}
+                              width={shot.width}
+                              height={shot.height}
+                              className="border border-rule max-w-full h-auto"
+                              style={{ maxHeight: 360 }}
+                            />
+                          ))}
+                        </div>
+                      </div>
+                    )}
                     {record.notes && (
                       <p className="text-muted text-[12px] mt-4 leading-relaxed">{record.notes}</p>
                     )}

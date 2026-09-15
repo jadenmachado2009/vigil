@@ -8,6 +8,7 @@ import type { Analysis } from '@/types/results';
 import type { ObservationSet } from '@/types/observations';
 import { strategyRepository, analysisRepository } from '@/lib/repository/client';
 import { getMetric } from '@/lib/metrics/catalog';
+import { reduceImage } from '@/lib/images';
 import type { MetricDef } from '@/types/metrics';
 import { Button, Card, Empty } from '@/components/ui';
 import { VerdictPanel } from './verdict-panel';
@@ -20,6 +21,7 @@ interface Upload {
   mimeType: string;
   base64: string;
   preview: string;
+  file: File;
 }
 
 /**
@@ -112,7 +114,7 @@ export function OpportunityChecker() {
       const bytes = new Uint8Array(buffer);
       for (let i = 0; i < bytes.length; i += 1) binary += String.fromCharCode(bytes[i] as number);
       const base64 = btoa(binary);
-      next.push({ name: file.name, mimeType: file.type, base64, preview: `data:${file.type};base64,${base64}` });
+      next.push({ name: file.name, mimeType: file.type, base64, preview: `data:${file.type};base64,${base64}`, file });
     }
     setUploads((current) => [...current, ...next].slice(0, MAX_IMAGES));
   }
@@ -160,6 +162,16 @@ export function OpportunityChecker() {
         return;
       }
 
+      // Reduced copies for the journal. A failure here must not lose the analysis.
+      let screenshots: AnalysisRecord['screenshots'];
+      if (uploads.length > 0) {
+        try {
+          screenshots = await Promise.all(uploads.map((u) => reduceImage(u.file)));
+        } catch {
+          screenshots = undefined;
+        }
+      }
+
       const record: AnalysisRecord = {
         id: `an_${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`,
         createdAt: data.analysis.evaluatedAt,
@@ -177,6 +189,7 @@ export function OpportunityChecker() {
         observations: data.observations,
         provider: data.provider,
         ...(notes.trim() ? { notes: notes.trim() } : {}),
+        ...(screenshots?.length ? { screenshots } : {}),
       };
       await analysisRepository.save(record);
       setResult({ record, warnings: data.warnings });
