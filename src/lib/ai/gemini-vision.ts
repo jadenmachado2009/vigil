@@ -2,7 +2,7 @@ import { DEFAULT_GEMINI_MODEL, geminiFallbackModels } from './config';
 import { generateJson } from './gemini-client';
 import type { VisionProvider, VisionRequest, VisionResult } from './types';
 import { ProviderUnavailableError } from './types';
-import { parseObservations } from './parse';
+import { parseObservations, chartDeclaredUnreadable, unreadableObservations, UNREADABLE_CHART_WARNING } from './parse';
 
 /**
  * Reads chart screenshots with Google's vision models.
@@ -37,11 +37,18 @@ export class GeminiVisionProvider implements VisionProvider {
     const prompt = [
       'You are reading trading chart screenshots. Report only what is visibly true.',
       '',
-      'Return a single JSON object. For each key below, return either the value, or',
+      'Return a single JSON object.',
+      '',
+      'First, always include "chart_readable": true or false.',
+      'true only if the image is a price chart with visible candles or bars and a readable price axis.',
+      'false if it is not a chart, is a sketch or schematic, is too blurry, or is cropped so the price action cannot be read.',
+      '',
+      'Then, for each key below, return either the value, or',
       'an object {"value": <value|null>, "confidence": 0-1, "pending": boolean, "note": string}.',
       '',
       'Rules you must follow:',
       '- If something is not clearly visible, return null. Never guess.',
+      '- "false" is a claim that a structure is definitely absent on a readable chart. If you are unsure, return null, not false.',
       '- Use "pending": true when a condition has not formed YET but still could.',
       '- Do not compute ratios, percentages, or risk/reward. Report raw levels only.',
       '- Do not judge whether the setup is good. That is decided elsewhere.',
@@ -84,9 +91,21 @@ export class GeminiVisionProvider implements VisionProvider {
       throw new ProviderUnavailableError('The chart reader returned malformed JSON.', true);
     }
 
+    const asOf = new Date().toISOString();
+
+    // The model reports whether the picture is a readable chart; code decides
+    // what that means. An explicit "not readable" discards every reading.
+    if (chartDeclaredUnreadable(raw)) {
+      return {
+        observations: unreadableObservations(request.requestedMetrics, asOf),
+        providerName: `${this.name} (${model})`,
+        warnings: [UNREADABLE_CHART_WARNING],
+      };
+    }
+
     const { observations, warnings } = parseObservations(raw, request.requestedMetrics, {
       source: 'vision',
-      asOf: new Date().toISOString(),
+      asOf,
     });
     return { observations, providerName: `${this.name} (${model})`, warnings };
   }

@@ -85,3 +85,39 @@ function normaliseValue(value: unknown, metric: MetricDef): number | boolean | s
       return typeof value === 'string' && value.trim() ? value.trim() : null;
   }
 }
+
+export const UNREADABLE_CHART_WARNING =
+  'The image could not be read as a price chart, so nothing was taken from it. Mark what you see instead.';
+
+/**
+ * True only when the reader explicitly said the image is not a readable price
+ * chart. A missing answer changes nothing — a model that forgets the field must
+ * not wipe out an otherwise good reading.
+ *
+ * This exists because on an image that is not really a chart, a model will
+ * occasionally report a structure as absent rather than unknown, and absent on
+ * a required rule means REJECTED. Asking the one question a picture can answer
+ * reliably, and letting code act on it, keeps "could not tell" from becoming
+ * "definitely not there".
+ */
+export function chartDeclaredUnreadable(raw: unknown): boolean {
+  return typeof raw === 'object' && raw !== null && (raw as Record<string, unknown>)['chart_readable'] === false;
+}
+
+/** Every observable metric recorded as unverified, with the reason attached. */
+export function unreadableObservations(
+  requestedMetrics: MetricDef[],
+  asOf: string,
+): ObservationSet {
+  const observations: ObservationSet = {};
+  for (const metric of requestedMetrics) {
+    if (metric.origin !== 'observed') continue;
+    observations[metric.id] = {
+      value: null,
+      source: 'vision',
+      asOf,
+      note: `${metric.label} could not be read: the image is not a readable price chart.`,
+    };
+  }
+  return observations;
+}

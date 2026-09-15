@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { parseObservations } from '@/lib/ai/parse';
+import { parseObservations, chartDeclaredUnreadable, unreadableObservations, UNREADABLE_CHART_WARNING } from '@/lib/ai/parse';
 import { MockVisionProvider } from '@/lib/ai/mock-vision';
 import { getMetric, metricsForMode } from '@/lib/metrics/catalog';
 import { evaluateStrategy } from '@/lib/rules-engine';
@@ -124,5 +124,56 @@ describe('mock vision provider', () => {
     // A demo that always says QUALIFIED would be worse than useless.
     expect(verdicts.size).toBeGreaterThan(1);
     expect(verdicts.has('QUALIFIED')).toBe(true);
+  });
+});
+
+describe('an image that is not a readable chart', () => {
+  it('acts only on an explicit "not readable"', () => {
+    expect(chartDeclaredUnreadable({ chart_readable: false })).toBe(true);
+    expect(chartDeclaredUnreadable({ chart_readable: true })).toBe(false);
+    // A model that forgets the field must not wipe out a good reading.
+    expect(chartDeclaredUnreadable({ htf_fvg: true })).toBe(false);
+    expect(chartDeclaredUnreadable({ chart_readable: 'no' })).toBe(false);
+    expect(chartDeclaredUnreadable(null)).toBe(false);
+    expect(chartDeclaredUnreadable('not json')).toBe(false);
+  });
+
+  it('records every observable condition as unverified, with the reason', () => {
+    const metrics = ['htf_fvg', 'inverse_fvg', 'entry', 'rr'].map((id) => getMetric(id)!);
+    const observations = unreadableObservations(metrics, '2026-03-10T15:00:00.000Z');
+    expect(Object.keys(observations).sort()).toEqual(['entry', 'htf_fvg', 'inverse_fvg']); // rr is computed, never read
+    for (const o of Object.values(observations)) {
+      expect(o.value).toBeNull();
+      expect(o.source).toBe('vision');
+      expect(o.note).toMatch(/not a readable price chart/);
+    }
+    expect(UNREADABLE_CHART_WARNING).toMatch(/Mark what you see/);
+  });
+
+  it('turns an unreadable image into insufficient data, never a rejection', () => {
+    const metrics = nyAmFvg.rules.map((r) => getMetric(r.metric)!).filter((m) => m.origin === 'observed');
+    const analysis = evaluateStrategy({
+      strategy: nyAmFvg,
+      observations: unreadableObservations(metrics, '2026-03-10T15:00:00.000Z'),
+      options: { now: '2026-03-10T15:00:00.000Z' },
+    });
+    expect(analysis.verdict).toBe('INSUFFICIENT_DATA');
+    expect(analysis.results.some((r) => r.status === 'FAIL')).toBe(false);
+  });
+
+  it("still lets the trader's own marks decide on top of an unreadable image", () => {
+    const now = '2026-03-10T15:00:00.000Z';
+    const metrics = nyAmFvg.rules.map((r) => getMetric(r.metric)!).filter((m) => m.origin === 'observed');
+    const observations = unreadableObservations(metrics, now);
+    // The route merges the trader's values over the reader's, skipping nulls.
+    const mine = {
+      htf_fvg: true, ltf_fvg: true, inverse_fvg: true, liquidity_target: true,
+      entry: 100, stop: 98, target: 105, entry_time: '2026-03-10T14:30:00.000Z',
+    };
+    for (const [key, value] of Object.entries(mine)) {
+      observations[key] = { value, source: 'user', asOf: now };
+    }
+    const analysis = evaluateStrategy({ strategy: nyAmFvg, observations, options: { now } });
+    expect(analysis.verdict).toBe('QUALIFIED');
   });
 });
