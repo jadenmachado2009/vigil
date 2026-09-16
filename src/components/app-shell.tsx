@@ -103,6 +103,17 @@ function Shell({ children }: { children: ReactNode }) {
       </div>
 
       <main className="px-4 sm:px-7 lg:px-10 py-8 max-w-[1600px] w-full mx-auto">{children}</main>
+      <footer className="border-t border-rule mt-auto px-4 sm:px-7 lg:px-10 py-5 flex items-baseline justify-between gap-x-8 gap-y-2 flex-wrap">
+        <div className="doc">© 2026 Vigil · All rights reserved</div>
+        <div className="doc !normal-case !tracking-normal text-muted">
+          Not financial advice. A verdict describes your own rules, never what the market will do.
+        </div>
+        <div className="flex items-center gap-5">
+          <Link href="/how-it-works" className="doc hover:!text-ink">How it works</Link>
+          <Link href="/terms" className="doc hover:!text-ink">Terms</Link>
+          <Link href="/privacy" className="doc hover:!text-ink">Privacy</Link>
+        </div>
+      </footer>
       <CommandPalette commands={commands} />
     </div>
   );

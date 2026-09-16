@@ -136,6 +136,14 @@ export function AuthForm({ mode }: { mode: 'sign-in' | 'sign-up' }) {
               )}
             </span>
           </div>
+          {isSignUp && (
+            <p className="text-faint text-[13px] sm:col-span-2 leading-relaxed">
+              Creating an account means you accept the{' '}
+              <Link href="/terms" className="text-ink underline underline-offset-4">Terms of use</Link>
+              {' '}and the{' '}
+              <Link href="/privacy" className="text-ink underline underline-offset-4">Privacy</Link> page.
+            </p>
+          )}
           {error && <p className="text-fail text-[15px] sm:col-span-2">{error}</p>}
         </form>
       </div>

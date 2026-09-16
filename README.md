@@ -246,3 +246,8 @@ providers — the rules engine is real either way.
 
 The entire project runs on no-cost tooling and free provider tiers. With no API
 keys configured at all, it runs on labelled mock providers. See `.env.example`.
+
+## Licence
+
+Copyright © 2026 Jaden Machado. All rights reserved. See [LICENSE](LICENSE).
+Vigil is a compliance-checking tool, not financial advice — see `/terms` and `/privacy` in the app.
